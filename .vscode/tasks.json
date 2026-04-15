@@ -1,0 +1,49 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "build",
+      "type": "process",
+      "command": "dotnet",
+      "args": [
+        "build",
+        "${workspaceFolder}/rennsyu/rennsyu.csproj",
+        "/property:GenerateFullPaths=true",
+        "/consoleloggerparameters:NoSummary"
+      ],
+      "problemMatcher": "$msCompile",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    },
+    {
+      "label": "run",
+      "type": "process",
+      "command": "dotnet",
+      "args": [
+        "run",
+        "--project",
+        "${workspaceFolder}/rennsyu/rennsyu.csproj",
+        "--launch-profile",
+        "https"
+      ],
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "watch",
+      "type": "process",
+      "command": "dotnet",
+      "args": [
+        "watch",
+        "--project",
+        "${workspaceFolder}/rennsyu/rennsyu.csproj",
+        "run",
+        "--launch-profile",
+        "https"
+      ],
+      "isBackground": true,
+      "problemMatcher": "$msCompile"
+    }
+  ]
+}

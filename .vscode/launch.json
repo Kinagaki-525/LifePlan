@@ -1,0 +1,43 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": ".NET Launch (HTTPS)",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build",
+      "program": "${workspaceFolder}/rennsyu/bin/Debug/net10.0/rennsyu.dll",
+      "args": [],
+      "cwd": "${workspaceFolder}/rennsyu",
+      "stopAtEntry": false,
+      "env": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ASPNETCORE_URLS": "https://localhost:7070;http://localhost:5250"
+      },
+      "serverReadyAction": {
+        "action": "openExternally",
+        "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
+      },
+      "console": "internalConsole"
+    },
+    {
+      "name": ".NET Launch (HTTP)",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build",
+      "program": "${workspaceFolder}/rennsyu/bin/Debug/net10.0/rennsyu.dll",
+      "args": [],
+      "cwd": "${workspaceFolder}/rennsyu",
+      "stopAtEntry": false,
+      "env": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ASPNETCORE_URLS": "http://localhost:5250"
+      },
+      "serverReadyAction": {
+        "action": "openExternally",
+        "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
+      },
+      "console": "internalConsole"
+    }
+  ]
+}
