@@ -4,7 +4,7 @@
 
 本書は、以下 2 つの文書を統合した「実装の基準仕様（v1.1）」です。
 
-- 先行作成した `life-plan-simulator-spec.md`（基本方針）
+- 先行作成した `docs/index.md`（基本方針・MkDocs 用に名称変更）
 - 後続作成した `web-app-spec.md`（詳細入力・計算項目）
 
 以降の実装では、**本書を正**とし、未確定項目は「要確認事項」に従って確定します。
@@ -232,4 +232,4 @@
 ## 9. 参照
 
 - `docs/web-app-spec.md`（詳細元資料）
-- `docs/life-plan-simulator-spec.md`（本統合版）
+- `docs/index.md`（本統合版）
