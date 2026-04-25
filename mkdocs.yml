@@ -1,0 +1,18 @@
+site_name: ライフプランアプリ
+
+theme:
+  name: material
+  language: ja
+
+nav:
+  - 統合仕様:
+      - ライフプランシミュレーター仕様: life-plan-simulator-spec.md
+  - 詳細仕様:
+      - WEBアプリ仕様: web-app-spec.md
+  - 仕様分割:
+      - ガイド: specs/index.md
+      - 全体概要: specs/overview.md
+      - 入力仕様: specs/input-spec.md
+      - 計算仕様: specs/calculation-spec.md
+      - 出力仕様: specs/output-spec.md
+      - 未確定事項: specs/open-issues.md
