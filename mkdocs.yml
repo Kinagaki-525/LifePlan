@@ -1,0 +1,9 @@
+site_name: ライフプランアプリ
+
+theme:
+  name: material
+  language: ja
+
+nav:
+  - ホーム: life-plan-simulator-spec.md
+  - 仕様書: web-app-spec.md
