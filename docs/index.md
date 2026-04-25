@@ -277,5 +277,4 @@
 
 ## 9. 参照
 
-- `docs/web-app-spec.md`（詳細元資料）
-- `docs/index.md`（本統合版）
+- `docs/web-app-spec.md`（統合前の詳細元資料）
