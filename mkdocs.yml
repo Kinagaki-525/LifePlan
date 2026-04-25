@@ -6,12 +6,4 @@ theme:
 
 nav:
   - 統合仕様: index.md
-  - 詳細仕様:
-      - Webアプリ仕様: web-app-spec.md
-  - 仕様分割:
-      - ガイド: specs/guide.md
-      - 全体概要: specs/overview.md
-      - 入力仕様: specs/input-spec.md
-      - 計算仕様: specs/calculation-spec.md
-      - 出力仕様: specs/output-spec.md
-      - 未確定事項: specs/open-issues.md
+  - 詳細元資料: web-app-spec.md
