@@ -71,9 +71,11 @@ rennsyu/
 | --- | --- |
 | Controller | HTTPリクエスト受付、画面遷移、ViewModel渡答 |
 | ViewModel | 画面表示用データ、入力バインド |
-| Application Service | 画面単位の処理フロー、計算実行 |
+| Application Service | 画面単位の処理フロー、現在年の取得、計算実行 |
 | Domain/Logic | 純粋な計算ロジック（貯蓄計算、ローン返済額等）と計算に使う固定マスタ |
 | Domain/Rules | 業務ルール（年齢範囲、利率範囲等） |
+
+`LifePlanCalculator` は `DateTime.Now` を直接参照せず、`Calculate(input, currentYear)` のように現在年を引数で受け取る。画面実行時は Application Service が現在年を取得して渡し、単体テストでは固定の `currentYear` を渡して計算結果を検証できるようにする。
 
 ### 4.4 バリデーション方針
 
@@ -114,6 +116,7 @@ rennsyu/
   - ローン返済額計算
   - 貯蓄推移計算
   - 教育費計算
+  - 引数で受け取った現在年を基準にした試算期間計算
   - 夫・妻・子どもの年齢推移計算
   - 給与、退職金、年金の収入計算
   - 基本生活費の年額化とインフレ率適用
