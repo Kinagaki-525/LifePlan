@@ -39,9 +39,9 @@ rennsyu/
 │  └─ LifePlanViewModel.cs       # シミュレーター画面データ（入力項目はdocs/index.md 3.入力仕様を参照）
 ├─ Application/
 │  ├─ Interfaces/
-│  │  └─ ILifePlanService.cs     # サービス契約
+│  │  └─ ILifePlanPageService.cs # シミュレーター画面サービス契約
 │  └─ Services/
-│       └─ LifePlanService.cs    # 画面ロジック
+│       └─ LifePlanPageService.cs # シミュレーター画面ロジック
 ├─ Domain/
 │  ├─ Entities/
 │  │  └─ LifePlanData.cs         # 業務データ
@@ -119,7 +119,7 @@ rennsyu/
 ### PR #2: 基盤作成
 - LifePlanController作成
 - LifePlanViewModel作成
-- LifePlanService作成
+- LifePlanPageService作成
 - Domain/Logic 基本構造
 - 教育費マスタ、年金参考データ作成
 - Application/Interfaces 契約定義

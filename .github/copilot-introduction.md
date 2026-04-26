@@ -51,9 +51,9 @@ MyApp
 ## Naming Rules
 
 - Service の interface / class / file 名は `{機能名}Service` を基本とする
-- Service interface 名は実装クラス名に `I` を付ける（例：`ILifePlanService` / `LifePlanService`）
+- Service interface 名は実装クラス名に `I` を付ける（例：`ILifePlanPageService` / `LifePlanPageService`）
 - Service のメソッド名には `Service` を付けず、処理内容を動詞句で表す
-- メソッド名は呼び出し側で自然に読める名前にする（例：`CreateInitialViewModel`, `CalculateLifePlan`, `ValidateInput`）
+- メソッド名は呼び出し側で自然に読める名前にする（例：`CreateInitialPage`, `CalculateLifePlan`, `ValidateInput`）
 
 ## Layer Responsibilities
 
@@ -90,7 +90,7 @@ MyApp
 
 - Application Service や Repository など、Application 層が利用する抽象を置く
 - 実装詳細ではなく、アプリケーションから見た必要契約を表現する
-- Service interface 名は実装クラス名に `I` を付けた名前を基本とする（例：`ILifePlanService` / `LifePlanService`）
+- Service interface 名は実装クラス名に `I` を付けた名前を基本とする（例：`ILifePlanPageService` / `LifePlanPageService`）
 
 ### Domain/Entities
 
