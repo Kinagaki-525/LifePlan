@@ -1,8 +1,31 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "ライフプランシミュレーター";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<section class="life-plan-home">
+    <div class="life-plan-home__content">
+        <p class="life-plan-home__eyebrow">Life Plan Simulator</p>
+        <h1 class="display-5 fw-bold mb-3">ライフプランシミュレーター</h1>
+        <p class="lead text-muted mb-4">
+            家族構成、収入、支出、ライフイベントをもとに、将来のキャッシュフローと貯蓄推移を確認します。
+        </p>
+        <a class="btn btn-primary btn-lg px-4" asp-controller="LifePlan" asp-action="Index">
+            シミュレーターを開く
+        </a>
+    </div>
+
+    <div class="life-plan-home__points" aria-label="確認できる内容">
+        <div class="life-plan-home__point">
+            <span class="life-plan-home__point-title">サマリー</span>
+            <span>最終年残高や最低残高年を確認</span>
+        </div>
+        <div class="life-plan-home__point">
+            <span class="life-plan-home__point-title">年次表</span>
+            <span>収入、支出、貯蓄の推移を一覧表示</span>
+        </div>
+        <div class="life-plan-home__point">
+            <span class="life-plan-home__point-title">グラフ</span>
+            <span>貯蓄推移を視覚的に把握</span>
+        </div>
+    </div>
+</section>

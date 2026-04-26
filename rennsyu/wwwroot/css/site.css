@@ -29,3 +29,44 @@ body {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
   text-align: start;
 }
+
+.life-plan-home {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 4rem 0 3rem;
+}
+
+.life-plan-home__content {
+  max-width: 720px;
+}
+
+.life-plan-home__eyebrow {
+  margin-bottom: 0.5rem;
+  color: #1b6ec2;
+  font-weight: 700;
+}
+
+.life-plan-home__points {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+  margin-top: 3rem;
+}
+
+.life-plan-home__point {
+  display: flex;
+  min-height: 112px;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 1rem;
+  border: 1px solid #dee2e6;
+  border-radius: 0.5rem;
+  background: #fff;
+  color: #495057;
+}
+
+.life-plan-home__point-title {
+  color: #212529;
+  font-weight: 700;
+}
