@@ -69,7 +69,7 @@ rennsyu/
 
 | レイヤー | 責務 |
 | --- | --- |
-| Controller | HTTPリクエスト受付、画面遷移、ViewModel渡答 |
+| Controller | HTTPリクエスト受付、画面遷移、ViewModel受け渡し |
 | ViewModel | 画面表示用データ、入力バインド |
 | Application Service | 画面単位の処理フロー、現在年の取得、計算実行 |
 | Domain/Logic | 純粋な計算ロジック（貯蓄計算、ローン返済額等）と計算に使う固定マスタ |
@@ -111,7 +111,7 @@ rennsyu/
 
 機能全体を以下のPRに分割して実装する。
 
-### PR #1: TOPページ作成
+### PR #1: TOPページ修正
 - 既存HomeController修正
 - 既存Views/Home/Index.cshtml修正
 - ライフプランシミュレーターへの遷移ボタン配置
@@ -119,7 +119,9 @@ rennsyu/
 ### PR #2: 基盤作成
 - LifePlanController作成
 - LifePlanViewModel作成
+- LifePlanService作成
 - Domain/Logic 基本構造
+- 教育費マスタ、年金参考データ作成
 - Application/Interfaces 契約定義
 
 ### PR #3: 計算基盤・収入計算実装
@@ -127,7 +129,7 @@ rennsyu/
   - 引数で受け取った現在年を基準にした試算期間計算
   - 夫・妻・子どもの年齢推移計算
   - 万円入力から円内部計算への単位変換
-  - 円単位の四捨五入と万円表示への変換
+  - 円単位の端数処理
   - 給与、退職金、年金の収入計算
 - Domain/Rules 検証ルール
   - 年齢、期間、利率、金額の範囲検証
@@ -153,7 +155,7 @@ rennsyu/
 ### PR #6: 結果表示・グラフ実装
 - サマリー表示
 - キャッシュフロー表表示
-- グラフ描画（初期実装では追加ライブラリなし。Chart.js等は必要性が明確になった時点で検討）
+- グラフ描画（初期実装では追加ライブラリなし）
 
 ## 6. 実装優先順位
 
