@@ -1,11 +1,11 @@
 # rennsyu
 
-ASP.NET Core MVC と Razor Views を使った練習用アプリです。
+ASP.NET Core MVC と Razor Views を使ったライフプランシミュレーターアプリです。
 
 ## 概要
 
-このリポジトリは、ASP.NET Core MVC の画面実装や UI 調整を練習するためのプロジェクトです。
-既存の MVC 構成を尊重しつつ、理解しやすい構成を保つことを目的としています。
+このリポジトリは、家族構成、収入、支出、ライフイベントをもとに将来のキャッシュフローと貯蓄推移を確認するためのプロジェクトです。
+既存の MVC 構成を尊重しつつ、責務が分かりやすい構成を保つことを目的としています。
 
 ## ディレクトリ方針
 
@@ -17,6 +17,11 @@ ASP.NET Core MVC と Razor Views を使った練習用アプリです。
 - 既存の命名規則とディレクトリ構成を優先する
 - 必要最小限の変更で目的を達成する
 - 関係のないファイルへ波及する変更は避ける
+- Service クラスを追加する場合は、対応する interface を `Application/Interfaces` または適切な Interfaces フォルダに定義する
+- Service の interface / class / file 名は `{機能名}Service` を基本とする（例：`ILifePlanService.cs`, `LifePlanService.cs`）
+- Service のメソッド名には `Service` を付けず、処理内容を動詞句で表す
+- Controller や他レイヤーから Service を利用する場合は、原則として interface 経由で依存させる
+- ViewModel、Domain 型、DTO の責務を混在させず、境界をまたぐ変換は Mapper に集約する
 - 可能なら変更後にビルド確認を行う
 
 ## Codex / Copilot 向け作業ルール

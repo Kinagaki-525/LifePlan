@@ -48,6 +48,13 @@ MyApp
 - 変更後は可能ならビルド確認を行う
 - 実装だけでなく、責務の分離や依存方向が妥当かも確認する
 
+## Naming Rules
+
+- Service の interface / class / file 名は `{機能名}Service` を基本とする
+- Service interface 名は実装クラス名に `I` を付ける（例：`ILifePlanService` / `LifePlanService`）
+- Service のメソッド名には `Service` を付けず、処理内容を動詞句で表す
+- メソッド名は呼び出し側で自然に読める名前にする（例：`CreateInitialViewModel`, `CalculateLifePlan`, `ValidateInput`）
+
 ## Layer Responsibilities
 
 ### Controllers
@@ -73,14 +80,17 @@ MyApp
 ### Application/Services
 
 - 画面や機能単位の処理の流れを組み立てる
+- Service クラスを追加する場合は、対応する interface を必ず定義する
+- Controller や他レイヤーからは、具体 Service クラスではなく interface に依存させる
 - `Domain/Services` や `Domain/Logic` を呼び出して処理を進める
 - Repository 抽象を通してデータ取得や保存を行う
 - 業務判断そのものはできるだけ `Domain` に寄せる
 
 ### Application/Interfaces
 
-- Repository など、Application 層が利用する抽象を置く
+- Application Service や Repository など、Application 層が利用する抽象を置く
 - 実装詳細ではなく、アプリケーションから見た必要契約を表現する
+- Service interface 名は実装クラス名に `I` を付けた名前を基本とする（例：`ILifePlanService` / `LifePlanService`）
 
 ### Domain/Entities
 
@@ -120,6 +130,7 @@ MyApp
 ## Dependency Direction
 
 - `Controllers` は `Application` を呼ぶ
+- `Controllers` は原則として `Application/Interfaces` の Service interface に依存する
 - `Application` は `Domain` と `Application/Interfaces` に依存する
 - `Infrastructure` は `Application/Interfaces` を実装する
 - `Views` は `ViewModels` を使う
@@ -128,11 +139,13 @@ MyApp
 
 ## DTO and Mapper Policy
 
-- 最初から `DTOs` や `Mappers` を過剰に増やさない
-- 画面向けデータはまず `ViewModels` を優先する
-- Application 層の入出力整理が必要になった時点で `DTOs` を追加してよい
-- 型変換が複数箇所に散り始めた時点で `Mappers` を追加してよい
-- 必要になるまでは Service 内の変換で十分
+- View に渡す画面専用データは `ViewModels` に置く
+- Domain の計算入力・出力は `Domain/Entities` または計算専用の型に置く
+- ViewModel、Domain 型、DTO の責務を混在させない
+- ViewModel と Domain 型の変換は `Application/Mappers` に集約する
+- Service 内に複雑な型変換を直接書かない
+- DTO は外部API、永続化、Application 層の入出力が ViewModel / Domain 型だけでは表現しづらい場合に追加する
+- Mapper 名は `{対象}Mapper` を基本とし、変換元と変換先が分かるメソッド名にする
 
 ## CSS and UI
 
