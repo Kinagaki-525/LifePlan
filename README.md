@@ -19,6 +19,10 @@ ASP.NET Core MVC と Razor Views を使った練習用アプリです。
 - 関係のないファイルへ波及する変更は避ける
 - 可能なら変更後にビルド確認を行う
 
+## Codex / Copilot 向け作業ルール
+
+Codex や GitHub Copilot でこのリポジトリを扱う場合は、`.github/copilot-introduction.md` を参照してください。
+
 ## ドキュメント
 
 ドキュメントは `docs/` 配下に配置します。

@@ -36,7 +36,7 @@ MyApp
 - 技術スタックは `C#`, `ASP.NET Core MVC`, `Razor Views`, `Bootstrap`
 - 既存の MVC 構成と命名規則を優先する
 - 画面文言や説明は日本語を優先してよい
-- 不要に概念を増やしすぎず、練習用として理解しやすい構成を保つ
+- 不要に概念を増やしすぎない
 
 ## General Rules
 
