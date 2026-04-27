@@ -1,7 +1,11 @@
+using rennsyu.Application.Interfaces;
+using rennsyu.Application.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddScoped<ILifePlanPageService, LifePlanPageService>();
 
 var app = builder.Build();
 
@@ -24,6 +28,5 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
-
 
 app.Run();

@@ -24,6 +24,7 @@ MyApp
 │  ├─ Entities
 │  ├─ Services
 │  ├─ Logic
+│  ├─ ReferenceData
 │  └─ Rules
 ├─ Infrastructure
 │  ├─ Data
@@ -47,6 +48,26 @@ MyApp
 - 小さな修正や明確な追加は、そのまま実装まで進めてよい
 - 変更後は可能ならビルド確認を行う
 - 実装だけでなく、責務の分離や依存方向が妥当かも確認する
+
+## Document Priority
+
+- 実装方針に迷った場合は、`docs/implementation-plan.md` より `.github/copilot-introduction.md` の責務分離・依存方向ルールを優先する
+- 実装計画と作業ルールが矛盾する場合は、作業ルールに合わせて実装し、必要に応じて実装計画側の更新を提案する
+
+## Code Readability
+
+- コードは処理のまとまりごとに適切な空行を入れ、読みやすさを保つ
+- 変数宣言、入力検証、変換処理、主要な処理、戻り値の生成など、役割が変わる箇所では空行で区切る
+- 空行を入れすぎて処理の流れが分断されないようにし、論理的なまとまりを優先する
+- 1つのメソッド内に複数の責務が見える場合は、空行だけで整えるのではなく、メソッド分割や Mapper / Service / Domain への責務移動を検討する
+- コメントで段落を作るのではなく、まず命名・空行・小さなメソッドで意図が伝わるコードを優先する
+
+## Naming Rules
+
+- Service の interface / class / file 名は `{機能名}Service` を基本とする
+- Service interface 名は実装クラス名に `I` を付ける（例：`ILifePlanPageService` / `LifePlanPageService`）
+- Service のメソッド名には `Service` を付けず、処理内容を動詞句で表す
+- メソッド名は呼び出し側で自然に読める名前にする（例：`CreateInitialPage`, `CalculateLifePlan`, `ValidateInput`）
 
 ## Layer Responsibilities
 
@@ -73,14 +94,17 @@ MyApp
 ### Application/Services
 
 - 画面や機能単位の処理の流れを組み立てる
+- Service クラスを追加する場合は、対応する interface を必ず定義する
+- Controller や他レイヤーからは、具体 Service クラスではなく interface に依存させる
 - `Domain/Services` や `Domain/Logic` を呼び出して処理を進める
 - Repository 抽象を通してデータ取得や保存を行う
 - 業務判断そのものはできるだけ `Domain` に寄せる
 
 ### Application/Interfaces
 
-- Repository など、Application 層が利用する抽象を置く
+- Application Service や Repository など、Application 層が利用する抽象を置く
 - 実装詳細ではなく、アプリケーションから見た必要契約を表現する
+- Service interface 名は実装クラス名に `I` を付けた名前を基本とする（例：`ILifePlanPageService` / `LifePlanPageService`）
 
 ### Domain/Entities
 
@@ -100,6 +124,16 @@ MyApp
 - 副作用を持たない処理を優先する
 - DB アクセス、外部サービス呼び出し、HTTP 依存は持ち込まない
 - 入力と出力が明確で、単体テストしやすい形を優先する
+- ViewModel や画面表示用の型に依存しない
+- 固定マスタや参考値そのものは原則として `Domain/ReferenceData` または適切な専用フォルダに置き、`Logic` には計算処理を置く
+
+### Domain/ReferenceData
+
+- 計算や選択肢生成で参照する固定データ、基準値、参考値を置く
+- 教育費マスタ、年金参考値など、ユーザー入力ではなくアプリ側が持つ参照用データを扱う
+- 計算処理そのものは持たず、必要な場合は `Domain/Logic` から参照されるデータとして表現する
+- 画面表示専用の都合や ViewModel には依存しない
+- クラス名に `ReferenceData` を機械的に付けず、対象と役割が分かる名前を優先する（例：`EducationCostMaster`, `EducationCostEntry`, `PensionReferenceEntry`）
 
 ### Domain/Rules
 
@@ -120,6 +154,7 @@ MyApp
 ## Dependency Direction
 
 - `Controllers` は `Application` を呼ぶ
+- `Controllers` は原則として `Application/Interfaces` の Service interface に依存する
 - `Application` は `Domain` と `Application/Interfaces` に依存する
 - `Infrastructure` は `Application/Interfaces` を実装する
 - `Views` は `ViewModels` を使う
@@ -128,11 +163,13 @@ MyApp
 
 ## DTO and Mapper Policy
 
-- 最初から `DTOs` や `Mappers` を過剰に増やさない
-- 画面向けデータはまず `ViewModels` を優先する
-- Application 層の入出力整理が必要になった時点で `DTOs` を追加してよい
-- 型変換が複数箇所に散り始めた時点で `Mappers` を追加してよい
-- 必要になるまでは Service 内の変換で十分
+- View に渡す画面専用データは `ViewModels` に置く
+- Domain の計算入力・出力は `Domain/Entities` または計算専用の型に置く
+- ViewModel、Domain 型、DTO の責務を混在させない
+- ViewModel と Domain 型の変換は `Application/Mappers` に集約する
+- Service 内に複雑な型変換を直接書かない
+- DTO は外部API、永続化、Application 層の入出力が ViewModel / Domain 型だけでは表現しづらい場合に追加する
+- Mapper 名は `{対象}Mapper` を基本とし、変換元と変換先が分かるメソッド名にする
 
 ## CSS and UI
 

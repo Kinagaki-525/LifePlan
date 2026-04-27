@@ -39,18 +39,20 @@ rennsyu/
 │  └─ LifePlanViewModel.cs       # シミュレーター画面データ（入力項目はdocs/index.md 3.入力仕様を参照）
 ├─ Application/
 │  ├─ Interfaces/
-│  │  └─ ILifePlanService.cs     # サービス契約
+│  │  └─ ILifePlanPageService.cs # シミュレーター画面サービス契約
 │  └─ Services/
-│       └─ LifePlanService.cs    # 画面ロジック
+│       └─ LifePlanPageService.cs # シミュレーター画面ロジック
 ├─ Domain/
 │  ├─ Entities/
 │  │  └─ LifePlanData.cs         # 業務データ
 │  ├─ Logic/
-│  │  ├─ LifePlanCalculator.cs   # 計算ロジック（計算仕様はdocs/index.md 4.計算仕様を参照）
+│  │  └─ LifePlanCalculator.cs   # 計算ロジック（計算仕様はdocs/index.md 4.計算仕様を参照）
+│  ├─ ReferenceData/
 │  │  ├─ EducationCostMaster.cs  # 教育費マスタ
 │  │  └─ PensionReferenceData.cs # 年金参考データ
 │  └─ Rules/
-│       └─ ValidationRules.cs    # 入力検証ルール
+│       ├─ AgeRules.cs           # 年齢範囲ルール
+│       └─ RateRules.cs          # 利率範囲ルール
 ├─ Infrastructure/
 │  └─ (現時点ではDB不要)
 └─ wwwroot/
@@ -61,7 +63,7 @@ rennsyu/
 ### 4.2 依存関係
 
 - **Controllers** → Application/Services
-- **Application** → Domain/Logic, Domain/Rules
+- **Application** → Domain/Logic, Domain/ReferenceData, Domain/Rules
 - **Views** → ViewModels
 - **Domain** は他レイヤーへの依存を持たない
 
@@ -72,7 +74,8 @@ rennsyu/
 | Controller | HTTPリクエスト受付、画面遷移、ViewModel受け渡し |
 | ViewModel | 画面表示用データ、入力バインド |
 | Application Service | 画面単位の処理フロー、現在年の取得、計算実行 |
-| Domain/Logic | 純粋な計算ロジック（貯蓄計算、ローン返済額等）と計算に使う固定マスタ |
+| Domain/Logic | 純粋な計算ロジック（貯蓄計算、ローン返済額等） |
+| Domain/ReferenceData | 計算や選択肢生成で参照する固定データ、基準値、参考値 |
 | Domain/Rules | 業務ルール（年齢範囲、利率範囲等） |
 
 `LifePlanCalculator` は `DateTime.Now` を直接参照せず、`Calculate(input, currentYear)` のように現在年を引数で受け取る。画面実行時は Application Service が現在年を取得して渡し、単体テストでは固定の `currentYear` を渡して計算結果を検証できるようにする。
@@ -109,7 +112,7 @@ rennsyu/
 
 ## 5. PR分割方針
 
-機能全体を以下のPRに分割して実装する。
+機能全体を以下のPRに分割して実装する。PR #2 完了時点で、LifePlan 画面の初期表示、ViewModel、Domain Entity、ReferenceData、Rules の基盤は作成済みとする。
 
 ### PR #1: TOPページ修正
 - 既存HomeController修正
@@ -119,43 +122,63 @@ rennsyu/
 ### PR #2: 基盤作成
 - LifePlanController作成
 - LifePlanViewModel作成
-- LifePlanService作成
+- LifePlanPageService作成
 - Domain/Logic 基本構造
 - 教育費マスタ、年金参考データ作成
 - Application/Interfaces 契約定義
 
-### PR #3: 計算基盤・収入計算実装
+### PR #3: 家族構成・貯蓄・収入入力フォーム実装
+- View 実装（家族構成、貯蓄、夫・妻の収入入力）
+- Controller の POST 受け口作成
+- Application/Mappers で対象入力の ViewModel から Domain Entity への変換を実装
+- Domain/Rules を使った基本検証の実装
+  - 夫・妻年齢、子ども年齢の範囲検証
+  - 想定運用年利、年収、退職金、年金の範囲検証
+- 検証エラー時は計算を実行せず、入力値を保持して画面へ戻す
+
+### PR #4: ライフイベント・支出入力フォーム実装
+- View 実装（結婚、住宅購入、自動車、教育費、旅行・その他、支出入力）
+- Application/Mappers で対象入力の ViewModel から Domain Entity への変換を実装
+- Domain/Rules を使った条件付き検証の実装
+  - 住宅購入、自動車、教育費、旅行・その他の条件付き入力検証
+  - 基本生活費、家賃、その他支出、インフレ率の範囲検証
+- 検証エラー時のメッセージと表示位置を整理
+
+### PR #5: 計算基盤・収入計算実装
 - Domain/Logic 計算基盤実装
-  - 引数で受け取った現在年を基準にした試算期間計算
+  - 引数で受け取った現在年を基準にした試算期間計算の拡張
   - 夫・妻・子どもの年齢推移計算
   - 万円入力から円内部計算への単位変換
   - 円単位の端数処理
+  - 年次計算結果の行データ構造作成
   - 給与、退職金、年金の収入計算
-- Domain/Rules 検証ルール
-  - 年齢、期間、利率、金額の範囲検証
+- Application Service から計算処理を呼び出す流れを作成
 
-### PR #4: 支出・貯蓄・サマリー計算実装
-- Domain/Logic 支出・貯蓄計算実装
+### PR #6: 支出計算実装
+- Domain/Logic 支出計算実装
   - ローン返済額計算
   - 教育費計算
   - 基本生活費の年額化とインフレ率適用
   - 家賃、その他支出、結婚、自動車、旅行・その他の支出計算
   - 住宅購入後の家賃停止
+- ReferenceData の教育費マスタ、年金参考値を計算・選択肢生成で利用する
+
+### PR #7: 貯蓄・サマリー計算実装
+- Domain/Logic 貯蓄・サマリー計算実装
   - 収入合計、支出合計、収支差額の集計
   - 0%運用と想定年利運用の残高計算
   - 最終年残高、最低残高年、大型支出ピーク年の算出
-- Domain/Rules 検証ルール
-  - 住宅、自動車、教育費、旅行・その他の条件付き入力検証
-  - 検証エラー時のメッセージ定義
 
-### PR #5: シミュレーター画面入力・POST実装
-- View実装（入力フォーム）
-- 計算実行ボタン POST処理
-
-### PR #6: 結果表示・グラフ実装
+### PR #8: 結果表示実装
+- Application/Mappers で計算結果を表示用 ViewModel へ変換
 - サマリー表示
 - キャッシュフロー表表示
-- グラフ描画（初期実装では追加ライブラリなし）
+- 検証エラーと計算結果の表示状態を整理
+
+### PR #9: グラフ描画実装
+- `wwwroot/js/life-plan-chart.js` 作成
+- 貯蓄推移グラフ描画（初期実装では追加ライブラリなし）
+- 収入合計、支出合計、貯蓄合計（0%運用/想定年利運用）の描画
 
 ## 6. 実装優先順位
 

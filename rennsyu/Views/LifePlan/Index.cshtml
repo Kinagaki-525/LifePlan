@@ -1,0 +1,70 @@
+@model LifePlanViewModel
+
+@{
+    ViewData["Title"] = "ライフプランシミュレーター";
+}
+
+<section class="life-plan-simulator">
+    <div class="mb-4">
+        <p class="text-primary fw-bold mb-2">Life Plan Simulator</p>
+        <h1 class="h2 fw-bold mb-2">ライフプランシミュレーター</h1>
+        <p class="text-muted mb-0">
+            入力フォームと計算処理は後続PRで実装します。PR2では画面構成とデータ受け渡しの基盤を用意します。
+        </p>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-7">
+            <section class="border rounded p-4 mb-3">
+                <h2 class="h5 fw-bold mb-3">家族構成</h2>
+                <dl class="row mb-0">
+                    <dt class="col-sm-4">夫年齢</dt>
+                    <dd class="col-sm-8">必須、16〜100歳</dd>
+                    <dt class="col-sm-4">妻年齢</dt>
+                    <dd class="col-sm-8">必須、16〜100歳</dd>
+                    <dt class="col-sm-4">子ども</dt>
+                    <dd class="col-sm-8">@Model.Family.Children.Count 人分の入力枠を準備</dd>
+                </dl>
+            </section>
+
+            <section class="border rounded p-4 mb-3">
+                <h2 class="h5 fw-bold mb-3">ライフイベント</h2>
+                <ul class="mb-0">
+                    <li>結婚、住宅購入、自動車、教育費、旅行・その他</li>
+                    <li>教育費マスタ候補：@Model.EducationOptions.Count 件</li>
+                </ul>
+            </section>
+
+            <section class="border rounded p-4 mb-3">
+                <h2 class="h5 fw-bold mb-3">貯蓄</h2>
+                <p class="mb-0">現在の金融資産残高と想定運用年利の入力枠を準備します。</p>
+            </section>
+
+            <section class="border rounded p-4 mb-3">
+                <h2 class="h5 fw-bold mb-3">収入</h2>
+                <p class="mb-0">夫・妻それぞれの職業、年収、退職金、年金情報の入力枠を準備します。</p>
+            </section>
+
+            <section class="border rounded p-4 mb-3">
+                <h2 class="h5 fw-bold mb-3">支出</h2>
+                <p class="mb-0">基本生活費、インフレ率、家賃、その他支出の入力枠を準備します。</p>
+            </section>
+
+            <button class="btn btn-primary" type="button" disabled>
+                シミュレーション実行
+            </button>
+        </div>
+
+        <div class="col-lg-5">
+            <section class="border rounded p-4 bg-light">
+                <h2 class="h5 fw-bold mb-3">結果</h2>
+                <p class="text-muted mb-3">
+                    試算後にサマリー、年次キャッシュフロー表、貯蓄推移グラフを表示します。
+                </p>
+                <div class="border rounded bg-white p-3">
+                    結果表示エリア
+                </div>
+            </section>
+        </div>
+    </div>
+</section>
