@@ -46,11 +46,13 @@ rennsyu/
 │  ├─ Entities/
 │  │  └─ LifePlanData.cs         # 業務データ
 │  ├─ Logic/
-│  │  ├─ LifePlanCalculator.cs   # 計算ロジック（計算仕様はdocs/index.md 4.計算仕様を参照）
+│  │  └─ LifePlanCalculator.cs   # 計算ロジック（計算仕様はdocs/index.md 4.計算仕様を参照）
+│  ├─ ReferenceData/
 │  │  ├─ EducationCostMaster.cs  # 教育費マスタ
 │  │  └─ PensionReferenceData.cs # 年金参考データ
 │  └─ Rules/
-│       └─ ValidationRules.cs    # 入力検証ルール
+│       ├─ AgeRules.cs           # 年齢範囲ルール
+│       └─ RateRules.cs          # 利率範囲ルール
 ├─ Infrastructure/
 │  └─ (現時点ではDB不要)
 └─ wwwroot/
@@ -61,7 +63,7 @@ rennsyu/
 ### 4.2 依存関係
 
 - **Controllers** → Application/Services
-- **Application** → Domain/Logic, Domain/Rules
+- **Application** → Domain/Logic, Domain/ReferenceData, Domain/Rules
 - **Views** → ViewModels
 - **Domain** は他レイヤーへの依存を持たない
 
@@ -72,7 +74,8 @@ rennsyu/
 | Controller | HTTPリクエスト受付、画面遷移、ViewModel受け渡し |
 | ViewModel | 画面表示用データ、入力バインド |
 | Application Service | 画面単位の処理フロー、現在年の取得、計算実行 |
-| Domain/Logic | 純粋な計算ロジック（貯蓄計算、ローン返済額等）と計算に使う固定マスタ |
+| Domain/Logic | 純粋な計算ロジック（貯蓄計算、ローン返済額等） |
+| Domain/ReferenceData | 計算や選択肢生成で参照する固定データ、基準値、参考値 |
 | Domain/Rules | 業務ルール（年齢範囲、利率範囲等） |
 
 `LifePlanCalculator` は `DateTime.Now` を直接参照せず、`Calculate(input, currentYear)` のように現在年を引数で受け取る。画面実行時は Application Service が現在年を取得して渡し、単体テストでは固定の `currentYear` を渡して計算結果を検証できるようにする。
