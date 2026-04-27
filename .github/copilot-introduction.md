@@ -24,6 +24,7 @@ MyApp
 │  ├─ Entities
 │  ├─ Services
 │  ├─ Logic
+│  ├─ ReferenceData
 │  └─ Rules
 ├─ Infrastructure
 │  ├─ Data
@@ -47,6 +48,11 @@ MyApp
 - 小さな修正や明確な追加は、そのまま実装まで進めてよい
 - 変更後は可能ならビルド確認を行う
 - 実装だけでなく、責務の分離や依存方向が妥当かも確認する
+
+## Document Priority
+
+- 実装方針に迷った場合は、`docs/implementation-plan.md` より `.github/copilot-introduction.md` の責務分離・依存方向ルールを優先する
+- 実装計画と作業ルールが矛盾する場合は、作業ルールに合わせて実装し、必要に応じて実装計画側の更新を提案する
 
 ## Code Readability
 
@@ -118,6 +124,15 @@ MyApp
 - 副作用を持たない処理を優先する
 - DB アクセス、外部サービス呼び出し、HTTP 依存は持ち込まない
 - 入力と出力が明確で、単体テストしやすい形を優先する
+- ViewModel や画面表示用の型に依存しない
+- 固定マスタや参考値そのものは原則として `Domain/ReferenceData` または適切な専用フォルダに置き、`Logic` には計算処理を置く
+
+### Domain/ReferenceData
+
+- 計算や選択肢生成で参照する固定データ、基準値、参考値を置く
+- 教育費マスタ、年金参考値など、ユーザー入力ではなくアプリ側が持つ参照用データを扱う
+- 計算処理そのものは持たず、必要な場合は `Domain/Logic` から参照されるデータとして表現する
+- 画面表示専用の都合や ViewModel には依存しない
 
 ### Domain/Rules
 
