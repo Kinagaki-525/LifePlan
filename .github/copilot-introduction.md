@@ -133,6 +133,7 @@ MyApp
 - 教育費マスタ、年金参考値など、ユーザー入力ではなくアプリ側が持つ参照用データを扱う
 - 計算処理そのものは持たず、必要な場合は `Domain/Logic` から参照されるデータとして表現する
 - 画面表示専用の都合や ViewModel には依存しない
+- クラス名に `ReferenceData` を機械的に付けず、対象と役割が分かる名前を優先する（例：`EducationCostMaster`, `EducationCostEntry`, `PensionReferenceEntry`）
 
 ### Domain/Rules
 
