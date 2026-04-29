@@ -819,7 +819,7 @@ body {
 
 .top-hero__cta {
   width: 160px;
-  min-height: 48px;
+  min-height: var(--ui-button-min-height);
   margin-top: 24px;
   padding: 0;
   font-size: 14px;
@@ -849,7 +849,7 @@ body {
   display: flex;
   align-items: center;
   padding: 0 20px;
-  border-radius: 999px;
+  border-radius: var(--ui-radius-pill);
   background: var(--ui-color-background);
   color: var(--ui-color-text);
   font-size: 16px;
@@ -869,9 +869,9 @@ body {
 
 .feature-card {
   height: 240px;
-  border-radius: 12px;
+  border-radius: var(--ui-radius-sm);
   background: var(--ui-color-surface);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--ui-shadow-sm);
   padding: 28px 24px;
   text-align: center;
 }
