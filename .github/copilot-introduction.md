@@ -19,7 +19,9 @@ MyApp
 ├─ ViewModels
 ├─ Application
 │  ├─ Services
-│  └─ Interfaces
+│  ├─ Interfaces
+│  ├─ Validators
+│  └─ Results
 ├─ Domain
 │  ├─ Entities
 │  ├─ Services
@@ -105,6 +107,21 @@ MyApp
 - Application Service や Repository など、Application 層が利用する抽象を置く
 - 実装詳細ではなく、アプリケーションから見た必要契約を表現する
 - Service interface 名は実装クラス名に `I` を付けた名前を基本とする（例：`ILifePlanPageService` / `LifePlanPageService`）
+
+### Application/Validators
+
+- ViewModel など Application 層が受け取った入力値のサーバー側検証を置く
+- Controller や Service に検証条件を直接増やしすぎないための置き場とする
+- Domain/Rules や Domain/ReferenceData を参照して、仕様上の入力制約を確認する
+- 検証結果は Controller が `ModelState` へ反映できるキーとメッセージで返す
+- 画面フロー制御や Domain Entity への変換は持たない
+
+### Application/Results
+
+- Application Service の処理結果を表す型を置く
+- 再表示用 ViewModel、検証結果、Domain 変換結果など、Service の戻り値としてまとめたいデータを扱う
+- 画面入力用の FormModel ではなく、Application 層のユースケース結果として命名・配置する
+- 汎用的すぎる `Models` フォルダは避け、戻り値用途は `Results` を優先する
 
 ### Domain/Entities
 

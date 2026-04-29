@@ -40,8 +40,12 @@ rennsyu/
 ├─ Application/
 │  ├─ Interfaces/
 │  │  └─ ILifePlanPageService.cs # シミュレーター画面サービス契約
-│  └─ Services/
-│       └─ LifePlanPageService.cs # シミュレーター画面ロジック
+│  ├─ Services/
+│  │   └─ LifePlanPageService.cs # シミュレーター画面ロジック
+│  ├─ Validators/
+│  │   └─ LifePlanInputValidator.cs # 画面入力のサーバー側検証
+│  └─ Results/
+│       └─ LifePlanSubmitResult.cs # Application Service の処理結果
 ├─ Domain/
 │  ├─ Entities/
 │  │  └─ LifePlanData.cs         # 業務データ
@@ -74,6 +78,8 @@ rennsyu/
 | Controller | HTTPリクエスト受付、画面遷移、ViewModel受け渡し |
 | ViewModel | 画面表示用データ、入力バインド |
 | Application Service | 画面単位の処理フロー、現在年の取得、計算実行 |
+| Application Validator | ViewModel の入力値を検証し、画面へ返す検証エラーを作成 |
+| Application Result | Application Service の処理結果、再表示用データ、検証結果の受け渡し |
 | Domain/Logic | 純粋な計算ロジック（貯蓄計算、ローン返済額等） |
 | Domain/ReferenceData | 計算や選択肢生成で参照する固定データ、基準値、参考値 |
 | Domain/Rules | 業務ルール（年齢範囲、利率範囲等） |
@@ -95,6 +101,8 @@ rennsyu/
 
 入力検証は、画面操作上の制御とサーバー側の検証を併用する。UIでは入力不可・選択肢制御・補助メッセージで誤入力を抑制し、Domain/RulesではPOSTされた値を必ず検証する。
 
+サーバー側の画面入力検証は `Application/Validators` に置き、Application Service は検証処理の呼び出しと結果に応じた画面フロー制御に集中する。Validator は ViewModel を入力として受け取り、Domain/Rules や Domain/ReferenceData を参照して、Controller が ModelState に反映できる検証エラーを返す。
+
 - 必須項目は、夫年齢・妻年齢など試算に必要な最低限の項目に限定する
 - 年齢、期間、利率、金額は、仕様に定義された範囲内かつ数値として解釈できることを検証する
 - 金額、年収、退職金、年金、家賃、生活費などは0以上を基本とし、負数は許可しない
@@ -109,6 +117,46 @@ rennsyu/
 - 子ども年齢が入力されている場合、教育費区分は定義済みマスタの値のみ許可する
 - 旅行・その他は、開始年齢と終了年齢の両方が入力されている場合のみ期間支出として扱う
 - 検証エラー時は計算を実行せず、入力値を保持したまま画面にエラーを表示する
+
+### 4.6 TODO: 入力解決責務の分離
+
+PR #4 以降で住宅購入、教育費、支出などの条件付き入力が増えた時点で、ViewModel から Domain Entity へ変換する前段に `InputResolver` または `InputNormalizer` 相当の責務を追加することを検討する。
+
+- Mapper は ViewModel と Domain Entity の単純な詰め替え・単位変換を中心に保つ
+- 手入力値とマスタ選択値の優先順位解決は Resolver / Normalizer に寄せる
+- 未入力時に関連項目を無効扱いにする処理は Resolver / Normalizer に寄せる
+- Mapper が検証済み入力を前提にする場合は、呼び出し側で検証済みであることを保証する
+- 年金参考値のような「手入力が空ならマスタ値を使う」処理は、PR #4 以降で同種の処理が増えたら Mapper から切り出す
+
+### 4.7 PR4以降の補足方針
+
+PR #3 で `Application/Validators`、`Application/Results`、`Domain/ReferenceData`、`Application/Mappers` の責務分離を進めたため、PR #4 以降は以下の方針を追加で適用する。
+
+#### 入力解決責務
+
+PR #4 から住宅購入、教育費、支出などの条件付き入力が増えるため、ViewModel から Domain Entity へ変換する前段に `InputResolver` または `InputNormalizer` 相当の責務を導入する。
+- Mapper は ViewModel と Domain Entity の単純な詰め替え・単位変換を中心に保つ
+- 手入力値とマスタ選択値の優先順位解決は Resolver / Normalizer に寄せる
+- 未入力時に関連項目を無効扱いにする処理は Resolver / Normalizer に寄せる
+- 年金参考値のような「手入力が空ならマスタ値を使う」処理は、PR #4 で Resolver / Normalizer 側へ切り出す
+
+#### ReferenceData 方針
+
+選択肢や固定マスタは `Domain/ReferenceData` に置き、Mapper や View に直接定義しない。Mapper は `Domain/ReferenceData` の値を ViewModel 用の選択肢へ変換する責務に限定する。
+- 職業、年金参考値、教育費マスタなど、POST 値として検証対象になる選択肢は `Domain/ReferenceData` に集約する
+- 住宅ローン年数、旅行期間、インフレ率候補など、PR #4 以降で追加する固定候補も同じ方針で扱う
+- Validator は `Domain/ReferenceData` を参照し、POST された選択肢の値が定義済みかを必ず検証する
+
+#### Validator 方針
+
+PR #4 以降は条件付き検証が増えるため、Validator は UI 制御に頼らず POST 値を必ず検証する。
+- 未入力なら無効扱いにする項目と、必須エラーにする項目を明確に分ける
+- 条件付き項目は Resolver / Normalizer 後ではなく、入力状態として Validator で検証する
+- 検証エラー時は計算を実行せず、入力値を保持して画面へ戻す
+
+#### 年収変化入力方針
+
+PR #3 では年収変化をパーセントの数値入力として実装したため、PR #5 以降の収入計算でも数値入力値をそのまま年次変化率として扱う。プルダウン方式へ戻す場合は、計算実装前に ViewModel、ReferenceData、Validator、Mapper の方針を更新する。
 
 ## 5. PR分割方針
 
@@ -139,6 +187,9 @@ rennsyu/
 ### PR #4: ライフイベント・支出入力フォーム実装
 - View 実装（結婚、住宅購入、自動車、教育費、旅行・その他、支出入力）
 - Application/Mappers で対象入力の ViewModel から Domain Entity への変換を実装
+- `LifePlanData.LifeEvents` と `LifePlanData.IncomeExpense.Expenses` へ、PR #4 で追加する入力値を反映する
+- 万円入力は Mapper または Resolver / Normalizer で円へ変換し、Domain Entity には内部計算用の単位で渡す
+- 手入力値とマスタ選択値の優先順位、未入力時の無効扱いは Resolver / Normalizer で整理する
 - Domain/Rules を使った条件付き検証の実装
   - 住宅購入、自動車、教育費、旅行・その他の条件付き入力検証
   - 基本生活費、家賃、その他支出、インフレ率の範囲検証
@@ -194,6 +245,9 @@ rennsyu/
 - ビルド成功 (`dotnet build`)
 - 画面が表示される
 - 計算結果が仕様通り
+- PR #4 以降は、未入力時・不正値時・有効値時のフォーム送信を確認する
+- 条件付き入力は、関連項目が未入力のときに無効扱いになること、関連項目が入力済みのときに必要な範囲検証が行われることを確認する
+- 検証エラー時は計算を実行せず、入力値を保持したまま該当項目にエラーが表示されることを確認する
 
 計算ロジックは、可能な範囲で単体テストにより以下を確認する：
 

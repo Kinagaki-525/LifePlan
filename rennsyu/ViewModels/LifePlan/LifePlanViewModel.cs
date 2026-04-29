@@ -10,6 +10,8 @@ namespace rennsyu.ViewModels.LifePlan
 
         public IncomeExpenseInputViewModel IncomeExpense { get; set; } = new();
 
+        public bool IsSubmitted { get; set; }
+
         public IReadOnlyList<SelectOptionViewModel> ChildAgeOptions { get; set; } = [];
 
         public IReadOnlyList<SelectOptionViewModel> EducationOptions { get; set; } = [];

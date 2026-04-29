@@ -1,7 +1,11 @@
+@using Microsoft.AspNetCore.Mvc.Rendering
 @model LifePlanViewModel
 
 @{
     ViewData["Title"] = "ライフプランシミュレーター";
+    var childAgeOptions = new SelectList(Model.ChildAgeOptions, "Value", "Text");
+    var occupationOptions = new SelectList(Model.OccupationOptions, "Value", "Text");
+    var pensionReferenceOptions = new SelectList(Model.PensionReferenceOptions, "Value", "Text");
 }
 
 <section class="life-plan-simulator">
@@ -9,62 +13,207 @@
         <p class="text-primary fw-bold mb-2">Life Plan Simulator</p>
         <h1 class="h2 fw-bold mb-2">ライフプランシミュレーター</h1>
         <p class="text-muted mb-0">
-            入力フォームと計算処理は後続PRで実装します。PR2では画面構成とデータ受け渡しの基盤を用意します。
+            家族構成、現在の貯蓄、夫婦それぞれの収入条件を入力して、試算に必要な基本情報を確認します。
         </p>
     </div>
 
-    <div class="row g-4">
-        <div class="col-lg-7">
-            <section class="border rounded p-4 mb-3">
-                <h2 class="h5 fw-bold mb-3">家族構成</h2>
-                <dl class="row mb-0">
-                    <dt class="col-sm-4">夫年齢</dt>
-                    <dd class="col-sm-8">必須、16〜100歳</dd>
-                    <dt class="col-sm-4">妻年齢</dt>
-                    <dd class="col-sm-8">必須、16〜100歳</dd>
-                    <dt class="col-sm-4">子ども</dt>
-                    <dd class="col-sm-8">@Model.Family.Children.Count 人分の入力枠を準備</dd>
-                </dl>
-            </section>
-
-            <section class="border rounded p-4 mb-3">
-                <h2 class="h5 fw-bold mb-3">ライフイベント</h2>
-                <ul class="mb-0">
-                    <li>結婚、住宅購入、自動車、教育費、旅行・その他</li>
-                    <li>教育費マスタ候補：@Model.EducationOptions.Count 件</li>
-                </ul>
-            </section>
-
-            <section class="border rounded p-4 mb-3">
-                <h2 class="h5 fw-bold mb-3">貯蓄</h2>
-                <p class="mb-0">現在の金融資産残高と想定運用年利の入力枠を準備します。</p>
-            </section>
-
-            <section class="border rounded p-4 mb-3">
-                <h2 class="h5 fw-bold mb-3">収入</h2>
-                <p class="mb-0">夫・妻それぞれの職業、年収、退職金、年金情報の入力枠を準備します。</p>
-            </section>
-
-            <section class="border rounded p-4 mb-3">
-                <h2 class="h5 fw-bold mb-3">支出</h2>
-                <p class="mb-0">基本生活費、インフレ率、家賃、その他支出の入力枠を準備します。</p>
-            </section>
-
-            <button class="btn btn-primary" type="button" disabled>
-                シミュレーション実行
-            </button>
+    @if (Model.IsSubmitted)
+    {
+        <div class="alert alert-success" role="alert">
+            入力内容を受け付けました。計算結果の表示は後続PRで実装します。
         </div>
+    }
 
-        <div class="col-lg-5">
-            <section class="border rounded p-4 bg-light">
-                <h2 class="h5 fw-bold mb-3">結果</h2>
-                <p class="text-muted mb-3">
-                    試算後にサマリー、年次キャッシュフロー表、貯蓄推移グラフを表示します。
-                </p>
-                <div class="border rounded bg-white p-3">
-                    結果表示エリア
-                </div>
-            </section>
+    <form asp-action="Index" method="post" novalidate>
+        <div asp-validation-summary="All" class="text-danger mb-3" role="alert"></div>
+
+        <div class="row g-4">
+            <div class="col-lg-7">
+                <section class="border rounded p-4 mb-3">
+                    <h2 class="h5 fw-bold mb-3">家族構成</h2>
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label asp-for="Family.HusbandAge" class="form-label">夫の年齢</label>
+                            <input asp-for="Family.HusbandAge" class="form-control" type="number" min="16" max="100" />
+                            <span asp-validation-for="Family.HusbandAge" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Family.WifeAge" class="form-label">妻の年齢</label>
+                            <input asp-for="Family.WifeAge" class="form-control" type="number" min="16" max="100" />
+                            <span asp-validation-for="Family.WifeAge" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <hr />
+
+                    <div class="row g-3">
+                        @for (var index = 0; index < Model.Family.Children.Count; index++)
+                        {
+                            <div class="col-md-6">
+                                <input asp-for="Family.Children[index].Label" type="hidden" />
+                                <label asp-for="Family.Children[index].Age" class="form-label">@Model.Family.Children[index].Label の年齢</label>
+                                <select asp-for="Family.Children[index].Age" asp-items="childAgeOptions" class="form-select"></select>
+                                <span asp-validation-for="Family.Children[index].Age" class="text-danger"></span>
+                            </div>
+                        }
+                    </div>
+                </section>
+
+                <section class="border rounded p-4 mb-3">
+                    <h2 class="h5 fw-bold mb-3">貯蓄</h2>
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label asp-for="Savings.CurrentFinancialAssetsManYen" class="form-label">現在の金融資産残高（万円）</label>
+                            <input asp-for="Savings.CurrentFinancialAssetsManYen" class="form-control" type="number" min="0" step="0.1" />
+                            <span asp-validation-for="Savings.CurrentFinancialAssetsManYen" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Savings.ExpectedAnnualReturnRatePercent" class="form-label">想定運用年利（%）</label>
+                            <input asp-for="Savings.ExpectedAnnualReturnRatePercent" class="form-control" type="number" min="0" max="20" step="0.1" />
+                            <span asp-validation-for="Savings.ExpectedAnnualReturnRatePercent" class="text-danger"></span>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="border rounded p-4 mb-3">
+                    <h2 class="h5 fw-bold mb-3">夫の収入</h2>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label asp-for="IncomeExpense.HusbandIncome.OccupationValue" class="form-label">職業</label>
+                            <select asp-for="IncomeExpense.HusbandIncome.OccupationValue" asp-items="occupationOptions" class="form-select">
+                                <option value="">選択してください</option>
+                            </select>
+                            <span asp-validation-for="IncomeExpense.HusbandIncome.OccupationValue" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="IncomeExpense.HusbandIncome.AnnualIncomeManYen" class="form-label">年収（万円）</label>
+                            <input asp-for="IncomeExpense.HusbandIncome.AnnualIncomeManYen" class="form-control" type="number" min="0" step="0.1" />
+                            <span asp-validation-for="IncomeExpense.HusbandIncome.AnnualIncomeManYen" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-4">
+                            <label asp-for="IncomeExpense.HusbandIncome.WorkStartAge" class="form-label">就労開始年齢</label>
+                            <input asp-for="IncomeExpense.HusbandIncome.WorkStartAge" class="form-control" type="number" min="16" max="100" />
+                            <span asp-validation-for="IncomeExpense.HusbandIncome.WorkStartAge" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-4">
+                            <label asp-for="IncomeExpense.HusbandIncome.WorkEndAge" class="form-label">就労終了年齢</label>
+                            <input asp-for="IncomeExpense.HusbandIncome.WorkEndAge" class="form-control" type="number" min="16" max="100" />
+                            <span asp-validation-for="IncomeExpense.HusbandIncome.WorkEndAge" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-4">
+                            <label asp-for="IncomeExpense.HusbandIncome.AnnualIncomeChangeRatePercent" class="form-label">年収の変化（%）</label>
+                            <input asp-for="IncomeExpense.HusbandIncome.AnnualIncomeChangeRatePercent" class="form-control" type="number" step="0.1" />
+                            <span asp-validation-for="IncomeExpense.HusbandIncome.AnnualIncomeChangeRatePercent" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="IncomeExpense.HusbandIncome.RetirementAllowanceManYen" class="form-label">退職金（万円）</label>
+                            <input asp-for="IncomeExpense.HusbandIncome.RetirementAllowanceManYen" class="form-control" type="number" min="0" step="0.1" />
+                            <span asp-validation-for="IncomeExpense.HusbandIncome.RetirementAllowanceManYen" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="IncomeExpense.HusbandIncome.PensionReferenceValue" class="form-label">年金参考値</label>
+                            <select asp-for="IncomeExpense.HusbandIncome.PensionReferenceValue" asp-items="pensionReferenceOptions" class="form-select">
+                                <option value="">選択してください</option>
+                            </select>
+                            <span asp-validation-for="IncomeExpense.HusbandIncome.PensionReferenceValue" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="IncomeExpense.HusbandIncome.AnnualPensionManYen" class="form-label">年金年額（万円）</label>
+                            <input asp-for="IncomeExpense.HusbandIncome.AnnualPensionManYen" class="form-control" type="number" min="0" step="0.1" />
+                            <span asp-validation-for="IncomeExpense.HusbandIncome.AnnualPensionManYen" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="IncomeExpense.HusbandIncome.PensionStartAge" class="form-label">年金受取開始年齢</label>
+                            <input asp-for="IncomeExpense.HusbandIncome.PensionStartAge" class="form-control" type="number" min="16" max="100" />
+                            <span asp-validation-for="IncomeExpense.HusbandIncome.PensionStartAge" class="text-danger"></span>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="border rounded p-4 mb-3">
+                    <h2 class="h5 fw-bold mb-3">妻の収入</h2>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label asp-for="IncomeExpense.WifeIncome.OccupationValue" class="form-label">職業</label>
+                            <select asp-for="IncomeExpense.WifeIncome.OccupationValue" asp-items="occupationOptions" class="form-select">
+                                <option value="">選択してください</option>
+                            </select>
+                            <span asp-validation-for="IncomeExpense.WifeIncome.OccupationValue" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="IncomeExpense.WifeIncome.AnnualIncomeManYen" class="form-label">年収（万円）</label>
+                            <input asp-for="IncomeExpense.WifeIncome.AnnualIncomeManYen" class="form-control" type="number" min="0" step="0.1" />
+                            <span asp-validation-for="IncomeExpense.WifeIncome.AnnualIncomeManYen" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-4">
+                            <label asp-for="IncomeExpense.WifeIncome.WorkStartAge" class="form-label">就労開始年齢</label>
+                            <input asp-for="IncomeExpense.WifeIncome.WorkStartAge" class="form-control" type="number" min="16" max="100" />
+                            <span asp-validation-for="IncomeExpense.WifeIncome.WorkStartAge" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-4">
+                            <label asp-for="IncomeExpense.WifeIncome.WorkEndAge" class="form-label">就労終了年齢</label>
+                            <input asp-for="IncomeExpense.WifeIncome.WorkEndAge" class="form-control" type="number" min="16" max="100" />
+                            <span asp-validation-for="IncomeExpense.WifeIncome.WorkEndAge" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-4">
+                            <label asp-for="IncomeExpense.WifeIncome.AnnualIncomeChangeRatePercent" class="form-label">年収の変化（%）</label>
+                            <input asp-for="IncomeExpense.WifeIncome.AnnualIncomeChangeRatePercent" class="form-control" type="number" step="0.1" />
+                            <span asp-validation-for="IncomeExpense.WifeIncome.AnnualIncomeChangeRatePercent" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="IncomeExpense.WifeIncome.RetirementAllowanceManYen" class="form-label">退職金（万円）</label>
+                            <input asp-for="IncomeExpense.WifeIncome.RetirementAllowanceManYen" class="form-control" type="number" min="0" step="0.1" />
+                            <span asp-validation-for="IncomeExpense.WifeIncome.RetirementAllowanceManYen" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="IncomeExpense.WifeIncome.PensionReferenceValue" class="form-label">年金参考値</label>
+                            <select asp-for="IncomeExpense.WifeIncome.PensionReferenceValue" asp-items="pensionReferenceOptions" class="form-select">
+                                <option value="">選択してください</option>
+                            </select>
+                            <span asp-validation-for="IncomeExpense.WifeIncome.PensionReferenceValue" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="IncomeExpense.WifeIncome.AnnualPensionManYen" class="form-label">年金年額（万円）</label>
+                            <input asp-for="IncomeExpense.WifeIncome.AnnualPensionManYen" class="form-control" type="number" min="0" step="0.1" />
+                            <span asp-validation-for="IncomeExpense.WifeIncome.AnnualPensionManYen" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="IncomeExpense.WifeIncome.PensionStartAge" class="form-label">年金受取開始年齢</label>
+                            <input asp-for="IncomeExpense.WifeIncome.PensionStartAge" class="form-control" type="number" min="16" max="100" />
+                            <span asp-validation-for="IncomeExpense.WifeIncome.PensionStartAge" class="text-danger"></span>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="border rounded p-4 mb-3 bg-light">
+                    <h2 class="h5 fw-bold mb-3">PR4以降の入力項目</h2>
+                    <p class="mb-0 text-muted">
+                        ライフイベント、支出、教育費、住宅、自動車、旅行・その他の入力は後続PRで実装します。
+                    </p>
+                </section>
+
+                <button class="btn btn-primary" type="submit">
+                    シミュレーション実行
+                </button>
+            </div>
+
+            <div class="col-lg-5">
+                <section class="border rounded p-4 bg-light">
+                    <h2 class="h5 fw-bold mb-3">結果</h2>
+                    <p class="text-muted mb-3">
+                        PR3では入力受付と検証までを行います。サマリー、年次キャッシュフロー表、貯蓄推移グラフは後続PRで表示します。
+                    </p>
+                    <div class="border rounded bg-white p-3">
+                        結果表示エリア
+                    </div>
+                </section>
+            </div>
         </div>
-    </div>
+    </form>
 </section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
