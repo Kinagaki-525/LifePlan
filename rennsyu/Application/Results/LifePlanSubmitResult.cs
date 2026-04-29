@@ -1,4 +1,4 @@
-using rennsyu.Domain.Entities;
+using rennsyu.Domain.Logic;
 using rennsyu.ViewModels.LifePlan;
 
 namespace rennsyu.Application.Results
@@ -11,6 +11,6 @@ namespace rennsyu.Application.Results
 
         public IReadOnlyList<LifePlanValidationError> Errors { get; set; } = [];
 
-        public LifePlanData? Data { get; set; }
+        public LifePlanCalculationResult? CalculationResult { get; set; }
     }
 }

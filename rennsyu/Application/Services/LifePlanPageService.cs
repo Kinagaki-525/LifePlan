@@ -3,6 +3,7 @@ using rennsyu.Application.Mappers;
 using rennsyu.Application.Normalizers;
 using rennsyu.Application.Results;
 using rennsyu.Application.Validators;
+using rennsyu.Domain.Logic;
 using rennsyu.Domain.ReferenceData;
 using rennsyu.ViewModels.LifePlan;
 
@@ -31,6 +32,8 @@ namespace rennsyu.Application.Services
             var errors = LifePlanInputValidator.Validate(page);
             var isValid = !hasBindingErrors && errors.Count == 0;
             var normalizedInput = isValid ? LifePlanInputNormalizer.Normalize(page) : null;
+            var data = normalizedInput is null ? null : LifePlanPageMapper.ToLifePlanData(normalizedInput);
+            var calculationResult = data is null ? null : new LifePlanCalculator().Calculate(data, DateTime.Today.Year);
             page.IsSubmitted = isValid;
 
             return new LifePlanSubmitResult
@@ -38,7 +41,7 @@ namespace rennsyu.Application.Services
                 Page = page,
                 IsValid = isValid,
                 Errors = errors,
-                Data = normalizedInput is null ? null : LifePlanPageMapper.ToLifePlanData(normalizedInput)
+                CalculationResult = calculationResult
             };
         }
 
