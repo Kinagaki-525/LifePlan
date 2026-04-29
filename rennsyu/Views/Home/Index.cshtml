@@ -1,31 +1,64 @@
-﻿@{
-    ViewData["Title"] = "ライフプランシミュレーター";
+@{
+    ViewData["Title"] = "TOP";
 }
 
-<section class="life-plan-home">
-    <div class="life-plan-home__content">
-        <p class="life-plan-home__eyebrow">Life Plan Simulator</p>
-        <h1 class="display-5 fw-bold mb-3">ライフプランシミュレーター</h1>
-        <p class="lead text-muted mb-4">
-            家族構成、収入、支出、ライフイベントをもとに、将来のキャッシュフローと貯蓄推移を確認します。
-        </p>
-        <a class="btn btn-primary btn-lg px-4" asp-controller="LifePlan" asp-action="Index">
-            シミュレーターを開く
-        </a>
-    </div>
+<section class="top-page" aria-label="ふたりの家計 トップページ">
+    <section class="top-hero">
+        <div class="top-hero__inner">
+            <h1 class="top-hero__title">ふたりの未来を、<br />お金の不安なく歩もう。</h1>
+            <div class="top-hero__divider" aria-hidden="true"></div>
+            <p class="top-hero__lead">婚約〜子育てまでのお金を</p>
+            <p class="top-hero__lead">一緒に考えるアプリ</p>
+            <a class="app-button app-button--primary top-hero__cta" asp-controller="LifePlan" asp-action="Index">▶ 無料でライフプランを作る</a>
+        </div>
+    </section>
 
-    <div class="life-plan-home__points" aria-label="確認できる内容">
-        <div class="life-plan-home__point">
-            <span class="life-plan-home__point-title">サマリー</span>
-            <span>最終年残高や最低残高年を確認</span>
+    <section class="top-worries">
+        <div class="top-worries__inner">
+            <h2 class="top-section-title">こんなお悩みありませんか？</h2>
+            <div class="top-worries__grid">
+                <article class="top-worry-item"><span>結婚式の費用が心配で式場選びが進まない</span></article>
+                <article class="top-worry-item"><span>子どもができたら生活費はどうなるの？</span></article>
+                <article class="top-worry-item"><span>夫婦でお金の話をするのが気まずい</span></article>
+                <article class="top-worry-item"><span>老後のためにいくら貯蓄すべき？</span></article>
+            </div>
         </div>
-        <div class="life-plan-home__point">
-            <span class="life-plan-home__point-title">年次表</span>
-            <span>収入、支出、貯蓄の推移を一覧表示</span>
+    </section>
+
+    <section class="top-features">
+        <div class="top-features__inner">
+            <div class="top-features__grid">
+                <article class="feature-card">
+                    <h3 class="feature-card__title">ライフプランシミュレーション</h3>
+                    <p class="feature-card__text">収入・支出・イベントを入力して将来を可視化</p>
+                    <a class="app-button app-button--primary feature-card__button" asp-controller="LifePlan" asp-action="Index">使ってみる</a>
+                </article>
+                <article class="feature-card">
+                    <h3 class="feature-card__title">毎月の支出チェック</h3>
+                    <p class="feature-card__text">毎月の収支を記録してムダを見つけよう</p>
+                    <span class="feature-card__coming">Coming Soon...</span>
+                </article>
+                <article class="feature-card">
+                    <h3 class="feature-card__title">家事分担管理シート</h3>
+                    <p class="feature-card__text">家事の見える化で公平に管理</p>
+                    <span class="feature-card__coming">Coming Soon...</span>
+                </article>
+                <article class="feature-card">
+                    <h3 class="feature-card__title">結婚式準備リスト</h3>
+                    <p class="feature-card__text">式場選びから当日までを漏れなく管理</p>
+                    <span class="feature-card__coming">Coming Soon...</span>
+                </article>
+                <article class="feature-card">
+                    <h3 class="feature-card__title">お役立ち記事</h3>
+                    <p class="feature-card__text">お金の知識をわかりやすく解説</p>
+                    <span class="feature-card__coming">Coming Soon...</span>
+                </article>
+                <article class="feature-card">
+                    <h3 class="feature-card__title">FP相談</h3>
+                    <p class="feature-card__text">お金のプロに無料で相談できる</p>
+                    <a class="app-button app-button--primary feature-card__button" asp-controller="Home" asp-action="Privacy">使ってみる</a>
+                </article>
+            </div>
         </div>
-        <div class="life-plan-home__point">
-            <span class="life-plan-home__point-title">グラフ</span>
-            <span>貯蓄推移を視覚的に把握</span>
-        </div>
-    </div>
+    </section>
 </section>
