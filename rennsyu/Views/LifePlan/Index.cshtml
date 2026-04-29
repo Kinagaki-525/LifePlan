@@ -1,0 +1,465 @@
+@using Microsoft.AspNetCore.Mvc.Rendering
+@model LifePlanViewModel
+
+@{
+    ViewData["Title"] = "ライフプランシミュレーター";
+    var childAgeOptions = new SelectList(Model.ChildAgeOptions, "Value", "Text");
+    var occupationOptions = new SelectList(Model.OccupationOptions, "Value", "Text");
+    var nurseryEducationOptions = new SelectList(Model.NurseryEducationOptions, "Value", "Text");
+    var kindergartenEducationOptions = new SelectList(Model.KindergartenEducationOptions, "Value", "Text");
+    var elementarySchoolEducationOptions = new SelectList(Model.ElementarySchoolEducationOptions, "Value", "Text");
+    var juniorHighSchoolEducationOptions = new SelectList(Model.JuniorHighSchoolEducationOptions, "Value", "Text");
+    var highSchoolEducationOptions = new SelectList(Model.HighSchoolEducationOptions, "Value", "Text");
+    var universityEducationOptions = new SelectList(Model.UniversityEducationOptions, "Value", "Text");
+    var graduateSchoolEducationOptions = new SelectList(Model.GraduateSchoolEducationOptions, "Value", "Text");
+}
+
+<section class="life-plan-page">
+    <div class="life-plan-page__heading">
+        <h1 class="life-plan-page__title">ライフプランシミュレーター</h1>
+    </div>
+
+    @if (Model.IsSubmitted)
+    {
+        <div class="life-plan-alert life-plan-alert--success" role="alert">
+            入力内容を受け付けました。計算結果の表示は後続PRで実装します。
+        </div>
+    }
+
+    <form asp-action="Index" method="post" class="life-plan-form" novalidate>
+        <div asp-validation-summary="All" class="life-plan-alert life-plan-alert--danger" role="alert"></div>
+
+        <nav class="life-plan-tabs" aria-label="ライフプラン入力ステップ" role="tablist">
+            <button id="family-tab" class="life-plan-tabs__item" type="button" role="tab" data-life-plan-tab="family" aria-controls="family-panel" aria-selected="true">家族構成</button>
+            <button id="life-event-tab" class="life-plan-tabs__item" type="button" role="tab" data-life-plan-tab="life-event" aria-controls="life-event-panel" aria-selected="false" tabindex="-1">ライフイベント</button>
+            <button id="income-tab" class="life-plan-tabs__item" type="button" role="tab" data-life-plan-tab="income" aria-controls="income-panel" aria-selected="false" tabindex="-1">収入</button>
+            <button id="savings-tab" class="life-plan-tabs__item" type="button" role="tab" data-life-plan-tab="savings" aria-controls="savings-panel" aria-selected="false" tabindex="-1">貯蓄</button>
+            <button id="expense-tab" class="life-plan-tabs__item" type="button" role="tab" data-life-plan-tab="expense" aria-controls="expense-panel" aria-selected="false" tabindex="-1">支出</button>
+        </nav>
+
+        <div class="life-plan-panel">
+            <section id="family-panel" data-life-plan-panel="family" role="tabpanel" aria-labelledby="family-tab">
+                <h2 id="family-tab-title" class="visually-hidden">家族構成</h2>
+
+                <div class="life-plan-field-grid life-plan-field-grid--two">
+                    <section class="life-plan-input-card" aria-labelledby="husband-age-title">
+                        <h3 id="husband-age-title" class="life-plan-input-card__label">夫</h3>
+                        <div class="life-plan-field-row">
+                            <label asp-for="Family.HusbandAge" class="life-plan-field-row__label">年齢</label>
+                            <input asp-for="Family.HusbandAge" class="form-control life-plan-control" type="number" min="16" max="100" inputmode="numeric" />
+                        </div>
+                        <span asp-validation-for="Family.HusbandAge" class="life-plan-validation"></span>
+                    </section>
+
+                    <section class="life-plan-input-card" aria-labelledby="wife-age-title">
+                        <h3 id="wife-age-title" class="life-plan-input-card__label">妻</h3>
+                        <div class="life-plan-field-row">
+                            <label asp-for="Family.WifeAge" class="life-plan-field-row__label">年齢</label>
+                            <input asp-for="Family.WifeAge" class="form-control life-plan-control" type="number" min="16" max="100" inputmode="numeric" />
+                        </div>
+                        <span asp-validation-for="Family.WifeAge" class="life-plan-validation"></span>
+                    </section>
+                </div>
+
+                <section class="life-plan-input-card life-plan-input-card--wide" aria-labelledby="children-age-title">
+                    <h3 id="children-age-title" class="life-plan-input-card__label">子ども</h3>
+
+                    <div class="life-plan-children-grid">
+                        @for (var index = 0; index < Model.Family.Children.Count; index++)
+                        {
+                            <div class="life-plan-child-field">
+                                <input asp-for="Family.Children[index].Label" type="hidden" />
+                                <label asp-for="Family.Children[index].Age" class="life-plan-field-row__label">@Model.Family.Children[index].Label</label>
+                                <select asp-for="Family.Children[index].Age" asp-items="childAgeOptions" class="form-select life-plan-control"></select>
+                                <span asp-validation-for="Family.Children[index].Age" class="life-plan-validation"></span>
+                            </div>
+                        }
+                    </div>
+
+                    <p class="life-plan-note">※予定は、「-（マイナス）」で表現してください。</p>
+                </section>
+
+                @await Html.PartialAsync("_LifePlanActions", new LifePlanActionsViewModel("life-event", "ライフイベントへ"))
+            </section>
+
+            <section id="life-event-panel" data-life-plan-panel="life-event" role="tabpanel" aria-labelledby="life-event-tab" hidden>
+                <h2 id="life-event-tab-title" class="visually-hidden">ライフイベント</h2>
+
+                <section class="life-plan-input-card life-plan-input-card--wide" aria-labelledby="marriage-title">
+                    <h3 id="marriage-title" class="life-plan-input-card__label">結婚費用</h3>
+                    <div class="life-plan-stack">
+                        <div class="life-plan-field-row">
+                            <label asp-for="LifeEvents.Marriage.CostManYen" class="life-plan-field-row__label">結婚費用</label>
+                            <input asp-for="LifeEvents.Marriage.CostManYen" class="form-control life-plan-control" type="number" min="0" step="0.1" />
+                            <span class="life-plan-unit">万円</span>
+                            <span asp-validation-for="LifeEvents.Marriage.CostManYen" class="life-plan-validation"></span>
+                        </div>
+                        <div class="life-plan-field-row">
+                            <label asp-for="LifeEvents.Marriage.HusbandAge" class="life-plan-field-row__label">発生時期</label>
+                            <input asp-for="LifeEvents.Marriage.HusbandAge" class="form-control life-plan-control" type="number" min="16" max="100" inputmode="numeric" />
+                            <span class="life-plan-help">※夫の年齢を入力してください</span>
+                            <span asp-validation-for="LifeEvents.Marriage.HusbandAge" class="life-plan-validation"></span>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="life-plan-input-card life-plan-input-card--wide" aria-labelledby="housing-title">
+                    <h3 id="housing-title" class="life-plan-input-card__label">住宅購入</h3>
+                    <div class="life-plan-stack">
+                        <div class="life-plan-field-row">
+                            <label asp-for="LifeEvents.Housing.DownPaymentManYen" class="life-plan-field-row__label">頭金</label>
+                            <input asp-for="LifeEvents.Housing.DownPaymentManYen" class="form-control life-plan-control" type="number" min="0" step="0.1" />
+                            <span class="life-plan-unit">万円</span>
+                            <span asp-validation-for="LifeEvents.Housing.DownPaymentManYen" class="life-plan-validation"></span>
+                        </div>
+                        <div class="life-plan-field-row">
+                            <label asp-for="LifeEvents.Housing.BorrowingAmountManYen" class="life-plan-field-row__label">借入額</label>
+                            <input asp-for="LifeEvents.Housing.BorrowingAmountManYen" class="form-control life-plan-control" type="number" min="0" step="0.1" />
+                            <span class="life-plan-unit">万円</span>
+                            <span asp-validation-for="LifeEvents.Housing.BorrowingAmountManYen" class="life-plan-validation"></span>
+                        </div>
+                        <div class="life-plan-field-row">
+                            <label asp-for="LifeEvents.Housing.PurchaseHusbandAge" class="life-plan-field-row__label">購入時期</label>
+                            <input asp-for="LifeEvents.Housing.PurchaseHusbandAge" class="form-control life-plan-control" type="number" min="16" max="100" inputmode="numeric" />
+                            <span class="life-plan-help">※夫の年齢を入力してください</span>
+                            <span asp-validation-for="LifeEvents.Housing.PurchaseHusbandAge" class="life-plan-validation"></span>
+                        </div>
+                        <div class="life-plan-field-row">
+                            <label asp-for="LifeEvents.Housing.LoanYears" class="life-plan-field-row__label">ローン年数</label>
+                            <input asp-for="LifeEvents.Housing.LoanYears" class="form-control life-plan-control" type="number" min="1" inputmode="numeric" />
+                            <span asp-validation-for="LifeEvents.Housing.LoanYears" class="life-plan-validation"></span>
+                        </div>
+                        <div class="life-plan-field-row">
+                            <label asp-for="LifeEvents.Housing.InterestRatePercent" class="life-plan-field-row__label">想定金利</label>
+                            <input asp-for="LifeEvents.Housing.InterestRatePercent" class="form-control life-plan-control" type="number" min="0" step="0.1" />
+                            <span class="life-plan-help">※参考：変動1〜2%、固定1.5〜3%</span>
+                            <span asp-validation-for="LifeEvents.Housing.InterestRatePercent" class="life-plan-validation"></span>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="life-plan-input-card life-plan-input-card--wide" aria-labelledby="car-title">
+                    <h3 id="car-title" class="life-plan-input-card__label">自動車</h3>
+                    <div class="life-plan-stack">
+                        <div class="life-plan-field-row">
+                            <label asp-for="LifeEvents.Car.PurchaseAmountManYen" class="life-plan-field-row__label">金額</label>
+                            <input asp-for="LifeEvents.Car.PurchaseAmountManYen" class="form-control life-plan-control" type="number" min="0" step="0.1" />
+                            <span class="life-plan-unit">万円</span>
+                            <span asp-validation-for="LifeEvents.Car.PurchaseAmountManYen" class="life-plan-validation"></span>
+                        </div>
+                        <div class="life-plan-field-row">
+                            <label asp-for="LifeEvents.Car.FirstPurchaseHusbandAge" class="life-plan-field-row__label">購入時期</label>
+                            <input asp-for="LifeEvents.Car.FirstPurchaseHusbandAge" class="form-control life-plan-control" type="number" min="16" max="100" inputmode="numeric" />
+                            <span class="life-plan-help">※夫の年齢を入力してください</span>
+                            <span asp-validation-for="LifeEvents.Car.FirstPurchaseHusbandAge" class="life-plan-validation"></span>
+                        </div>
+                        <div class="life-plan-field-row">
+                            <label asp-for="LifeEvents.Car.ReplacementIntervalYears" class="life-plan-field-row__label">買い替え間隔</label>
+                            <input asp-for="LifeEvents.Car.ReplacementIntervalYears" class="form-control life-plan-control" type="number" min="1" inputmode="numeric" />
+                            <span asp-validation-for="LifeEvents.Car.ReplacementIntervalYears" class="life-plan-validation"></span>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="life-plan-input-card life-plan-input-card--wide" aria-labelledby="education-title">
+                    <h3 id="education-title" class="life-plan-input-card__label">教育費</h3>
+                    <div class="life-plan-education-list">
+                        @for (var index = 0; index < Model.LifeEvents.EducationPlans.Count; index++)
+                        {
+                            <div class="life-plan-education-row">
+                                <input asp-for="LifeEvents.EducationPlans[index].Label" type="hidden" />
+                                <h4 class="life-plan-education-row__title">@Model.LifeEvents.EducationPlans[index].Label</h4>
+                                <div class="life-plan-education-grid">
+                                    <label class="life-plan-education-field">
+                                        <span>保育園<br />（0〜2歳）</span>
+                                        <select asp-for="LifeEvents.EducationPlans[index].NurseryOptionValue" asp-items="nurseryEducationOptions" class="form-select life-plan-control">
+                                            <option value="">-</option>
+                                        </select>
+                                        <span asp-validation-for="LifeEvents.EducationPlans[index].NurseryOptionValue" class="life-plan-validation"></span>
+                                    </label>
+                                    <label class="life-plan-education-field">
+                                        <span>幼稚園・<br />保育園</span>
+                                        <select asp-for="LifeEvents.EducationPlans[index].KindergartenOptionValue" asp-items="kindergartenEducationOptions" class="form-select life-plan-control">
+                                            <option value="">-</option>
+                                        </select>
+                                        <span asp-validation-for="LifeEvents.EducationPlans[index].KindergartenOptionValue" class="life-plan-validation"></span>
+                                    </label>
+                                    <label class="life-plan-education-field">
+                                        <span>小学校</span>
+                                        <select asp-for="LifeEvents.EducationPlans[index].ElementarySchoolOptionValue" asp-items="elementarySchoolEducationOptions" class="form-select life-plan-control">
+                                            <option value="">-</option>
+                                        </select>
+                                        <span asp-validation-for="LifeEvents.EducationPlans[index].ElementarySchoolOptionValue" class="life-plan-validation"></span>
+                                    </label>
+                                    <label class="life-plan-education-field">
+                                        <span>中学校</span>
+                                        <select asp-for="LifeEvents.EducationPlans[index].JuniorHighSchoolOptionValue" asp-items="juniorHighSchoolEducationOptions" class="form-select life-plan-control">
+                                            <option value="">-</option>
+                                        </select>
+                                        <span asp-validation-for="LifeEvents.EducationPlans[index].JuniorHighSchoolOptionValue" class="life-plan-validation"></span>
+                                    </label>
+                                    <label class="life-plan-education-field">
+                                        <span>高校</span>
+                                        <select asp-for="LifeEvents.EducationPlans[index].HighSchoolOptionValue" asp-items="highSchoolEducationOptions" class="form-select life-plan-control">
+                                            <option value="">-</option>
+                                        </select>
+                                        <span asp-validation-for="LifeEvents.EducationPlans[index].HighSchoolOptionValue" class="life-plan-validation"></span>
+                                    </label>
+                                    <label class="life-plan-education-field">
+                                        <span>大学</span>
+                                        <select asp-for="LifeEvents.EducationPlans[index].UniversityOptionValue" asp-items="universityEducationOptions" class="form-select life-plan-control">
+                                            <option value="">-</option>
+                                        </select>
+                                        <span asp-validation-for="LifeEvents.EducationPlans[index].UniversityOptionValue" class="life-plan-validation"></span>
+                                    </label>
+                                    <label class="life-plan-education-field">
+                                        <span>大学院</span>
+                                        <select asp-for="LifeEvents.EducationPlans[index].GraduateSchoolOptionValue" asp-items="graduateSchoolEducationOptions" class="form-select life-plan-control">
+                                            <option value="">-</option>
+                                        </select>
+                                        <span asp-validation-for="LifeEvents.EducationPlans[index].GraduateSchoolOptionValue" class="life-plan-validation"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </section>
+
+                <section class="life-plan-input-card life-plan-input-card--wide" aria-labelledby="travel-title">
+                    <h3 id="travel-title" class="life-plan-input-card__label">旅行・その他</h3>
+                    <div class="life-plan-stack">
+                        <div class="life-plan-field-row">
+                            <label asp-for="LifeEvents.TravelOther.AnnualCostManYen" class="life-plan-field-row__label">金額（年間）</label>
+                            <input asp-for="LifeEvents.TravelOther.AnnualCostManYen" class="form-control life-plan-control" type="number" min="0" step="0.1" />
+                            <span class="life-plan-unit">万円</span>
+                            <span asp-validation-for="LifeEvents.TravelOther.AnnualCostManYen" class="life-plan-validation"></span>
+                        </div>
+                        <div class="life-plan-period-row">
+                            <label class="life-plan-field-row__label">購入時期</label>
+                            <input asp-for="LifeEvents.TravelOther.StartHusbandAge" class="form-control life-plan-control" type="number" min="16" max="100" inputmode="numeric" aria-label="旅行・その他の開始年齢" />
+                            <span>〜</span>
+                            <input asp-for="LifeEvents.TravelOther.EndHusbandAge" class="form-control life-plan-control" type="number" min="16" max="100" inputmode="numeric" aria-label="旅行・その他の終了年齢" />
+                            <span class="life-plan-help">※夫の年齢を入力してください</span>
+                            <span asp-validation-for="LifeEvents.TravelOther.StartHusbandAge" class="life-plan-validation"></span>
+                            <span asp-validation-for="LifeEvents.TravelOther.EndHusbandAge" class="life-plan-validation"></span>
+                        </div>
+                    </div>
+                </section>
+
+                @await Html.PartialAsync("_LifePlanActions", new LifePlanActionsViewModel("income", "収入へ"))
+            </section>
+
+            <section id="income-panel" data-life-plan-panel="income" role="tabpanel" aria-labelledby="income-tab" hidden>
+                <h2 id="income-tab-title" class="visually-hidden">収入</h2>
+
+                <section class="life-plan-input-card life-plan-input-card--wide" aria-labelledby="husband-income-title">
+                    <h3 id="husband-income-title" class="life-plan-input-card__label">夫</h3>
+                    <div class="life-plan-stack">
+                        <div class="life-plan-field-row life-plan-field-row--wide">
+                            <label asp-for="IncomeExpense.HusbandIncome.OccupationValue" class="life-plan-field-row__label">職業</label>
+                            <select asp-for="IncomeExpense.HusbandIncome.OccupationValue" asp-items="occupationOptions" class="form-select life-plan-control">
+                                <option value="">-</option>
+                            </select>
+                            <span asp-validation-for="IncomeExpense.HusbandIncome.OccupationValue" class="life-plan-validation"></span>
+                        </div>
+                        <div class="life-plan-field-row">
+                            <label asp-for="IncomeExpense.HusbandIncome.AnnualIncomeManYen" class="life-plan-field-row__label">年収（手取り）</label>
+                            <input asp-for="IncomeExpense.HusbandIncome.AnnualIncomeManYen" class="form-control life-plan-control" type="number" min="0" step="0.1" />
+                            <span class="life-plan-unit">万円</span>
+                            <span asp-validation-for="IncomeExpense.HusbandIncome.AnnualIncomeManYen" class="life-plan-validation"></span>
+                        </div>
+                        <div class="life-plan-field-row life-plan-field-row--wide">
+                            <label asp-for="IncomeExpense.HusbandIncome.AnnualIncomeChangeRatePercent" class="life-plan-field-row__label">年収の変化</label>
+                            <input asp-for="IncomeExpense.HusbandIncome.AnnualIncomeChangeRatePercent" class="form-control life-plan-control" type="number" step="0.1" />
+                            <span asp-validation-for="IncomeExpense.HusbandIncome.AnnualIncomeChangeRatePercent" class="life-plan-validation"></span>
+                        </div>
+                        <div class="life-plan-period-row">
+                            <label class="life-plan-field-row__label">就労期間</label>
+                            <input asp-for="IncomeExpense.HusbandIncome.WorkStartAge" class="form-control life-plan-control" type="number" min="16" max="100" inputmode="numeric" aria-label="夫の就労開始年齢" />
+                            <span>〜</span>
+                            <input asp-for="IncomeExpense.HusbandIncome.WorkEndAge" class="form-control life-plan-control" type="number" min="16" max="100" inputmode="numeric" aria-label="夫の就労終了年齢" />
+                            <span class="life-plan-help">※年齢を入力してください</span>
+                            <span asp-validation-for="IncomeExpense.HusbandIncome.WorkStartAge" class="life-plan-validation"></span>
+                            <span asp-validation-for="IncomeExpense.HusbandIncome.WorkEndAge" class="life-plan-validation"></span>
+                        </div>
+                        <div class="life-plan-field-row">
+                            <label asp-for="IncomeExpense.HusbandIncome.RetirementAllowanceManYen" class="life-plan-field-row__label">退職金</label>
+                            <input asp-for="IncomeExpense.HusbandIncome.RetirementAllowanceManYen" class="form-control life-plan-control" type="number" min="0" step="0.1" />
+                            <span class="life-plan-unit">万円</span>
+                            <span asp-validation-for="IncomeExpense.HusbandIncome.RetirementAllowanceManYen" class="life-plan-validation"></span>
+                        </div>
+                        <div class="life-plan-field-row">
+                            <label asp-for="IncomeExpense.HusbandIncome.AnnualPensionManYen" class="life-plan-field-row__label">年金（年額）</label>
+                            <input asp-for="IncomeExpense.HusbandIncome.AnnualPensionManYen" class="form-control life-plan-control" type="number" min="0" step="0.1" />
+                            <span class="life-plan-unit">万円</span>
+                            <span class="life-plan-reference">
+                                @await Html.PartialAsync("_PensionReference", "husband-pension-reference")
+                            </span>
+                            <span asp-validation-for="IncomeExpense.HusbandIncome.AnnualPensionManYen" class="life-plan-validation"></span>
+                        </div>
+                        <div class="life-plan-field-row">
+                            <label asp-for="IncomeExpense.HusbandIncome.PensionStartAge" class="life-plan-field-row__label">年金受取開始年齢</label>
+                            <input asp-for="IncomeExpense.HusbandIncome.PensionStartAge" class="form-control life-plan-control" type="number" min="16" max="100" inputmode="numeric" />
+                            <span asp-validation-for="IncomeExpense.HusbandIncome.PensionStartAge" class="life-plan-validation"></span>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="life-plan-input-card life-plan-input-card--wide" aria-labelledby="wife-income-title">
+                    <h3 id="wife-income-title" class="life-plan-input-card__label">妻</h3>
+                    <div class="life-plan-stack">
+                        <div class="life-plan-field-row life-plan-field-row--wide">
+                            <label asp-for="IncomeExpense.WifeIncome.OccupationValue" class="life-plan-field-row__label">職業</label>
+                            <select asp-for="IncomeExpense.WifeIncome.OccupationValue" asp-items="occupationOptions" class="form-select life-plan-control">
+                                <option value="">-</option>
+                            </select>
+                            <span asp-validation-for="IncomeExpense.WifeIncome.OccupationValue" class="life-plan-validation"></span>
+                        </div>
+                        <div class="life-plan-field-row">
+                            <label asp-for="IncomeExpense.WifeIncome.AnnualIncomeManYen" class="life-plan-field-row__label">年収（手取り）</label>
+                            <input asp-for="IncomeExpense.WifeIncome.AnnualIncomeManYen" class="form-control life-plan-control" type="number" min="0" step="0.1" />
+                            <span class="life-plan-unit">万円</span>
+                            <span asp-validation-for="IncomeExpense.WifeIncome.AnnualIncomeManYen" class="life-plan-validation"></span>
+                        </div>
+                        <div class="life-plan-field-row life-plan-field-row--wide">
+                            <label asp-for="IncomeExpense.WifeIncome.AnnualIncomeChangeRatePercent" class="life-plan-field-row__label">年収の変化</label>
+                            <input asp-for="IncomeExpense.WifeIncome.AnnualIncomeChangeRatePercent" class="form-control life-plan-control" type="number" step="0.1" />
+                            <span asp-validation-for="IncomeExpense.WifeIncome.AnnualIncomeChangeRatePercent" class="life-plan-validation"></span>
+                        </div>
+                        <div class="life-plan-period-row">
+                            <label class="life-plan-field-row__label">就労期間</label>
+                            <input asp-for="IncomeExpense.WifeIncome.WorkStartAge" class="form-control life-plan-control" type="number" min="16" max="100" inputmode="numeric" aria-label="妻の就労開始年齢" />
+                            <span>〜</span>
+                            <input asp-for="IncomeExpense.WifeIncome.WorkEndAge" class="form-control life-plan-control" type="number" min="16" max="100" inputmode="numeric" aria-label="妻の就労終了年齢" />
+                            <span class="life-plan-help">※年齢を入力してください</span>
+                            <span asp-validation-for="IncomeExpense.WifeIncome.WorkStartAge" class="life-plan-validation"></span>
+                            <span asp-validation-for="IncomeExpense.WifeIncome.WorkEndAge" class="life-plan-validation"></span>
+                        </div>
+                        <div class="life-plan-field-row">
+                            <label asp-for="IncomeExpense.WifeIncome.RetirementAllowanceManYen" class="life-plan-field-row__label">退職金</label>
+                            <input asp-for="IncomeExpense.WifeIncome.RetirementAllowanceManYen" class="form-control life-plan-control" type="number" min="0" step="0.1" />
+                            <span class="life-plan-unit">万円</span>
+                            <span asp-validation-for="IncomeExpense.WifeIncome.RetirementAllowanceManYen" class="life-plan-validation"></span>
+                        </div>
+                        <div class="life-plan-field-row">
+                            <label asp-for="IncomeExpense.WifeIncome.AnnualPensionManYen" class="life-plan-field-row__label">年金（年額）</label>
+                            <input asp-for="IncomeExpense.WifeIncome.AnnualPensionManYen" class="form-control life-plan-control" type="number" min="0" step="0.1" />
+                            <span class="life-plan-unit">万円</span>
+                            <span class="life-plan-reference">
+                                @await Html.PartialAsync("_PensionReference", "wife-pension-reference")
+                            </span>
+                            <span asp-validation-for="IncomeExpense.WifeIncome.AnnualPensionManYen" class="life-plan-validation"></span>
+                        </div>
+                        <div class="life-plan-field-row">
+                            <label asp-for="IncomeExpense.WifeIncome.PensionStartAge" class="life-plan-field-row__label">年金受取開始年齢</label>
+                            <input asp-for="IncomeExpense.WifeIncome.PensionStartAge" class="form-control life-plan-control" type="number" min="16" max="100" inputmode="numeric" />
+                            <span asp-validation-for="IncomeExpense.WifeIncome.PensionStartAge" class="life-plan-validation"></span>
+                        </div>
+                    </div>
+                </section>
+
+                @await Html.PartialAsync("_LifePlanActions", new LifePlanActionsViewModel("savings", "貯蓄へ"))
+            </section>
+
+            <section id="savings-panel" data-life-plan-panel="savings" role="tabpanel" aria-labelledby="savings-tab" hidden>
+                <h2 id="savings-tab-title" class="visually-hidden">貯蓄</h2>
+
+                <section class="life-plan-input-card life-plan-input-card--wide" aria-labelledby="savings-assets-title">
+                    <h3 id="savings-assets-title" class="life-plan-input-card__label">金融資産</h3>
+                    <div class="life-plan-field-row">
+                        <label asp-for="Savings.CurrentFinancialAssetsManYen" class="life-plan-field-row__label">現在の金融資産保有額</label>
+                        <input asp-for="Savings.CurrentFinancialAssetsManYen" class="form-control life-plan-control" type="number" min="0" step="0.1" />
+                        <span class="life-plan-unit">万円</span>
+                        <span asp-validation-for="Savings.CurrentFinancialAssetsManYen" class="life-plan-validation"></span>
+                    </div>
+                </section>
+
+                <section class="life-plan-input-card life-plan-input-card--wide" aria-labelledby="savings-return-title">
+                    <h3 id="savings-return-title" class="life-plan-input-card__label">想定運用年利</h3>
+                    <div class="life-plan-field-row">
+                        <label asp-for="Savings.ExpectedAnnualReturnRatePercent" class="life-plan-field-row__label">想定運用年利</label>
+                        <input asp-for="Savings.ExpectedAnnualReturnRatePercent" class="form-control life-plan-control" type="number" min="0" max="20" step="0.1" />
+                        <span class="life-plan-help">※本シミュレーションで使用する想定の運用年利を入力してください</span>
+                        <span asp-validation-for="Savings.ExpectedAnnualReturnRatePercent" class="life-plan-validation"></span>
+                    </div>
+                </section>
+
+                @await Html.PartialAsync("_LifePlanActions", new LifePlanActionsViewModel("expense", "支出へ"))
+            </section>
+
+            <section id="expense-panel" data-life-plan-panel="expense" role="tabpanel" aria-labelledby="expense-tab" hidden>
+                <h2 id="expense-tab-title" class="visually-hidden">支出</h2>
+
+                <section class="life-plan-input-card life-plan-input-card--wide" aria-labelledby="expense-title">
+                    <h3 id="expense-title" class="life-plan-input-card__label">支出</h3>
+                    <div class="life-plan-stack">
+                        <div class="life-plan-field-row">
+                            <label asp-for="IncomeExpense.Expenses.MonthlyBasicLivingCostManYen" class="life-plan-field-row__label">基本生活費（月間）</label>
+                            <input asp-for="IncomeExpense.Expenses.MonthlyBasicLivingCostManYen" class="form-control life-plan-control" type="number" min="0" step="0.1" />
+                            <span class="life-plan-unit">万円</span>
+                            <span asp-validation-for="IncomeExpense.Expenses.MonthlyBasicLivingCostManYen" class="life-plan-validation"></span>
+                        </div>
+                        <div class="life-plan-field-row">
+                            <label asp-for="IncomeExpense.Expenses.InflationRatePercent" class="life-plan-field-row__label">想定インフレ率</label>
+                            <input asp-for="IncomeExpense.Expenses.InflationRatePercent" class="form-control life-plan-control" type="number" min="0" max="5" step="0.1" />
+                            <span class="life-plan-help">※毎月の基本支出のインフレ率を加味する場合は選択してください</span>
+                            <span asp-validation-for="IncomeExpense.Expenses.InflationRatePercent" class="life-plan-validation"></span>
+                        </div>
+                        <div class="life-plan-field-row">
+                            <label asp-for="IncomeExpense.Expenses.MonthlyRentManYen" class="life-plan-field-row__label">家賃（月額）</label>
+                            <input asp-for="IncomeExpense.Expenses.MonthlyRentManYen" class="form-control life-plan-control" type="number" min="0" step="0.1" />
+                            <span class="life-plan-help">万円　※住宅購入時に不要となります</span>
+                            <span asp-validation-for="IncomeExpense.Expenses.MonthlyRentManYen" class="life-plan-validation"></span>
+                        </div>
+                        <div class="life-plan-field-row">
+                            <label asp-for="IncomeExpense.Expenses.OtherAnnualCostManYen" class="life-plan-field-row__label">その他支出（年間）</label>
+                            <input asp-for="IncomeExpense.Expenses.OtherAnnualCostManYen" class="form-control life-plan-control" type="number" min="0" step="0.1" />
+                            <span class="life-plan-unit">万円</span>
+                            <span asp-validation-for="IncomeExpense.Expenses.OtherAnnualCostManYen" class="life-plan-validation"></span>
+                        </div>
+                    </div>
+                </section>
+
+                @await Html.PartialAsync("_LifePlanActions", new LifePlanActionsViewModel())
+            </section>
+        </div>
+    </form>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        (() => {
+            const tabButtons = [...document.querySelectorAll('[data-life-plan-tab]')];
+            const panes = [...document.querySelectorAll('[data-life-plan-panel]')];
+
+            const activateTab = (tabName) => {
+                tabButtons.forEach((button) => {
+                    const isActive = button.dataset.lifePlanTab === tabName;
+                    button.setAttribute('aria-selected', String(isActive));
+                    button.setAttribute('tabindex', isActive ? '0' : '-1');
+                });
+
+                panes.forEach((pane) => {
+                    const isActive = pane.dataset.lifePlanPanel === tabName;
+                    pane.toggleAttribute('hidden', !isActive);
+                });
+            };
+
+            tabButtons.forEach((button) => {
+                button.addEventListener('click', () => activateTab(button.dataset.lifePlanTab));
+            });
+
+            document.querySelectorAll('[data-life-plan-next]').forEach((button) => {
+                button.addEventListener('click', () => activateTab(button.dataset.lifePlanNext));
+            });
+
+            const firstInvalidPane = panes.find((pane) =>
+                pane.querySelector('.field-validation-error, .input-validation-error'));
+
+            if (firstInvalidPane) {
+                activateTab(firstInvalidPane.dataset.lifePlanPanel);
+            }
+        })();
+    </script>
+}

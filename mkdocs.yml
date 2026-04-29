@@ -1,0 +1,10 @@
+site_name: ライフプランアプリ
+
+theme:
+  name: material
+  language: ja
+
+nav:
+  - 統合仕様: index.md
+  - 詳細元資料: web-app-spec.md
+  - UI実装ガイドライン: ui-implementation-guidelines.md

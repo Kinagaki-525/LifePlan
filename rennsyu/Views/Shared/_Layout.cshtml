@@ -1,45 +1,91 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="ja">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - rennsyu</title>
+    <title>@ViewData["Title"] - ふたりの家計</title>
     <script type="importmap"></script>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/rennsyu.styles.css" asp-append-version="true" />
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">rennsyu</a>
+    @{
+        var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+        var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
+        var isTopPage = string.Equals(currentController, "Home", StringComparison.OrdinalIgnoreCase)
+            && string.Equals(currentAction, "Index", StringComparison.OrdinalIgnoreCase);
+    }
+    <header class="app-header">
+        <nav class="navbar navbar-expand-sm navbar-light app-header__nav">
+            <div class="container-fluid app-header__container">
+                <a class="app-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                    <span class="app-brand__name">ふたりの家計</span>
+                    <span class="app-brand__tagline">おかねのことを、ふたりで。</span>
+                </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
+                <div class="navbar-collapse collapse app-header__menu">
+                    <ul class="navbar-nav app-header__links">
+                        @* TODO: 公開時にコメントアウトを削除 *@
+                        @*
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">機能一覧</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Privacy">記事</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Privacy">FP相談</a>
+                        </li>
+                        *@
                     </ul>
+                    @if (isTopPage)
+                    {
+                        @* TODO: 公開時にコメントアウトを削除 *@
+                        @*
+                        <a class="app-button app-button--primary app-header__cta" asp-area="" asp-controller="LifePlan" asp-action="Index">無料で始める</a>
+                        *@
+                    }
                 </div>
             </div>
         </nav>
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
+    <div class="app-shell">
+        <main role="main">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2026 - rennsyu - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    <footer class="app-footer">
+        <div class="app-footer__container">
+            <div class="app-footer__top">
+                <div class="app-brand">
+                    <span class="app-brand__name">ふたりの家計</span>
+                    <span class="app-brand__tagline">おかねのことを、ふたりで。</span>
+                </div>
+                @* TODO: 公開時にコメントアウトを削除 *@
+                @*
+                <ul class="app-footer__links">
+                    <li><a asp-area="" asp-controller="LifePlan" asp-action="Index">ライフプランシミュレーション</a></li>
+                    <li><a asp-area="" asp-controller="Home" asp-action="Privacy">毎月の支出チェック</a></li>
+                    <li><a asp-area="" asp-controller="Home" asp-action="Privacy">家事分担管理シート</a></li>
+                    <li><a asp-area="" asp-controller="Home" asp-action="Privacy">結婚式準備リスト</a></li>
+                    <li><a asp-area="" asp-controller="Home" asp-action="Privacy">お役立ち記事</a></li>
+                    <li><a asp-area="" asp-controller="Home" asp-action="Privacy">FP相談</a></li>
+                </ul>
+                *@
+            </div>
+            <div class="app-footer__bottom">
+                <span>&copy;2026ふたりの家計</span>
+                @* TODO: 公開時にコメントアウトを削除 *@
+                @*
+                <a asp-area="" asp-controller="Home" asp-action="Privacy">プライバシーポリシー</a>
+                <a asp-area="" asp-controller="Home" asp-action="Privacy">お問い合わせ</a>
+                *@
+            </div>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
