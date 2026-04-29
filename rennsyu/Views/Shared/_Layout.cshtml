@@ -29,6 +29,8 @@
                 </button>
                 <div class="navbar-collapse collapse app-header__menu">
                     <ul class="navbar-nav app-header__links">
+                        @* TODO: 公開時にコメントアウトを削除 *@
+                        @*
                         <li class="nav-item">
                             <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">機能一覧</a>
                         </li>
@@ -38,10 +40,14 @@
                         <li class="nav-item">
                             <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Privacy">FP相談</a>
                         </li>
+                        *@
                     </ul>
                     @if (isTopPage)
                     {
+                        @* TODO: 公開時にコメントアウトを削除 *@
+                        @*
                         <a class="app-button app-button--primary app-header__cta" asp-area="" asp-controller="LifePlan" asp-action="Index">無料で始める</a>
+                        *@
                     }
                 </div>
             </div>
@@ -60,6 +66,8 @@
                     <span class="app-brand__name">ふたりの家計</span>
                     <span class="app-brand__tagline">おかねのことを、ふたりで。</span>
                 </div>
+                @* TODO: 公開時にコメントアウトを削除 *@
+                @*
                 <ul class="app-footer__links">
                     <li><a asp-area="" asp-controller="LifePlan" asp-action="Index">ライフプランシミュレーション</a></li>
                     <li><a asp-area="" asp-controller="Home" asp-action="Privacy">毎月の支出チェック</a></li>
@@ -68,11 +76,15 @@
                     <li><a asp-area="" asp-controller="Home" asp-action="Privacy">お役立ち記事</a></li>
                     <li><a asp-area="" asp-controller="Home" asp-action="Privacy">FP相談</a></li>
                 </ul>
+                *@
             </div>
             <div class="app-footer__bottom">
                 <span>&copy;2026ふたりの家計</span>
+                @* TODO: 公開時にコメントアウトを削除 *@
+                @*
                 <a asp-area="" asp-controller="Home" asp-action="Privacy">プライバシーポリシー</a>
                 <a asp-area="" asp-controller="Home" asp-action="Privacy">お問い合わせ</a>
+                *@
             </div>
         </div>
     </footer>

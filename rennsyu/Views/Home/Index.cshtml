@@ -1,31 +1,123 @@
-﻿@{
-    ViewData["Title"] = "ライフプランシミュレーター";
+@{
+    ViewData["Title"] = "ふたりの家計 | カップル・夫婦向けライフプラン＆家計管理アプリ";
+    ViewData["Description"] = "婚約から子育てまで、カップル・夫婦のお金の悩みをサポート。ライフプランシミュレーションやFP相談など、ふたりの未来設計をまるごとサポートする無料アプリです。";
+    ViewData["Keywords"] = "夫婦 家計,カップル 家計管理,ライフプラン シミュレーション,結婚 お金,子育て 費用,FP相談 無料";
+    ViewData["OgTitle"] = "ふたりの家計 | カップル・夫婦向けライフプラン＆家計管理アプリ";
+    ViewData["OgDescription"] = "婚約から子育てまで、ふたりのお金の不安を解消。ライフプランシミュレーション・FP相談など無料で使えます。";
+    ViewData["OgType"] = "website";
+    ViewData["CanonicalUrl"] = "https://www.futari-kakei.com/";  @* ← 本番URLに変更 *@
 }
 
-<section class="life-plan-home">
-    <div class="life-plan-home__content">
-        <p class="life-plan-home__eyebrow">Life Plan Simulator</p>
-        <h1 class="display-5 fw-bold mb-3">ライフプランシミュレーター</h1>
-        <p class="lead text-muted mb-4">
-            家族構成、収入、支出、ライフイベントをもとに、将来のキャッシュフローと貯蓄推移を確認します。
-        </p>
-        <a class="btn btn-primary btn-lg px-4" asp-controller="LifePlan" asp-action="Index">
-            シミュレーターを開く
-        </a>
-    </div>
+@* 構造化データ (JSON-LD) *@
+<script type="application/ld+json">
+    {
+    "@@context": "https://schema.org",
+    "@@type": "WebApplication",
+    "name": "ふたりの家計",
+    "description": "婚約から子育てまでのお金を一緒に考えるカップル・夫婦向けアプリ",
+    "url": "https://www.example.com/",
+    "applicationCategory": "FinanceApplication",
+    "offers": {
+    "@@type": "Offer",
+    "price": "0",
+    "priceCurrency": "JPY"
+    }
+    }
+</script>
 
-    <div class="life-plan-home__points" aria-label="確認できる内容">
-        <div class="life-plan-home__point">
-            <span class="life-plan-home__point-title">サマリー</span>
-            <span>最終年残高や最低残高年を確認</span>
+<section class="top-page" aria-label="ふたりの家計 トップページ">
+
+    <section class="top-hero">
+        <div class="top-hero__inner">
+            <h1 class="top-hero__title">
+                ふたりの未来を、<br />お金の不安なく歩もう。
+            </h1>
+            <div class="top-hero__divider" aria-hidden="true"></div>
+            <p class="top-hero__lead">婚約〜子育てまでのお金を</p>
+            <p class="top-hero__lead">一緒に考えるカップル・夫婦向けアプリ</p>  @* ← キーワード追加 *@
+            @* TODO: 公開時にコメントアウトを削除 *@
+            @*
+            <a class="app-button app-button--primary top-hero__cta"
+                   asp-controller="LifePlan" asp-action="Index"
+                   aria-label="無料でライフプランを作成する">
+                ▶ 無料でライフプランを作る
+            </a>
+            *@
         </div>
-        <div class="life-plan-home__point">
-            <span class="life-plan-home__point-title">年次表</span>
-            <span>収入、支出、貯蓄の推移を一覧表示</span>
+    </section>
+
+    <section class="top-worries" aria-labelledby="worries-heading">
+        <div class="top-worries__inner">
+            <h2 id="worries-heading" class="top-section-title">こんなお悩みありませんか？</h2>
+            <ul class="top-worries__grid" role="list">
+                <li class="top-worry-item"><span>結婚式の費用が心配で式場選びが進まない</span></li>
+                <li class="top-worry-item"><span>子どもができたら生活費はどうなるの？</span></li>
+                <li class="top-worry-item"><span>夫婦でお金の話をするのが気まずい</span></li>
+                <li class="top-worry-item"><span>老後のためにいくら貯蓄すべき？</span></li>
+            </ul>
         </div>
-        <div class="life-plan-home__point">
-            <span class="life-plan-home__point-title">グラフ</span>
-            <span>貯蓄推移を視覚的に把握</span>
+    </section>
+
+    <section class="top-features" aria-labelledby="features-heading">
+        <div class="top-features__inner">
+            <h2 id="features-heading" class="top-section-title">できること</h2>  @* ← h2見出し追加（SEO・アクセシビリティ向上）*@
+            <ul class="top-features__grid" role="list">
+                <li>
+                    <article class="feature-card">
+                        <h3 class="feature-card__title">ライフプランシミュレーション</h3>
+                        <p class="feature-card__text">収入・支出・イベントを入力して将来を可視化</p>
+                        @* TODO: 公開時に削除 *@
+                        <span class="feature-card__coming" aria-label="準備中">Coming Soon...</span>
+                        @* 
+                        <a class="app-button app-button--primary feature-card__button"
+                           asp-controller="LifePlan" asp-action="Index"
+                           aria-label="ライフプランシミュレーションを使ってみる">使ってみる</a>
+                        *@
+                    </article>
+                </li>
+                <li>
+                    <article class="feature-card">
+                        <h3 class="feature-card__title">毎月の支出チェック</h3>
+                        <p class="feature-card__text">毎月の収支を記録してムダを見つけよう</p>
+                        <span class="feature-card__coming" aria-label="準備中">Coming Soon...</span>
+                    </article>
+                </li>
+                <li>
+                    <article class="feature-card">
+                        <h3 class="feature-card__title">家事分担管理シート</h3>
+                        <p class="feature-card__text">家事の見える化で公平に管理</p>
+                        <span class="feature-card__coming" aria-label="準備中">Coming Soon...</span>
+                    </article>
+                </li>
+                <li>
+                    <article class="feature-card">
+                        <h3 class="feature-card__title">結婚式準備リスト</h3>
+                        <p class="feature-card__text">式場選びから当日までを漏れなく管理</p>
+                        <span class="feature-card__coming" aria-label="準備中">Coming Soon...</span>
+                    </article>
+                </li>
+                <li>
+                    <article class="feature-card">
+                        <h3 class="feature-card__title">お役立ち記事</h3>
+                        <p class="feature-card__text">お金の知識をわかりやすく解説</p>
+                        <span class="feature-card__coming" aria-label="準備中">Coming Soon...</span>
+                    </article>
+                </li>
+                <li>
+                    <article class="feature-card">
+                        <h3 class="feature-card__title">FP相談</h3>
+                        <p class="feature-card__text">お金のプロに無料で相談できる</p>
+                        @* TODO: 公開時に削除 *@
+                        <span class="feature-card__coming" aria-label="準備中">Coming Soon...</span>
+                        @* 
+                        <a class="app-button app-button--primary feature-card__button"
+                           asp-controller="Home" asp-action="Privacy"
+                           aria-label="FP相談を使ってみる">使ってみる</a>
+                        *@
+                    </article>
+                </li>
+            </ul>
         </div>
-    </div>
+    </section>
+
 </section>
