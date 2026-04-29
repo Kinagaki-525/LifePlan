@@ -200,7 +200,11 @@ MyApp
 
 ## CSS and UI
 
+- Figma由来のUI実装やCSS追加を行う場合は、`docs/ui-implementation-guidelines.md` を参照する
+- Figmaから取得したReact、Tailwind、絶対配置コードはそのまま貼り付けず、Razor、Bootstrap、`wwwroot/css/site.css` に合わせて変換する
 - まず `wwwroot/css/site.css` の既存方針に合わせる
+- パディング、マージン、フォントサイズ、角丸、影、主要カラーは、可能な限り共通トークンまたは共通CSSクラスへ寄せる
+- CSSやHTMLの重複が増えていないか確認し、同じ見た目や構造は共通化を検討する
 - 既存 UI に沿った軽微なスタイル調整を優先する
 - 不要に複雑なセレクタや過剰な詳細度は避ける
 - デザイン変更は既存レイアウトとの整合性を保つ
