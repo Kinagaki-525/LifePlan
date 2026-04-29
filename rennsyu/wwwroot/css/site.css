@@ -1,15 +1,82 @@
+﻿:root {
+  --ui-color-primary: #4caf7d;
+  --ui-color-primary-dark: #3e9869;
+  --ui-color-background: #fff8f0;
+  --ui-color-surface: #ffffff;
+  --ui-color-text: #333333;
+  --ui-color-muted: #888888;
+  --ui-color-border: #e0e0e0;
+  --ui-color-accent: #ff7d6b;
+  --ui-color-danger: #b42318;
+  --ui-color-focus: #258cfb;
+  --ui-color-reference-header: rgba(76, 175, 125, 0.16);
+  --ui-font-family-base: "Noto Sans JP", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --ui-font-size-root-sm: 14px;
+  --ui-font-size-root-md: 16px;
+  --ui-font-size-small: 0.875rem;
+  --ui-font-size-body: 1rem;
+  --ui-font-size-brand: 1.25rem;
+  --ui-font-size-mobile-title: 1.5rem;
+  --ui-font-size-title: 2rem;
+  --ui-line-height-tight: 1;
+  --ui-line-height-normal: 1.2;
+  --ui-line-height-relaxed: 1.5;
+  --ui-space-2xs: 0.4rem;
+  --ui-space-xs: 0.5rem;
+  --ui-space-sm: 0.75rem;
+  --ui-space-md: 1rem;
+  --ui-space-lg: 1.5rem;
+  --ui-space-xl: 2rem;
+  --ui-space-2xl: 3rem;
+  --ui-space-3xl: 4rem;
+  --ui-space-4xl: 4.5rem;
+  --ui-border-width-sm: 1px;
+  --ui-border-width-md: 3px;
+  --ui-border-width-lg: 6px;
+  --ui-card-padding-inline: 1.75rem;
+  --ui-card-padding-bottom: 1.25rem;
+  --ui-radius-sm: 0.5rem;
+  --ui-radius-pill: 999px;
+  --ui-shadow-sm: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.1);
+  --ui-focus-shadow: 0 0 0 0.1rem var(--ui-color-surface), 0 0 0 0.25rem var(--ui-color-focus);
+  --ui-control-focus-shadow: 0 0 0 0.2rem rgba(76, 175, 125, 0.25);
+  --ui-content-width: 1072px;
+  --ui-wide-content-width: 1512px;
+  --ui-footer-content-width: 1352px;
+  --ui-header-height: 72px;
+  --ui-button-min-height: 48px;
+  --ui-control-min-height: 40px;
+  --ui-tab-min-width: 136px;
+  --ui-tab-min-height: 45px;
+  --ui-card-label-min-width: 120px;
+  --ui-card-label-min-height: 32px;
+  --ui-card-label-offset: -3rem;
+  --ui-control-width: 150px;
+  --ui-control-width-wide: 400px;
+  --ui-field-label-min-width: 7.5rem;
+  --ui-field-label-max-width: 10rem;
+  --ui-period-control-width: 80px;
+  --ui-period-help-min-width: 14rem;
+  --ui-children-column-min-width: 235px;
+  --ui-education-title-width: 3rem;
+  --ui-education-column-min-width: 130px;
+  --ui-education-label-width: 3.75rem;
+  --ui-action-submit-min-width: 200px;
+  --ui-reference-panel-width: 540px;
+}
+
 html {
-  font-size: 14px;
+  font-size: var(--ui-font-size-root-sm);
 }
 
 @media (min-width: 768px) {
   html {
-    font-size: 16px;
+    font-size: var(--ui-font-size-root-md);
   }
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+  box-shadow: var(--ui-focus-shadow);
 }
 
 html {
@@ -18,22 +85,17 @@ html {
 }
 
 body {
-  margin-bottom: 60px;
-}
-
-.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-  color: var(--bs-secondary-color);
-  text-align: end;
-}
-
-.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
-  text-align: start;
+  min-height: 100vh;
+  margin: 0;
+  background: var(--ui-color-background);
+  color: var(--ui-color-text);
+  font-family: var(--ui-font-family-base);
 }
 
 .life-plan-home {
   max-width: 960px;
   margin: 0 auto;
-  padding: 4rem 0 3rem;
+  padding: var(--ui-space-3xl) 0 var(--ui-space-2xl);
 }
 
 .life-plan-home__content {
@@ -41,16 +103,16 @@ body {
 }
 
 .life-plan-home__eyebrow {
-  margin-bottom: 0.5rem;
-  color: #1b6ec2;
+  margin-bottom: var(--ui-space-xs);
+  color: var(--ui-color-primary);
   font-weight: 700;
 }
 
 .life-plan-home__points {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 1rem;
-  margin-top: 3rem;
+  gap: var(--ui-space-md);
+  margin-top: var(--ui-space-2xl);
 }
 
 .life-plan-home__point {
@@ -58,15 +120,653 @@ body {
   min-height: 112px;
   flex-direction: column;
   justify-content: center;
-  gap: 0.4rem;
-  padding: 1rem;
-  border: 1px solid #dee2e6;
-  border-radius: 0.5rem;
-  background: #fff;
-  color: #495057;
+  gap: var(--ui-space-2xs);
+  padding: var(--ui-space-md);
+  border: var(--ui-border-width-sm) solid var(--ui-color-border);
+  border-radius: var(--ui-radius-sm);
+  background: var(--ui-color-surface);
+  color: var(--ui-color-muted);
 }
 
 .life-plan-home__point-title {
-  color: #212529;
+  color: var(--ui-color-text);
   font-weight: 700;
+}
+
+.app-header {
+  border-bottom: var(--ui-border-width-sm) solid var(--ui-color-muted);
+  background: var(--ui-color-surface);
+}
+
+.app-header__nav {
+  min-height: var(--ui-header-height);
+  padding: 0;
+}
+
+.app-header__container {
+  gap: var(--ui-space-lg);
+  padding: var(--ui-space-sm) var(--ui-space-md);
+}
+
+.app-brand {
+  display: inline-flex;
+  flex-direction: column;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.app-brand__name {
+  color: var(--ui-color-primary);
+  font-size: var(--ui-font-size-brand);
+  font-weight: 500;
+  line-height: var(--ui-line-height-relaxed);
+}
+
+.app-brand__tagline {
+  color: var(--ui-color-muted);
+  font-size: var(--ui-font-size-small);
+  line-height: var(--ui-line-height-normal);
+}
+
+.app-header__menu {
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--ui-space-xl);
+}
+
+.app-header__links {
+  align-items: center;
+  gap: var(--ui-space-lg);
+  font-size: var(--ui-font-size-small);
+}
+
+.app-header__links .nav-link {
+  padding: var(--ui-space-xs) 0;
+  color: var(--ui-color-text);
+}
+
+.app-header__links .nav-link:hover,
+.app-header__links .nav-link:focus {
+  color: var(--ui-color-primary);
+}
+
+.app-button {
+  display: inline-flex;
+  min-height: var(--ui-button-min-height);
+  align-items: center;
+  justify-content: center;
+  gap: var(--ui-space-xs);
+  padding: var(--ui-space-sm) var(--ui-space-xl);
+  border: 0;
+  font-size: var(--ui-font-size-body);
+  line-height: var(--ui-line-height-tight);
+  text-align: center;
+  text-decoration: none;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.app-button--primary {
+  background: var(--ui-color-primary);
+  box-shadow: var(--ui-shadow-sm);
+  color: var(--ui-color-background);
+}
+
+.app-button--primary:hover,
+.app-button--primary:focus {
+  background: var(--ui-color-primary-dark);
+  color: var(--ui-color-background);
+}
+
+.app-button--outline {
+  border: var(--ui-border-width-md) solid var(--ui-color-primary);
+  border-radius: var(--ui-radius-pill);
+  background: var(--ui-color-background);
+  box-shadow: var(--ui-shadow-sm);
+  color: var(--ui-color-primary);
+}
+
+.app-shell {
+  min-height: calc(100vh - var(--ui-header-height));
+}
+
+.app-footer {
+  background: var(--ui-color-border);
+  color: var(--ui-color-muted);
+}
+
+.app-footer__container {
+  width: min(100%, var(--ui-footer-content-width));
+  margin: 0 auto;
+  padding: var(--ui-space-2xl);
+}
+
+.app-footer__top {
+  display: flex;
+  gap: 5rem;
+  align-items: flex-start;
+}
+
+.app-footer__links {
+  display: grid;
+  gap: var(--ui-space-xs);
+  padding: 0;
+  margin: 0;
+  font-size: var(--ui-font-size-small);
+  list-style: none;
+}
+
+.app-footer__links a,
+.app-footer__bottom a {
+  color: var(--ui-color-muted);
+  text-decoration: none;
+}
+
+.app-footer__links a:hover,
+.app-footer__links a:focus,
+.app-footer__bottom a:hover,
+.app-footer__bottom a:focus {
+  color: var(--ui-color-text);
+}
+
+.app-footer__bottom {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ui-space-xl);
+  padding-top: var(--ui-space-lg);
+  margin-top: var(--ui-space-xl);
+  border-top: var(--ui-border-width-sm) solid var(--ui-color-text);
+  font-size: var(--ui-font-size-small);
+}
+
+.life-plan-page {
+  min-height: 960px;
+  padding: var(--ui-space-xl) var(--ui-space-md) 15rem;
+}
+
+.life-plan-page__heading {
+  width: min(100%, var(--ui-wide-content-width));
+  margin: 0 auto;
+  padding: 0 var(--ui-space-lg);
+}
+
+.life-plan-page__title {
+  display: flex;
+  align-items: center;
+  gap: var(--ui-space-sm);
+  margin: 0;
+  color: var(--ui-color-text);
+  font-size: var(--ui-font-size-title);
+  font-weight: 700;
+  line-height: var(--ui-line-height-relaxed);
+}
+
+.life-plan-page__title::before {
+  width: 4px;
+  height: 40px;
+  background: var(--ui-color-primary);
+  content: "";
+}
+
+.life-plan-form {
+  width: min(100%, var(--ui-content-width));
+  margin: 4.25rem auto 0;
+}
+
+.life-plan-tabs {
+  display: flex;
+  justify-content: center;
+  gap: var(--ui-space-lg);
+  overflow-x: auto;
+}
+
+.life-plan-tabs__item {
+  display: inline-flex;
+  min-width: var(--ui-tab-min-width);
+  min-height: var(--ui-tab-min-height);
+  align-items: center;
+  justify-content: center;
+  padding: var(--ui-space-sm) var(--ui-space-lg);
+  border: 0;
+  background: var(--ui-color-border);
+  color: var(--ui-color-text);
+  font-size: var(--ui-font-size-body);
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.life-plan-tabs__item[aria-selected="true"] {
+  background: var(--ui-color-primary);
+  color: var(--ui-color-surface);
+}
+
+.life-plan-panel {
+  padding: var(--ui-space-xl) var(--ui-space-4xl) var(--ui-space-3xl);
+  background: var(--ui-color-surface);
+  box-shadow: var(--ui-shadow-sm);
+}
+
+.life-plan-field-grid {
+  display: grid;
+  gap: var(--ui-space-xl);
+}
+
+.life-plan-field-grid--two {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.life-plan-input-card {
+  position: relative;
+  margin-top: var(--ui-space-3xl);
+  padding: var(--ui-space-2xl) var(--ui-card-padding-inline) var(--ui-card-padding-bottom);
+  border: var(--ui-border-width-md) solid var(--ui-color-primary);
+  border-radius: var(--ui-radius-sm);
+  background: var(--ui-color-surface);
+}
+
+.life-plan-input-card--wide {
+  padding-bottom: var(--ui-space-lg);
+}
+
+.life-plan-input-card__label {
+  position: absolute;
+  top: var(--ui-card-label-offset);
+  left: 0;
+  min-width: var(--ui-card-label-min-width);
+  min-height: var(--ui-card-label-min-height);
+  padding: 0.45rem var(--ui-space-md);
+  border-radius: var(--ui-radius-sm);
+  background: var(--ui-color-primary);
+  color: var(--ui-color-surface);
+  font-size: var(--ui-font-size-body);
+  font-weight: 400;
+  line-height: var(--ui-line-height-tight);
+  text-align: center;
+}
+
+.life-plan-field-row {
+  display: grid;
+  grid-template-columns: minmax(var(--ui-field-label-min-width), var(--ui-field-label-max-width)) minmax(0, var(--ui-control-width)) minmax(2rem, auto);
+  gap: var(--ui-space-md);
+  align-items: center;
+}
+
+.life-plan-field-row--wide {
+  grid-template-columns: minmax(var(--ui-field-label-min-width), var(--ui-field-label-max-width)) minmax(0, var(--ui-control-width-wide));
+}
+
+.life-plan-field-row__label {
+  margin: 0;
+  color: var(--ui-color-text);
+  font-size: var(--ui-font-size-small);
+}
+
+.life-plan-control {
+  min-height: var(--ui-control-min-height);
+  border-color: var(--ui-color-border);
+  border-radius: var(--ui-radius-sm);
+  color: var(--ui-color-text);
+  font-size: var(--ui-font-size-small);
+}
+
+.life-plan-control:focus {
+  border-color: var(--ui-color-primary);
+  box-shadow: var(--ui-control-focus-shadow);
+}
+
+.life-plan-unit,
+.life-plan-help {
+  color: var(--ui-color-text);
+  font-size: var(--ui-font-size-small);
+}
+
+.life-plan-reference {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.life-plan-reference__trigger {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ui-color-accent);
+  font-size: var(--ui-font-size-small);
+  text-decoration: none;
+}
+
+.life-plan-reference__trigger:hover,
+.life-plan-reference__trigger:focus {
+  text-decoration: underline;
+}
+
+.life-plan-reference__panel {
+  position: absolute;
+  z-index: 20;
+  bottom: calc(100% + var(--ui-space-md));
+  left: 50%;
+  display: none;
+  width: min(88vw, var(--ui-reference-panel-width));
+  padding: var(--ui-space-md);
+  border: var(--ui-border-width-lg) solid var(--ui-color-primary);
+  border-radius: var(--ui-radius-sm);
+  background: var(--ui-color-surface);
+  box-shadow: var(--ui-shadow-sm);
+  color: var(--ui-color-text);
+  transform: translateX(-50%);
+}
+
+.life-plan-reference__panel::after {
+  position: absolute;
+  bottom: -18px;
+  left: 50%;
+  width: 28px;
+  height: 28px;
+  background: var(--ui-color-surface);
+  border-right: var(--ui-border-width-lg) solid var(--ui-color-primary);
+  border-bottom: var(--ui-border-width-lg) solid var(--ui-color-primary);
+  content: "";
+  transform: translateX(-50%) rotate(45deg);
+}
+
+.life-plan-reference:hover .life-plan-reference__panel,
+.life-plan-reference:focus-within .life-plan-reference__panel {
+  display: block;
+}
+
+.life-plan-reference__title {
+  display: block;
+  padding: var(--ui-space-md);
+  background: var(--ui-color-primary);
+  color: var(--ui-color-surface);
+  font-size: var(--ui-font-size-small);
+  font-weight: 700;
+}
+
+.life-plan-reference__table {
+  display: grid;
+  grid-template-columns: 1fr 1.35fr 1.35fr;
+  border-top: var(--ui-border-width-sm) solid var(--ui-color-primary);
+  border-left: var(--ui-border-width-sm) solid var(--ui-color-primary);
+  font-size: var(--ui-font-size-small);
+}
+
+.life-plan-reference__table > * {
+  display: flex;
+  min-height: var(--ui-space-2xl);
+  align-items: center;
+  justify-content: center;
+  padding: var(--ui-space-sm);
+  border-right: var(--ui-border-width-sm) solid var(--ui-color-primary);
+  border-bottom: var(--ui-border-width-sm) solid var(--ui-color-primary);
+  text-align: center;
+}
+
+.life-plan-reference__table > :nth-child(-n + 3) {
+  background: var(--ui-color-reference-header);
+  font-weight: 700;
+}
+
+.life-plan-reference__source {
+  display: block;
+  margin-top: var(--ui-space-md);
+  color: var(--ui-color-text);
+  font-size: var(--ui-font-size-small);
+  line-height: var(--ui-line-height-relaxed);
+}
+
+.life-plan-stack {
+  display: grid;
+  gap: var(--ui-space-lg);
+}
+
+.life-plan-period-row {
+  display: grid;
+  grid-template-columns: minmax(var(--ui-field-label-min-width), var(--ui-field-label-max-width)) var(--ui-period-control-width) auto var(--ui-period-control-width) minmax(var(--ui-period-help-min-width), auto);
+  gap: var(--ui-space-md);
+  align-items: center;
+}
+
+.life-plan-children-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(var(--ui-children-column-min-width), 1fr));
+  column-gap: calc(var(--ui-space-3xl) * 2);
+  row-gap: var(--ui-space-lg);
+}
+
+.life-plan-child-field {
+  display: grid;
+  grid-template-columns: minmax(var(--ui-field-label-min-width), var(--ui-field-label-max-width)) minmax(0, var(--ui-control-width));
+  gap: var(--ui-space-md);
+  align-items: start;
+}
+
+.life-plan-child-field .life-plan-validation {
+  grid-column: 2;
+}
+
+.life-plan-field-row .life-plan-validation {
+  grid-column: 2 / -1;
+}
+
+.life-plan-period-row .life-plan-validation {
+  grid-column: 2 / -1;
+}
+
+.life-plan-education-list {
+  display: grid;
+  gap: var(--ui-space-lg);
+}
+
+.life-plan-education-row {
+  display: grid;
+  grid-template-columns: var(--ui-education-title-width) minmax(0, 1fr);
+  gap: var(--ui-space-md);
+  align-items: start;
+}
+
+.life-plan-education-row__title {
+  margin: 0;
+  color: var(--ui-color-text);
+  font-size: var(--ui-font-size-body);
+  font-weight: 400;
+  line-height: 2.5;
+}
+
+.life-plan-education-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(var(--ui-education-column-min-width), 1fr));
+  gap: var(--ui-space-md) var(--ui-space-lg);
+}
+
+.life-plan-education-field {
+  display: grid;
+  grid-template-columns: minmax(var(--ui-education-label-width), auto) var(--ui-period-control-width);
+  gap: var(--ui-space-xs);
+  align-items: start;
+  color: var(--ui-color-text);
+  font-size: var(--ui-font-size-small);
+}
+
+.life-plan-education-field .life-plan-control {
+  min-width: var(--ui-period-control-width);
+}
+
+.life-plan-education-field .life-plan-validation {
+  grid-column: 2;
+}
+
+.life-plan-note {
+  margin: var(--ui-space-md) 0 0;
+  color: var(--ui-color-text);
+  font-size: var(--ui-font-size-small);
+  text-align: right;
+}
+
+.life-plan-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7rem;
+  margin-top: var(--ui-space-2xl);
+}
+
+.life-plan-actions__submit {
+  min-width: var(--ui-action-submit-min-width);
+}
+
+.life-plan-alert {
+  width: min(100%, var(--ui-content-width));
+  margin: var(--ui-space-lg) auto 0;
+  padding: var(--ui-space-md);
+  border-radius: var(--ui-radius-sm);
+  background: var(--ui-color-surface);
+}
+
+.life-plan-alert--success {
+  border: var(--ui-border-width-sm) solid var(--ui-color-primary);
+  color: var(--ui-color-primary-dark);
+}
+
+.life-plan-alert--danger {
+  border: var(--ui-border-width-sm) solid var(--ui-color-danger);
+  color: var(--ui-color-danger);
+}
+
+.validation-summary-valid {
+  display: none;
+}
+
+.life-plan-validation {
+  display: block;
+  margin-top: var(--ui-space-xs);
+  color: var(--ui-color-danger);
+  font-size: var(--ui-font-size-small);
+}
+
+@media (max-width: 991.98px) {
+  .app-footer__top {
+    flex-direction: column;
+    gap: var(--ui-space-xl);
+  }
+
+  .life-plan-page {
+    padding-bottom: var(--ui-space-2xl);
+  }
+
+  .life-plan-page__heading {
+    padding: 0;
+  }
+
+  .life-plan-form {
+    margin-top: var(--ui-space-2xl);
+  }
+
+  .life-plan-tabs {
+    justify-content: flex-start;
+  }
+
+  .life-plan-panel {
+    padding: var(--ui-space-xl) var(--ui-space-lg) var(--ui-space-2xl);
+  }
+
+  .life-plan-field-grid--two,
+  .life-plan-children-grid,
+  .life-plan-education-grid {
+    grid-template-columns: 1fr;
+    gap: var(--ui-space-2xl);
+  }
+
+  .life-plan-period-row {
+    grid-template-columns: minmax(var(--ui-field-label-min-width), var(--ui-field-label-max-width)) minmax(0, var(--ui-period-control-width)) auto minmax(0, var(--ui-period-control-width));
+  }
+
+  .life-plan-period-row .life-plan-help,
+  .life-plan-period-row .life-plan-validation {
+    grid-column: 2 / -1;
+  }
+
+  .life-plan-actions {
+    flex-direction: column;
+    gap: var(--ui-space-md);
+  }
+
+  .life-plan-actions .app-button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .app-header__container,
+  .app-footer__container {
+    padding-right: var(--ui-space-md);
+    padding-left: var(--ui-space-md);
+  }
+
+  .app-header__menu {
+    align-items: flex-start;
+    padding: var(--ui-space-md) 0;
+  }
+
+  .app-header__links {
+    align-items: flex-start;
+    gap: var(--ui-space-xs);
+  }
+
+  .app-header__cta {
+    width: 100%;
+  }
+
+  .life-plan-page__title {
+    font-size: var(--ui-font-size-mobile-title);
+  }
+
+  .life-plan-panel {
+    padding: var(--ui-space-xl) var(--ui-space-md) var(--ui-space-2xl);
+  }
+
+  .life-plan-field-row,
+  .life-plan-child-field,
+  .life-plan-period-row,
+  .life-plan-education-row,
+  .life-plan-education-field {
+    grid-template-columns: 1fr;
+    gap: var(--ui-space-xs);
+  }
+
+  .life-plan-child-field .life-plan-validation,
+  .life-plan-field-row .life-plan-validation,
+  .life-plan-education-field .life-plan-validation,
+  .life-plan-period-row .life-plan-help,
+  .life-plan-period-row .life-plan-validation {
+    grid-column: auto;
+  }
+
+  .life-plan-note {
+    text-align: left;
+  }
+
+  .life-plan-reference {
+    align-items: flex-start;
+  }
+
+  .life-plan-reference__panel {
+    left: auto;
+    right: 0;
+    transform: none;
+  }
+
+  .life-plan-reference__panel::after {
+    left: auto;
+    right: var(--ui-space-lg);
+    transform: rotate(45deg);
+  }
+
+  .life-plan-reference__table {
+    grid-template-columns: 1fr;
+  }
+
+  .life-plan-reference__table > :first-child {
+    display: none;
+  }
 }

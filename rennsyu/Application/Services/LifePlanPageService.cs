@@ -80,7 +80,6 @@ namespace rennsyu.Application.Services
             page.HighSchoolEducationOptions = LifePlanPageMapper.ToEducationOptionsByStage(EducationCostMaster.Entries, "高校");
             page.UniversityEducationOptions = LifePlanPageMapper.ToEducationOptionsByStage(EducationCostMaster.Entries, "大学");
             page.GraduateSchoolEducationOptions = LifePlanPageMapper.ToEducationOptionsByStage(EducationCostMaster.Entries, "大学院");
-            page.PensionReferenceOptions = LifePlanPageMapper.ToPensionReferenceOptions(PensionReferenceData.All);
             page.OccupationOptions = LifePlanPageMapper.ToOccupationOptions(OccupationReferenceData.All);
         }
 

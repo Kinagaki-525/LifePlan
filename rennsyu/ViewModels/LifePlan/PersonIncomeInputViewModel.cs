@@ -16,8 +16,6 @@ namespace rennsyu.ViewModels.LifePlan
 
         public decimal? AnnualPensionManYen { get; set; }
 
-        public string? PensionReferenceValue { get; set; }
-
         public int? PensionStartAge { get; set; }
     }
 }

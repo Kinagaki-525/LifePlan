@@ -30,8 +30,6 @@ namespace rennsyu.ViewModels.LifePlan
 
         public IReadOnlyList<SelectOptionViewModel> GraduateSchoolEducationOptions { get; set; } = [];
 
-        public IReadOnlyList<SelectOptionViewModel> PensionReferenceOptions { get; set; } = [];
-
         public IReadOnlyList<SelectOptionViewModel> OccupationOptions { get; set; } = [];
     }
 }

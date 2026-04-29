@@ -202,8 +202,6 @@ namespace rennsyu.Application.Validators
             ValidateAnnualIncomeChangeRate(errors, $"{prefix}.AnnualIncomeChangeRatePercent", income.AnnualIncomeChangeRatePercent, $"{ownerLabel}の年収の変化");
             ValidateNonNegative(errors, $"{prefix}.RetirementAllowanceManYen", income.RetirementAllowanceManYen, $"{ownerLabel}の退職金");
             ValidateNonNegative(errors, $"{prefix}.AnnualPensionManYen", income.AnnualPensionManYen, $"{ownerLabel}の年金年額");
-            ValidatePensionReference(errors, $"{prefix}.PensionReferenceValue", income.PensionReferenceValue, $"{ownerLabel}の年金参考値");
-
             ValidateOptionalAdultAge(errors, $"{prefix}.WorkStartAge", income.WorkStartAge, $"{ownerLabel}の就労開始年齢");
             ValidateOptionalAdultAge(errors, $"{prefix}.WorkEndAge", income.WorkEndAge, $"{ownerLabel}の就労終了年齢");
             ValidateOptionalAdultAge(errors, $"{prefix}.PensionStartAge", income.PensionStartAge, $"{ownerLabel}の年金受取開始年齢");
@@ -255,23 +253,6 @@ namespace rennsyu.Application.Validators
                 errors.Add(new LifePlanValidationError(
                     key,
                     $"{label}は{RateRules.MinAnnualIncomeChangeRatePercent}〜{RateRules.MaxAnnualIncomeChangeRatePercent}%で入力してください。"));
-            }
-        }
-
-        private static void ValidatePensionReference(
-            List<LifePlanValidationError> errors,
-            string key,
-            string? value,
-            string label)
-        {
-            if (string.IsNullOrWhiteSpace(value))
-            {
-                return;
-            }
-
-            if (PensionReferenceData.All.All(reference => reference.Value != value))
-            {
-                errors.Add(new LifePlanValidationError(key, $"{label}は定義済みの選択肢から選んでください。"));
             }
         }
 

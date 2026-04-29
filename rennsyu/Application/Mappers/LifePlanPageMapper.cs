@@ -53,13 +53,6 @@ namespace rennsyu.Application.Mappers
                 .ToList();
         }
 
-        public static IReadOnlyList<SelectOptionViewModel> ToPensionReferenceOptions(IReadOnlyList<PensionReferenceEntry> references)
-        {
-            return references
-                .Select(reference => new SelectOptionViewModel(reference.Value, reference.DisplayName))
-                .ToList();
-        }
-
         public static IReadOnlyList<SelectOptionViewModel> ToOccupationOptions(IReadOnlyList<OccupationEntry> occupations)
         {
             return occupations
