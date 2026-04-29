@@ -43,6 +43,16 @@ namespace rennsyu.Application.Mappers
                 .ToList();
         }
 
+        public static IReadOnlyList<SelectOptionViewModel> ToEducationOptionsByStage(
+            IReadOnlyList<EducationCostEntry> entries,
+            string stage)
+        {
+            return entries
+                .Where(entry => entry.Stage == stage)
+                .Select(entry => new SelectOptionViewModel(entry.Value, entry.Type))
+                .ToList();
+        }
+
         public static IReadOnlyList<SelectOptionViewModel> ToPensionReferenceOptions(IReadOnlyList<PensionReferenceEntry> references)
         {
             return references
@@ -70,6 +80,16 @@ namespace rennsyu.Application.Mappers
                         .Select(child => new ChildData { Age = child.Age })
                         .ToList()
                 },
+                LifeEvents = new LifeEventData
+                {
+                    Marriage = ToMarriageEventData(model.LifeEvents.Marriage),
+                    Housing = ToHousingEventData(model.LifeEvents.Housing),
+                    Car = ToCarEventData(model.LifeEvents.Car),
+                    EducationPlans = model.LifeEvents.EducationPlans
+                        .Select(ToChildEducationData)
+                        .ToList(),
+                    TravelOther = ToTravelOtherEventData(model.LifeEvents.TravelOther)
+                },
                 Assets = new AssetData
                 {
                     CurrentFinancialAssetsYen = ToYen(model.Savings.CurrentFinancialAssetsManYen),
@@ -78,7 +98,8 @@ namespace rennsyu.Application.Mappers
                 IncomeExpense = new IncomeExpenseData
                 {
                     HusbandIncome = ToPersonIncomeData(model.IncomeExpense.HusbandIncome),
-                    WifeIncome = ToPersonIncomeData(model.IncomeExpense.WifeIncome)
+                    WifeIncome = ToPersonIncomeData(model.IncomeExpense.WifeIncome),
+                    Expenses = ToExpenseData(model.IncomeExpense.Expenses)
                 }
             };
         }
@@ -104,16 +125,75 @@ namespace rennsyu.Application.Mappers
                 WorkStartAge = input.WorkStartAge,
                 WorkEndAge = input.WorkEndAge,
                 RetirementAllowanceYen = ToYen(input.RetirementAllowanceManYen),
-                AnnualPensionYen = ToYen(input.AnnualPensionManYen) ?? ToPensionReferenceAnnualAmountYen(input.PensionReferenceValue),
+                AnnualPensionYen = ToYen(input.AnnualPensionManYen),
                 PensionStartAge = input.PensionStartAge
             };
         }
 
-        private static long? ToPensionReferenceAnnualAmountYen(string? pensionReferenceValue)
+        private static MarriageEventData ToMarriageEventData(MarriageEventInputViewModel input)
         {
-            return PensionReferenceData.All
-                .FirstOrDefault(reference => reference.Value == pensionReferenceValue)
-                ?.AnnualAmountYen;
+            return new MarriageEventData
+            {
+                CostYen = ToYen(input.CostManYen),
+                HusbandAge = input.HusbandAge
+            };
+        }
+
+        private static HousingEventData ToHousingEventData(HousingEventInputViewModel input)
+        {
+            return new HousingEventData
+            {
+                DownPaymentYen = ToYen(input.DownPaymentManYen),
+                BorrowingAmountYen = ToYen(input.BorrowingAmountManYen),
+                PurchaseHusbandAge = input.PurchaseHusbandAge,
+                LoanYears = input.LoanYears,
+                InterestRatePercent = input.InterestRatePercent
+            };
+        }
+
+        private static CarEventData ToCarEventData(CarEventInputViewModel input)
+        {
+            return new CarEventData
+            {
+                PurchaseAmountYen = ToYen(input.PurchaseAmountManYen),
+                FirstPurchaseHusbandAge = input.FirstPurchaseHusbandAge,
+                ReplacementIntervalYears = input.ReplacementIntervalYears
+            };
+        }
+
+        private static ChildEducationData ToChildEducationData(ChildEducationInputViewModel input)
+        {
+            return new ChildEducationData
+            {
+                NurseryOptionValue = input.NurseryOptionValue,
+                KindergartenOptionValue = input.KindergartenOptionValue,
+                ElementarySchoolOptionValue = input.ElementarySchoolOptionValue,
+                JuniorHighSchoolOptionValue = input.JuniorHighSchoolOptionValue,
+                HighSchoolOptionValue = input.HighSchoolOptionValue,
+                UniversityOptionValue = input.UniversityOptionValue,
+                GraduateSchoolOptionValue = input.GraduateSchoolOptionValue
+            };
+        }
+
+        private static TravelOtherEventData ToTravelOtherEventData(TravelOtherEventInputViewModel input)
+        {
+            return new TravelOtherEventData
+            {
+                AnnualCostYen = ToYen(input.AnnualCostManYen),
+                StartHusbandAge = input.StartHusbandAge,
+                EndHusbandAge = input.EndHusbandAge
+            };
+        }
+
+        private static ExpenseData ToExpenseData(ExpenseInputViewModel input)
+        {
+            return new ExpenseData
+            {
+                MonthlyBasicLivingCostYen = ToYen(input.MonthlyBasicLivingCostManYen),
+                InflationRatePercent = input.InflationRatePercent,
+                MonthlyRentYen = ToYen(input.MonthlyRentManYen),
+                OtherAnnualCostYen = ToYen(input.OtherAnnualCostManYen)
+            };
         }
 
         private static long? ToYen(decimal? manYen)
