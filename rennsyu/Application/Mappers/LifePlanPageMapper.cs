@@ -1,5 +1,6 @@
 using rennsyu.Domain.ReferenceData;
 using rennsyu.Domain.Rules;
+using rennsyu.Domain.Entities;
 using rennsyu.ViewModels.LifePlan;
 
 namespace rennsyu.Application.Mappers
@@ -49,16 +50,37 @@ namespace rennsyu.Application.Mappers
                 .ToList();
         }
 
-        public static IReadOnlyList<SelectOptionViewModel> CreateOccupationOptions()
+        public static IReadOnlyList<SelectOptionViewModel> ToOccupationOptions(IReadOnlyList<OccupationEntry> occupations)
         {
-            return
-            [
-                new SelectOptionViewModel("company_employee", "会社員"),
-                new SelectOptionViewModel("self_employed", "自営業"),
-                new SelectOptionViewModel("public_employee", "公務員"),
-                new SelectOptionViewModel("homemaker", "専業主婦・主夫"),
-                new SelectOptionViewModel("other", "その他")
-            ];
+            return occupations
+                .Select(occupation => new SelectOptionViewModel(occupation.Value, occupation.DisplayName))
+                .ToList();
+        }
+
+        public static LifePlanData ToLifePlanData(LifePlanViewModel model)
+        {
+            return new LifePlanData
+            {
+                Family = new FamilyData
+                {
+                    HusbandAge = model.Family.HusbandAge.GetValueOrDefault(),
+                    WifeAge = model.Family.WifeAge.GetValueOrDefault(),
+                    Children = model.Family.Children
+                        .Where(child => child.Age.HasValue)
+                        .Select(child => new ChildData { Age = child.Age })
+                        .ToList()
+                },
+                Assets = new AssetData
+                {
+                    CurrentFinancialAssetsYen = ToYen(model.Savings.CurrentFinancialAssetsManYen),
+                    ExpectedAnnualReturnRatePercent = model.Savings.ExpectedAnnualReturnRatePercent
+                },
+                IncomeExpense = new IncomeExpenseData
+                {
+                    HusbandIncome = ToPersonIncomeData(model.IncomeExpense.HusbandIncome),
+                    WifeIncome = ToPersonIncomeData(model.IncomeExpense.WifeIncome)
+                }
+            };
         }
 
         private static IReadOnlyList<string> CreateChildLabels()
@@ -70,6 +92,35 @@ namespace rennsyu.Application.Mappers
                 "第3子",
                 "第4子"
             ];
+        }
+
+        private static PersonIncomeData ToPersonIncomeData(PersonIncomeInputViewModel input)
+        {
+            return new PersonIncomeData
+            {
+                OccupationValue = input.OccupationValue,
+                AnnualIncomeYen = ToYen(input.AnnualIncomeManYen),
+                AnnualIncomeChangeRatePercent = input.AnnualIncomeChangeRatePercent,
+                WorkStartAge = input.WorkStartAge,
+                WorkEndAge = input.WorkEndAge,
+                RetirementAllowanceYen = ToYen(input.RetirementAllowanceManYen),
+                AnnualPensionYen = ToYen(input.AnnualPensionManYen) ?? ToPensionReferenceAnnualAmountYen(input.PensionReferenceValue),
+                PensionStartAge = input.PensionStartAge
+            };
+        }
+
+        private static long? ToPensionReferenceAnnualAmountYen(string? pensionReferenceValue)
+        {
+            return PensionReferenceData.All
+                .FirstOrDefault(reference => reference.Value == pensionReferenceValue)
+                ?.AnnualAmountYen;
+        }
+
+        private static long? ToYen(decimal? manYen)
+        {
+            return manYen.HasValue
+                ? decimal.ToInt64(decimal.Round(manYen.Value * 10000m, 0, MidpointRounding.AwayFromZero))
+                : null;
         }
     }
 }
