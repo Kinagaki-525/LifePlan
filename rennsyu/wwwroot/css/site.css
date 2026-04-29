@@ -909,3 +909,9 @@ body {
 .app-footer {
   min-height: 320px;
 }
+
+
+.top-features__grid,
+.top-worries__grid {
+    list-style: none;
+}
