@@ -21,6 +21,7 @@ MyApp
 │  ├─ Services
 │  ├─ Interfaces
 │  ├─ Validators
+│  ├─ Normalizers
 │  └─ Results
 ├─ Domain
 │  ├─ Entities
@@ -116,6 +117,14 @@ MyApp
 - 検証結果は Controller が `ModelState` へ反映できるキーとメッセージで返す
 - 画面フロー制御や Domain Entity への変換は持たない
 
+### Application/Normalizers
+
+- ViewModel など Application 層が受け取った入力値を、Mapper に渡す前に正規化する
+- 条件付き入力の採用・無効化、未入力時の関連項目クリア、手入力値とマスタ値の優先順位解決を担当する
+- Domain Entity への型変換や単位変換は持たず、Mapper の前段処理に集中する
+- 入力値の妥当性検証は持たず、Validator が検証済みの入力を前提に扱う
+- View 表示用の選択肢や画面状態の補完は持たない
+
 ### Application/Results
 
 - Application Service の処理結果を表す型を置く
@@ -185,6 +194,7 @@ MyApp
 - ViewModel、Domain 型、DTO の責務を混在させない
 - ViewModel と Domain 型の変換は `Application/Mappers` に集約する
 - Service 内に複雑な型変換を直接書かない
+- 条件付き入力の採用・無効化、手入力値とマスタ値の優先順位解決は `Application/Normalizers` に寄せ、Mapper は詰め替えと単位変換を中心に保つ
 - DTO は外部API、永続化、Application 層の入出力が ViewModel / Domain 型だけでは表現しづらい場合に追加する
 - Mapper 名は `{対象}Mapper` を基本とし、変換元と変換先が分かるメソッド名にする
 

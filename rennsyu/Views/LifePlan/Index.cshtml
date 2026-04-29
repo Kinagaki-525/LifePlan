@@ -6,6 +6,13 @@
     var childAgeOptions = new SelectList(Model.ChildAgeOptions, "Value", "Text");
     var occupationOptions = new SelectList(Model.OccupationOptions, "Value", "Text");
     var pensionReferenceOptions = new SelectList(Model.PensionReferenceOptions, "Value", "Text");
+    var nurseryEducationOptions = new SelectList(Model.NurseryEducationOptions, "Value", "Text");
+    var kindergartenEducationOptions = new SelectList(Model.KindergartenEducationOptions, "Value", "Text");
+    var elementarySchoolEducationOptions = new SelectList(Model.ElementarySchoolEducationOptions, "Value", "Text");
+    var juniorHighSchoolEducationOptions = new SelectList(Model.JuniorHighSchoolEducationOptions, "Value", "Text");
+    var highSchoolEducationOptions = new SelectList(Model.HighSchoolEducationOptions, "Value", "Text");
+    var universityEducationOptions = new SelectList(Model.UniversityEducationOptions, "Value", "Text");
+    var graduateSchoolEducationOptions = new SelectList(Model.GraduateSchoolEducationOptions, "Value", "Text");
 }
 
 <section class="life-plan-simulator">
@@ -187,11 +194,176 @@
                     </div>
                 </section>
 
-                <section class="border rounded p-4 mb-3 bg-light">
-                    <h2 class="h5 fw-bold mb-3">PR4以降の入力項目</h2>
-                    <p class="mb-0 text-muted">
-                        ライフイベント、支出、教育費、住宅、自動車、旅行・その他の入力は後続PRで実装します。
-                    </p>
+                <section class="border rounded p-4 mb-3">
+                    <h2 class="h5 fw-bold mb-3">ライフイベント</h2>
+
+                    <h3 class="h6 fw-bold mb-3">結婚</h3>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label asp-for="LifeEvents.Marriage.CostManYen" class="form-label">費用（万円）</label>
+                            <input asp-for="LifeEvents.Marriage.CostManYen" class="form-control" type="number" min="0" step="0.1" />
+                            <span asp-validation-for="LifeEvents.Marriage.CostManYen" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="LifeEvents.Marriage.HusbandAge" class="form-label">実施年齢（夫年齢）</label>
+                            <input asp-for="LifeEvents.Marriage.HusbandAge" class="form-control" type="number" min="16" max="100" />
+                            <span asp-validation-for="LifeEvents.Marriage.HusbandAge" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <h3 class="h6 fw-bold mb-3">住宅購入</h3>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label asp-for="LifeEvents.Housing.PurchaseHusbandAge" class="form-label">購入時期（夫年齢）</label>
+                            <input asp-for="LifeEvents.Housing.PurchaseHusbandAge" class="form-control" type="number" min="16" max="100" />
+                            <span asp-validation-for="LifeEvents.Housing.PurchaseHusbandAge" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="LifeEvents.Housing.DownPaymentManYen" class="form-label">頭金（万円）</label>
+                            <input asp-for="LifeEvents.Housing.DownPaymentManYen" class="form-control" type="number" min="0" step="0.1" />
+                            <span asp-validation-for="LifeEvents.Housing.DownPaymentManYen" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="LifeEvents.Housing.BorrowingAmountManYen" class="form-label">借入額（万円）</label>
+                            <input asp-for="LifeEvents.Housing.BorrowingAmountManYen" class="form-control" type="number" min="0" step="0.1" />
+                            <span asp-validation-for="LifeEvents.Housing.BorrowingAmountManYen" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-3">
+                            <label asp-for="LifeEvents.Housing.LoanYears" class="form-label">ローン年数</label>
+                            <input asp-for="LifeEvents.Housing.LoanYears" class="form-control" type="number" min="1" />
+                            <span asp-validation-for="LifeEvents.Housing.LoanYears" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-3">
+                            <label asp-for="LifeEvents.Housing.InterestRatePercent" class="form-label">想定金利（%）</label>
+                            <input asp-for="LifeEvents.Housing.InterestRatePercent" class="form-control" type="number" min="0" step="0.1" />
+                            <span asp-validation-for="LifeEvents.Housing.InterestRatePercent" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <h3 class="h6 fw-bold mb-3">自動車</h3>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-4">
+                            <label asp-for="LifeEvents.Car.PurchaseAmountManYen" class="form-label">購入額（万円）</label>
+                            <input asp-for="LifeEvents.Car.PurchaseAmountManYen" class="form-control" type="number" min="0" step="0.1" />
+                            <span asp-validation-for="LifeEvents.Car.PurchaseAmountManYen" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-4">
+                            <label asp-for="LifeEvents.Car.FirstPurchaseHusbandAge" class="form-label">初回購入年齢（夫年齢）</label>
+                            <input asp-for="LifeEvents.Car.FirstPurchaseHusbandAge" class="form-control" type="number" min="16" max="100" />
+                            <span asp-validation-for="LifeEvents.Car.FirstPurchaseHusbandAge" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-4">
+                            <label asp-for="LifeEvents.Car.ReplacementIntervalYears" class="form-label">買い替え間隔（年）</label>
+                            <input asp-for="LifeEvents.Car.ReplacementIntervalYears" class="form-control" type="number" min="1" />
+                            <span asp-validation-for="LifeEvents.Car.ReplacementIntervalYears" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <h3 class="h6 fw-bold mb-3">教育費</h3>
+                    @for (var index = 0; index < Model.LifeEvents.EducationPlans.Count; index++)
+                    {
+                        <div class="border rounded p-3 mb-3">
+                            <input asp-for="LifeEvents.EducationPlans[index].Label" type="hidden" />
+                            <h4 class="h6 fw-bold mb-3">@Model.LifeEvents.EducationPlans[index].Label</h4>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label asp-for="LifeEvents.EducationPlans[index].NurseryOptionValue" class="form-label">保育園</label>
+                                    <select asp-for="LifeEvents.EducationPlans[index].NurseryOptionValue" asp-items="nurseryEducationOptions" class="form-select">
+                                        <option value="">選択してください</option>
+                                    </select>
+                                    <span asp-validation-for="LifeEvents.EducationPlans[index].NurseryOptionValue" class="text-danger"></span>
+                                </div>
+                                <div class="col-md-6">
+                                    <label asp-for="LifeEvents.EducationPlans[index].KindergartenOptionValue" class="form-label">幼稚園・保育園</label>
+                                    <select asp-for="LifeEvents.EducationPlans[index].KindergartenOptionValue" asp-items="kindergartenEducationOptions" class="form-select">
+                                        <option value="">選択してください</option>
+                                    </select>
+                                    <span asp-validation-for="LifeEvents.EducationPlans[index].KindergartenOptionValue" class="text-danger"></span>
+                                </div>
+                                <div class="col-md-6">
+                                    <label asp-for="LifeEvents.EducationPlans[index].ElementarySchoolOptionValue" class="form-label">小学校</label>
+                                    <select asp-for="LifeEvents.EducationPlans[index].ElementarySchoolOptionValue" asp-items="elementarySchoolEducationOptions" class="form-select">
+                                        <option value="">選択してください</option>
+                                    </select>
+                                    <span asp-validation-for="LifeEvents.EducationPlans[index].ElementarySchoolOptionValue" class="text-danger"></span>
+                                </div>
+                                <div class="col-md-6">
+                                    <label asp-for="LifeEvents.EducationPlans[index].JuniorHighSchoolOptionValue" class="form-label">中学校</label>
+                                    <select asp-for="LifeEvents.EducationPlans[index].JuniorHighSchoolOptionValue" asp-items="juniorHighSchoolEducationOptions" class="form-select">
+                                        <option value="">選択してください</option>
+                                    </select>
+                                    <span asp-validation-for="LifeEvents.EducationPlans[index].JuniorHighSchoolOptionValue" class="text-danger"></span>
+                                </div>
+                                <div class="col-md-6">
+                                    <label asp-for="LifeEvents.EducationPlans[index].HighSchoolOptionValue" class="form-label">高校</label>
+                                    <select asp-for="LifeEvents.EducationPlans[index].HighSchoolOptionValue" asp-items="highSchoolEducationOptions" class="form-select">
+                                        <option value="">選択してください</option>
+                                    </select>
+                                    <span asp-validation-for="LifeEvents.EducationPlans[index].HighSchoolOptionValue" class="text-danger"></span>
+                                </div>
+                                <div class="col-md-6">
+                                    <label asp-for="LifeEvents.EducationPlans[index].UniversityOptionValue" class="form-label">大学</label>
+                                    <select asp-for="LifeEvents.EducationPlans[index].UniversityOptionValue" asp-items="universityEducationOptions" class="form-select">
+                                        <option value="">選択してください</option>
+                                    </select>
+                                    <span asp-validation-for="LifeEvents.EducationPlans[index].UniversityOptionValue" class="text-danger"></span>
+                                </div>
+                                <div class="col-md-6">
+                                    <label asp-for="LifeEvents.EducationPlans[index].GraduateSchoolOptionValue" class="form-label">大学院</label>
+                                    <select asp-for="LifeEvents.EducationPlans[index].GraduateSchoolOptionValue" asp-items="graduateSchoolEducationOptions" class="form-select">
+                                        <option value="">選択してください</option>
+                                    </select>
+                                    <span asp-validation-for="LifeEvents.EducationPlans[index].GraduateSchoolOptionValue" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                    <h3 class="h6 fw-bold mb-3">旅行・その他</h3>
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label asp-for="LifeEvents.TravelOther.AnnualCostManYen" class="form-label">年間費用（万円）</label>
+                            <input asp-for="LifeEvents.TravelOther.AnnualCostManYen" class="form-control" type="number" min="0" step="0.1" />
+                            <span asp-validation-for="LifeEvents.TravelOther.AnnualCostManYen" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-4">
+                            <label asp-for="LifeEvents.TravelOther.StartHusbandAge" class="form-label">開始年齢（夫年齢）</label>
+                            <input asp-for="LifeEvents.TravelOther.StartHusbandAge" class="form-control" type="number" min="16" max="100" />
+                            <span asp-validation-for="LifeEvents.TravelOther.StartHusbandAge" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-4">
+                            <label asp-for="LifeEvents.TravelOther.EndHusbandAge" class="form-label">終了年齢（夫年齢）</label>
+                            <input asp-for="LifeEvents.TravelOther.EndHusbandAge" class="form-control" type="number" min="16" max="100" />
+                            <span asp-validation-for="LifeEvents.TravelOther.EndHusbandAge" class="text-danger"></span>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="border rounded p-4 mb-3">
+                    <h2 class="h5 fw-bold mb-3">支出</h2>
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label asp-for="IncomeExpense.Expenses.MonthlyBasicLivingCostManYen" class="form-label">毎月の基本生活費（万円）</label>
+                            <input asp-for="IncomeExpense.Expenses.MonthlyBasicLivingCostManYen" class="form-control" type="number" min="0" step="0.1" />
+                            <span asp-validation-for="IncomeExpense.Expenses.MonthlyBasicLivingCostManYen" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="IncomeExpense.Expenses.InflationRatePercent" class="form-label">想定インフレ率（%）</label>
+                            <input asp-for="IncomeExpense.Expenses.InflationRatePercent" class="form-control" type="number" min="0" max="5" step="0.1" />
+                            <span asp-validation-for="IncomeExpense.Expenses.InflationRatePercent" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="IncomeExpense.Expenses.MonthlyRentManYen" class="form-label">毎月の家賃（万円）</label>
+                            <input asp-for="IncomeExpense.Expenses.MonthlyRentManYen" class="form-control" type="number" min="0" step="0.1" />
+                            <span asp-validation-for="IncomeExpense.Expenses.MonthlyRentManYen" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="IncomeExpense.Expenses.OtherAnnualCostManYen" class="form-label">その他支出（年間・万円）</label>
+                            <input asp-for="IncomeExpense.Expenses.OtherAnnualCostManYen" class="form-control" type="number" min="0" step="0.1" />
+                            <span asp-validation-for="IncomeExpense.Expenses.OtherAnnualCostManYen" class="text-danger"></span>
+                        </div>
+                    </div>
                 </section>
 
                 <button class="btn btn-primary" type="submit">
@@ -216,4 +388,26 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        (() => {
+            const purchaseAge = document.getElementById('LifeEvents_Housing_PurchaseHusbandAge');
+            const housingFields = [
+                'LifeEvents_Housing_DownPaymentManYen',
+                'LifeEvents_Housing_BorrowingAmountManYen',
+                'LifeEvents_Housing_LoanYears',
+                'LifeEvents_Housing_InterestRatePercent'
+            ].map((id) => document.getElementById(id)).filter(Boolean);
+
+            const updateHousingFields = () => {
+                const isEnabled = purchaseAge && purchaseAge.value.trim() !== '';
+
+                housingFields.forEach((field) => {
+                    field.disabled = !isEnabled;
+                });
+            };
+
+            purchaseAge?.addEventListener('input', updateHousingFields);
+            updateHousingFields();
+        })();
+    </script>
 }

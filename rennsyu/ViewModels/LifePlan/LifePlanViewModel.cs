@@ -16,6 +16,20 @@ namespace rennsyu.ViewModels.LifePlan
 
         public IReadOnlyList<SelectOptionViewModel> EducationOptions { get; set; } = [];
 
+        public IReadOnlyList<SelectOptionViewModel> NurseryEducationOptions { get; set; } = [];
+
+        public IReadOnlyList<SelectOptionViewModel> KindergartenEducationOptions { get; set; } = [];
+
+        public IReadOnlyList<SelectOptionViewModel> ElementarySchoolEducationOptions { get; set; } = [];
+
+        public IReadOnlyList<SelectOptionViewModel> JuniorHighSchoolEducationOptions { get; set; } = [];
+
+        public IReadOnlyList<SelectOptionViewModel> HighSchoolEducationOptions { get; set; } = [];
+
+        public IReadOnlyList<SelectOptionViewModel> UniversityEducationOptions { get; set; } = [];
+
+        public IReadOnlyList<SelectOptionViewModel> GraduateSchoolEducationOptions { get; set; } = [];
+
         public IReadOnlyList<SelectOptionViewModel> PensionReferenceOptions { get; set; } = [];
 
         public IReadOnlyList<SelectOptionViewModel> OccupationOptions { get; set; } = [];
