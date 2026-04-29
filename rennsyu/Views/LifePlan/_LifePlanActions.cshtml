@@ -1,0 +1,9 @@
+@model LifePlanActionsViewModel?
+
+<div class="life-plan-actions">
+    <button class="app-button app-button--primary life-plan-actions__submit" type="submit">結果を表示する</button>
+    @if (!string.IsNullOrWhiteSpace(Model?.NextTab) && !string.IsNullOrWhiteSpace(Model.NextLabel))
+    {
+        <button class="app-button app-button--outline" type="button" data-life-plan-next="@Model.NextTab">@Model.NextLabel</button>
+    }
+</div>

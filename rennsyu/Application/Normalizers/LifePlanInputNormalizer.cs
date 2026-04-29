@@ -1,4 +1,3 @@
-using rennsyu.Domain.ReferenceData;
 using rennsyu.ViewModels.LifePlan;
 
 namespace rennsyu.Application.Normalizers
@@ -94,21 +93,9 @@ namespace rennsyu.Application.Normalizers
                 WorkStartAge = input.WorkStartAge,
                 WorkEndAge = input.WorkEndAge,
                 RetirementAllowanceManYen = input.RetirementAllowanceManYen,
-                AnnualPensionManYen = input.AnnualPensionManYen ?? ToPensionReferenceAnnualAmountManYen(input.PensionReferenceValue),
-                PensionReferenceValue = input.PensionReferenceValue,
+                AnnualPensionManYen = input.AnnualPensionManYen,
                 PensionStartAge = input.PensionStartAge
             };
-        }
-
-        private static decimal? ToPensionReferenceAnnualAmountManYen(string? pensionReferenceValue)
-        {
-            var annualAmountYen = PensionReferenceData.All
-                .FirstOrDefault(reference => reference.Value == pensionReferenceValue)
-                ?.AnnualAmountYen;
-
-            return annualAmountYen.HasValue
-                ? annualAmountYen.Value / 10000m
-                : null;
         }
     }
 }
