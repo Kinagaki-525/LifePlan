@@ -35,11 +35,14 @@
             <div class="top-hero__divider" aria-hidden="true"></div>
             <p class="top-hero__lead">婚約〜子育てまでのお金を</p>
             <p class="top-hero__lead">一緒に考えるカップル・夫婦向けアプリ</p>  @* ← キーワード追加 *@
+            @* TODO: 公開時にコメントアウトを削除 *@
+            @*
             <a class="app-button app-button--primary top-hero__cta"
                    asp-controller="LifePlan" asp-action="Index"
                    aria-label="無料でライフプランを作成する">
                 ▶ 無料でライフプランを作る
             </a>
+            *@
         </div>
     </section>
 
@@ -63,9 +66,13 @@
                     <article class="feature-card">
                         <h3 class="feature-card__title">ライフプランシミュレーション</h3>
                         <p class="feature-card__text">収入・支出・イベントを入力して将来を可視化</p>
+                        @* TODO: 公開時に削除 *@
+                        <span class="feature-card__coming" aria-label="準備中">Coming Soon...</span>
+                        @* 
                         <a class="app-button app-button--primary feature-card__button"
                            asp-controller="LifePlan" asp-action="Index"
                            aria-label="ライフプランシミュレーションを使ってみる">使ってみる</a>
+                        *@
                     </article>
                 </li>
                 <li>
@@ -100,9 +107,13 @@
                     <article class="feature-card">
                         <h3 class="feature-card__title">FP相談</h3>
                         <p class="feature-card__text">お金のプロに無料で相談できる</p>
+                        @* TODO: 公開時に削除 *@
+                        <span class="feature-card__coming" aria-label="準備中">Coming Soon...</span>
+                        @* 
                         <a class="app-button app-button--primary feature-card__button"
                            asp-controller="Home" asp-action="Privacy"
                            aria-label="FP相談を使ってみる">使ってみる</a>
+                        *@
                     </article>
                 </li>
             </ul>
