@@ -44,6 +44,18 @@ namespace rennsyu.Application.Services
 
         private static LifePlanViewModel PopulatePageDefaults(LifePlanViewModel page)
         {
+            EnsureInputModels(page);
+
+            page.Family.Children = MergeChildInputs(page.Family.Children);
+            page.LifeEvents.EducationPlans = MergeEducationPlans(page.LifeEvents.EducationPlans);
+
+            PopulateSelectOptions(page);
+
+            return page;
+        }
+
+        private static void EnsureInputModels(LifePlanViewModel page)
+        {
             page.Family ??= new FamilyInputViewModel();
             page.LifeEvents ??= new LifeEventInputViewModel();
             page.LifeEvents.Marriage ??= new MarriageEventInputViewModel();
@@ -55,10 +67,10 @@ namespace rennsyu.Application.Services
             page.IncomeExpense.HusbandIncome ??= new PersonIncomeInputViewModel();
             page.IncomeExpense.WifeIncome ??= new PersonIncomeInputViewModel();
             page.IncomeExpense.Expenses ??= new ExpenseInputViewModel();
+        }
 
-            page.Family.Children = MergeChildInputs(page.Family.Children);
-            page.LifeEvents.EducationPlans = MergeEducationPlans(page.LifeEvents.EducationPlans);
-
+        private static void PopulateSelectOptions(LifePlanViewModel page)
+        {
             page.ChildAgeOptions = LifePlanPageMapper.CreateChildAgeOptions();
             page.EducationOptions = LifePlanPageMapper.ToEducationOptions(EducationCostMaster.Entries);
             page.NurseryEducationOptions = LifePlanPageMapper.ToEducationOptionsByStage(EducationCostMaster.Entries, "保育園");
@@ -70,8 +82,6 @@ namespace rennsyu.Application.Services
             page.GraduateSchoolEducationOptions = LifePlanPageMapper.ToEducationOptionsByStage(EducationCostMaster.Entries, "大学院");
             page.PensionReferenceOptions = LifePlanPageMapper.ToPensionReferenceOptions(PensionReferenceData.All);
             page.OccupationOptions = LifePlanPageMapper.ToOccupationOptions(OccupationReferenceData.All);
-
-            return page;
         }
 
         private static List<ChildInputViewModel> MergeChildInputs(List<ChildInputViewModel>? postedChildren)
@@ -99,17 +109,24 @@ namespace rennsyu.Application.Services
             {
                 if (index < postedPlans.Count)
                 {
-                    defaults[index].NurseryOptionValue = postedPlans[index].NurseryOptionValue;
-                    defaults[index].KindergartenOptionValue = postedPlans[index].KindergartenOptionValue;
-                    defaults[index].ElementarySchoolOptionValue = postedPlans[index].ElementarySchoolOptionValue;
-                    defaults[index].JuniorHighSchoolOptionValue = postedPlans[index].JuniorHighSchoolOptionValue;
-                    defaults[index].HighSchoolOptionValue = postedPlans[index].HighSchoolOptionValue;
-                    defaults[index].UniversityOptionValue = postedPlans[index].UniversityOptionValue;
-                    defaults[index].GraduateSchoolOptionValue = postedPlans[index].GraduateSchoolOptionValue;
+                    CopyEducationPlanValues(defaults[index], postedPlans[index]);
                 }
             }
 
             return defaults;
+        }
+
+        private static void CopyEducationPlanValues(
+            ChildEducationInputViewModel target,
+            ChildEducationInputViewModel source)
+        {
+            target.NurseryOptionValue = source.NurseryOptionValue;
+            target.KindergartenOptionValue = source.KindergartenOptionValue;
+            target.ElementarySchoolOptionValue = source.ElementarySchoolOptionValue;
+            target.JuniorHighSchoolOptionValue = source.JuniorHighSchoolOptionValue;
+            target.HighSchoolOptionValue = source.HighSchoolOptionValue;
+            target.UniversityOptionValue = source.UniversityOptionValue;
+            target.GraduateSchoolOptionValue = source.GraduateSchoolOptionValue;
         }
 
     }
