@@ -6,9 +6,9 @@
       "type": "coreclr",
       "request": "launch",
       "preLaunchTask": "build",
-      "program": "${workspaceFolder}/rennsyu/bin/Debug/net10.0/rennsyu.dll",
+      "program": "${workspaceFolder}/LifePlan/bin/Debug/net10.0/LifePlan.dll",
       "args": [],
-      "cwd": "${workspaceFolder}/rennsyu",
+      "cwd": "${workspaceFolder}/LifePlan",
       "stopAtEntry": false,
       "env": {
         "ASPNETCORE_ENVIRONMENT": "Development",
@@ -25,9 +25,9 @@
       "type": "coreclr",
       "request": "launch",
       "preLaunchTask": "build",
-      "program": "${workspaceFolder}/rennsyu/bin/Debug/net10.0/rennsyu.dll",
+      "program": "${workspaceFolder}/LifePlan/bin/Debug/net10.0/LifePlan.dll",
       "args": [],
-      "cwd": "${workspaceFolder}/rennsyu",
+      "cwd": "${workspaceFolder}/LifePlan",
       "stopAtEntry": false,
       "env": {
         "ASPNETCORE_ENVIRONMENT": "Development",
