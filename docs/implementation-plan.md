@@ -25,7 +25,7 @@
 ### 4.1 レイヤー構成
 
 ```
-rennsyu/
+LifePlan/
 ├─ Controllers/
 │  ├─ HomeController.cs          # TOPページ制御
 │  └─ LifePlanController.cs      # シミュレーター制御

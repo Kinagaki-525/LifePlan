@@ -4,8 +4,8 @@
 
 ## Scope
 
-- このファイルは `C:\Users\PC_User\source\repos\rennsyu` 配下の作業に適用する
-- 対象は `rennsyu` の ASP.NET Core MVC アプリ実装と関連する UI 修正
+- このファイルは `C:\Users\PC_User\source\repos\LifePlan` 配下の作業に適用する
+- 対象は `LifePlan` の ASP.NET Core MVC アプリ実装と関連する UI 修正
 - 実装時は常にアーキテクチャの整合性を意識し、責務の置き場所を検討してから変更する
 
 ## Recommended Architecture
