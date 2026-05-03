@@ -6,7 +6,7 @@
 
 ## 1. 概要
 
-`rennsyu` の ASP.NET Core MVC アプリに、家計の将来推移を可視化するライフプランシミュレーターを追加する。
+`LifePlan` の ASP.NET Core MVC アプリに、家計の将来推移を可視化するライフプランシミュレーターを追加する。
 
 - 対象：`Home/Index` の TOP ページと `LifePlan/Index` のシミュレーター画面
 - 利用前提：夫婦での利用。単身利用は対象外
