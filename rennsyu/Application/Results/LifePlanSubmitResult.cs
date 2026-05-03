@@ -1,7 +1,7 @@
-using rennsyu.Domain.Logic;
-using rennsyu.ViewModels.LifePlan;
+using LifePlan.Domain.Logic;
+using LifePlan.ViewModels.LifePlan;
 
-namespace rennsyu.Application.Results
+namespace LifePlan.Application.Results
 {
     public class LifePlanSubmitResult
     {

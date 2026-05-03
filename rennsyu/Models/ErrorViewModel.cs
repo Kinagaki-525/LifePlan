@@ -1,4 +1,4 @@
-namespace rennsyu.Models
+namespace LifePlan.Models
 {
     public class ErrorViewModel
     {

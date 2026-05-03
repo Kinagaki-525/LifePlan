@@ -1,6 +1,6 @@
-using rennsyu.Domain.Entities;
+using LifePlan.Domain.Entities;
 
-namespace rennsyu.Domain.Logic
+namespace LifePlan.Domain.Logic
 {
     public class LifePlanCalculator
     {

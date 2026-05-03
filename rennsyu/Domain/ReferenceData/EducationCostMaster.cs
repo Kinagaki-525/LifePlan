@@ -1,4 +1,4 @@
-namespace rennsyu.Domain.ReferenceData
+namespace LifePlan.Domain.ReferenceData
 {
     public static class EducationCostMaster
     {

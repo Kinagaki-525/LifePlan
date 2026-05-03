@@ -1,4 +1,4 @@
-namespace rennsyu.ViewModels.LifePlan
+namespace LifePlan.ViewModels.LifePlan
 {
     public class ChildInputViewModel
     {

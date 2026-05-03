@@ -1,4 +1,4 @@
-namespace rennsyu.Domain.Entities
+namespace LifePlan.Domain.Entities
 {
     public class IncomeExpenseData
     {

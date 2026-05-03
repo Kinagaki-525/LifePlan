@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
-using rennsyu.Application.Interfaces;
-using rennsyu.ViewModels.LifePlan;
+using LifePlan.Application.Interfaces;
+using LifePlan.ViewModels.LifePlan;
 
-namespace rennsyu.Controllers
+namespace LifePlan.Controllers
 {
     public class LifePlanController : Controller
     {

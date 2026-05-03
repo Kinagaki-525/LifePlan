@@ -1,5 +1,5 @@
-using rennsyu.Application.Interfaces;
-using rennsyu.Application.Services;
+using LifePlan.Application.Interfaces;
+using LifePlan.Application.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 

@@ -1,6 +1,6 @@
-using rennsyu.ViewModels.LifePlan;
+using LifePlan.ViewModels.LifePlan;
 
-namespace rennsyu.Application.Normalizers
+namespace LifePlan.Application.Normalizers
 {
     public static class LifePlanInputNormalizer
     {

@@ -1,9 +1,9 @@
-using rennsyu.Domain.ReferenceData;
-using rennsyu.Domain.Rules;
-using rennsyu.Domain.Entities;
-using rennsyu.ViewModels.LifePlan;
+using LifePlan.Domain.ReferenceData;
+using LifePlan.Domain.Rules;
+using LifePlan.Domain.Entities;
+using LifePlan.ViewModels.LifePlan;
 
-namespace rennsyu.Application.Mappers
+namespace LifePlan.Application.Mappers
 {
     public static class LifePlanPageMapper
     {

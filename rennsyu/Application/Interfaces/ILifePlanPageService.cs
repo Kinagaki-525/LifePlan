@@ -1,7 +1,7 @@
-using rennsyu.Application.Results;
-using rennsyu.ViewModels.LifePlan;
+using LifePlan.Application.Results;
+using LifePlan.ViewModels.LifePlan;
 
-namespace rennsyu.Application.Interfaces
+namespace LifePlan.Application.Interfaces
 {
     public interface ILifePlanPageService
     {

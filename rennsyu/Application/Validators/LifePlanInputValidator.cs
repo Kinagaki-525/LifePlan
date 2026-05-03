@@ -1,9 +1,9 @@
-using rennsyu.Application.Results;
-using rennsyu.Domain.ReferenceData;
-using rennsyu.Domain.Rules;
-using rennsyu.ViewModels.LifePlan;
+using LifePlan.Application.Results;
+using LifePlan.Domain.ReferenceData;
+using LifePlan.Domain.Rules;
+using LifePlan.ViewModels.LifePlan;
 
-namespace rennsyu.Application.Validators
+namespace LifePlan.Application.Validators
 {
     public static class LifePlanInputValidator
     {

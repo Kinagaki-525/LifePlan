@@ -7,7 +7,7 @@
       "command": "dotnet",
       "args": [
         "build",
-        "${workspaceFolder}/rennsyu/rennsyu.csproj",
+        "${workspaceFolder}/rennsyu/LifePlan.csproj",
         "/property:GenerateFullPaths=true",
         "/consoleloggerparameters:NoSummary"
       ],
@@ -24,7 +24,7 @@
       "args": [
         "run",
         "--project",
-        "${workspaceFolder}/rennsyu/rennsyu.csproj",
+        "${workspaceFolder}/rennsyu/LifePlan.csproj",
         "--launch-profile",
         "https"
       ],
@@ -37,7 +37,7 @@
       "args": [
         "watch",
         "--project",
-        "${workspaceFolder}/rennsyu/rennsyu.csproj",
+        "${workspaceFolder}/rennsyu/LifePlan.csproj",
         "run",
         "--launch-profile",
         "https"

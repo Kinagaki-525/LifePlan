@@ -1,4 +1,4 @@
-namespace rennsyu.Domain.Logic
+namespace LifePlan.Domain.Logic
 {
     public record LifePlanCalculationResult(
         int StartYear,

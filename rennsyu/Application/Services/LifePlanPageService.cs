@@ -1,13 +1,13 @@
-using rennsyu.Application.Interfaces;
-using rennsyu.Application.Mappers;
-using rennsyu.Application.Normalizers;
-using rennsyu.Application.Results;
-using rennsyu.Application.Validators;
-using rennsyu.Domain.Logic;
-using rennsyu.Domain.ReferenceData;
-using rennsyu.ViewModels.LifePlan;
+using LifePlan.Application.Interfaces;
+using LifePlan.Application.Mappers;
+using LifePlan.Application.Normalizers;
+using LifePlan.Application.Results;
+using LifePlan.Application.Validators;
+using LifePlan.Domain.Logic;
+using LifePlan.Domain.ReferenceData;
+using LifePlan.ViewModels.LifePlan;
 
-namespace rennsyu.Application.Services
+namespace LifePlan.Application.Services
 {
     public class LifePlanPageService : ILifePlanPageService
     {

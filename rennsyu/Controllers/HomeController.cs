@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
-using rennsyu.Models;
+using LifePlan.Models;
 using System.Diagnostics;
 
-namespace rennsyu.Controllers
+namespace LifePlan.Controllers
 {
     public class HomeController : Controller
     {

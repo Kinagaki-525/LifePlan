@@ -1,4 +1,4 @@
-namespace rennsyu.Domain.Rules
+namespace LifePlan.Domain.Rules
 {
     public static class AgeRules
     {
