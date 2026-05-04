@@ -442,6 +442,17 @@ body {
   box-shadow: var(--ui-control-focus-shadow);
 }
 
+.life-plan-control[type="number"] {
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+.life-plan-control[type="number"]::-webkit-outer-spin-button,
+.life-plan-control[type="number"]::-webkit-inner-spin-button {
+  margin: 0;
+  -webkit-appearance: none;
+}
+
 .life-plan-unit,
 .life-plan-help {
   color: var(--ui-color-text);

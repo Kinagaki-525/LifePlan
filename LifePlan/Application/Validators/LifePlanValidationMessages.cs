@@ -14,6 +14,11 @@ namespace LifePlan.Application.Validators
             return $"{label}は{AgeRules.MinAdultAge}〜{AgeRules.MaxAdultAge}で入力してください。";
         }
 
+        public static string HalfWidthInteger(string label)
+        {
+            return $"{label}は半角整数で入力してください。";
+        }
+
         public static string ChildAgeRange()
         {
             return $"子どもの年齢は{AgeRules.MinChildAge}〜{AgeRules.MaxChildAge}で入力してください。";
@@ -39,14 +44,14 @@ namespace LifePlan.Application.Validators
             return $"住宅ローンの想定金利は{RateRules.MinRatePercent}%以上で入力してください。";
         }
 
+        public static string OneDecimalPlace(string label)
+        {
+            return $"{label}は小数第1位までで入力してください。";
+        }
+
         public static string InflationRateRange()
         {
             return $"想定インフレ率は{RateRules.MinRatePercent}〜{RateRules.MaxInflationRatePercent}%で入力してください。";
-        }
-
-        public static string AnnualIncomeChangeRateRange(string label)
-        {
-            return $"{label}は{RateRules.MinAnnualIncomeChangeRatePercent}〜{RateRules.MaxAnnualIncomeChangeRatePercent}%で入力してください。";
         }
 
         public static string DefinedOption(string label)
