@@ -69,7 +69,6 @@ namespace LifePlan.Application.Mappers
                     HusbandAge = model.Family.HusbandAge.GetValueOrDefault(),
                     WifeAge = model.Family.WifeAge.GetValueOrDefault(),
                     Children = model.Family.Children
-                        .Where(child => child.Age.HasValue)
                         .Select(child => new ChildData { Age = child.Age })
                         .ToList()
                 },
