@@ -14,6 +14,10 @@
   --ui-color-cash-flow-income: #f1fbf5;
   --ui-color-cash-flow-expense: #fff6f3;
   --ui-color-cash-flow-savings: #f7f4ff;
+  --ui-color-chart-income: #2f8f5b;
+  --ui-color-chart-expense: #d96045;
+  --ui-color-chart-savings-without-return: #2f67b1;
+  --ui-color-chart-savings-with-return: #6f5fc7;
   --ui-font-family-base: "Noto Sans JP", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --ui-font-size-root-sm: 14px;
   --ui-font-size-root-md: 16px;
@@ -677,11 +681,8 @@ body {
   background: var(--ui-color-surface);
 }
 
-.life-plan-result-frame--graph-placeholder {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 12rem;
+.life-plan-result-frame--graph {
+  min-height: 30rem;
 }
 
 .life-plan-result-frame__label {
@@ -702,6 +703,55 @@ body {
   font-weight: 600;
 }
 
+.life-plan-chart {
+  display: grid;
+  gap: var(--ui-space-md);
+  width: 100%;
+  min-width: 0;
+}
+
+.life-plan-chart__canvas-wrap {
+  width: 100%;
+  min-width: 0;
+  padding: var(--ui-space-md);
+  border: var(--ui-border-width-sm) solid var(--ui-color-border);
+  border-radius: var(--ui-radius-sm);
+  background: var(--ui-color-surface);
+}
+
+.life-plan-chart__canvas {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: 22.5rem;
+}
+
+.life-plan-chart__legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ui-space-sm) var(--ui-space-lg);
+  color: var(--ui-color-text);
+  font-size: var(--ui-font-size-small);
+}
+
+.life-plan-chart__legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ui-space-xs);
+}
+
+.life-plan-chart__legend-marker {
+  width: 1rem;
+  height: 0.25rem;
+  border-radius: var(--ui-radius-pill);
+}
+
+.life-plan-chart__fallback {
+  margin: 0;
+  color: var(--ui-color-muted);
+  font-size: var(--ui-font-size-small);
+}
+
 .life-plan-result__actions {
   display: flex;
   justify-content: flex-end;
@@ -711,6 +761,80 @@ body {
   min-height: auto;
   padding: var(--ui-space-xs) var(--ui-space-lg);
   line-height: var(--ui-line-height-normal);
+}
+
+.life-plan-assumptions {
+  display: grid;
+  gap: var(--ui-space-xs);
+}
+
+.life-plan-assumptions__label {
+  width: 11.25rem;
+  min-height: var(--ui-card-label-min-height);
+  margin: 0;
+  padding: 0.45rem var(--ui-space-md);
+  border-radius: var(--ui-radius-sm);
+  background: var(--ui-color-primary);
+  color: var(--ui-color-surface);
+  font-size: var(--ui-font-size-body);
+  font-weight: 400;
+  line-height: var(--ui-line-height-tight);
+  text-align: center;
+}
+
+.life-plan-assumptions__frame {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--ui-space-xl);
+  padding: var(--ui-space-md) var(--ui-space-lg);
+  border: var(--ui-border-width-md) solid var(--ui-color-primary);
+  border-radius: var(--ui-radius-sm);
+  background: var(--ui-color-surface);
+  color: var(--ui-color-text);
+  font-size: var(--ui-font-size-small);
+  line-height: var(--ui-line-height-relaxed);
+}
+
+.life-plan-assumptions__column {
+  min-width: 0;
+}
+
+.life-plan-assumptions__column p,
+.life-plan-assumptions__list,
+.life-plan-assumptions__education {
+  margin: 0;
+}
+
+.life-plan-assumptions__list {
+  padding: 0;
+  list-style: none;
+}
+
+.life-plan-assumptions__column p + .life-plan-assumptions__list {
+  margin-top: var(--ui-space-md);
+}
+
+.life-plan-assumptions__education {
+  display: grid;
+  gap: 0;
+}
+
+.life-plan-assumptions__education div {
+  display: grid;
+  grid-template-columns: 8.5rem minmax(0, 1fr);
+  column-gap: var(--ui-space-xs);
+}
+
+.life-plan-assumptions__education dt {
+  font-weight: 400;
+}
+
+.life-plan-assumptions__education dd {
+  margin: 0;
+}
+
+.life-plan-assumptions__education div dd + dd {
+  grid-column: 2;
 }
 
 .life-plan-cash-flow {
@@ -850,6 +974,15 @@ body {
 
   .life-plan-actions .app-button {
     width: 100%;
+  }
+
+  .life-plan-assumptions__frame,
+  .life-plan-assumptions__education div {
+    grid-template-columns: 1fr;
+  }
+
+  .life-plan-assumptions__education div dd + dd {
+    grid-column: auto;
   }
 }
 

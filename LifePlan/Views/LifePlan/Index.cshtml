@@ -1,4 +1,5 @@
 @using Microsoft.AspNetCore.Mvc.Rendering
+@using System.Text.Json
 @model LifePlanViewModel
 
 @{
@@ -13,6 +14,7 @@
     var universityEducationOptions = new SelectList(Model.UniversityEducationOptions, "Value", "Text");
     var graduateSchoolEducationOptions = new SelectList(Model.GraduateSchoolEducationOptions, "Value", "Text");
     var hasResult = Model.Result is not null;
+    var chartJsonOptions = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
 }
 
 <section class="life-plan-page">
@@ -468,14 +470,57 @@
                         <p class="life-plan-result-frame__note">金額の単位は万円です。</p>
                     </div>
 
-                    <div class="life-plan-result-frame life-plan-result-frame--graph-placeholder" aria-labelledby="simulation-graph-title">
+                    <div class="life-plan-result-frame life-plan-result-frame--graph" aria-labelledby="simulation-graph-title">
                         <h2 id="simulation-graph-title" class="life-plan-result-frame__label">シミュレーショングラフ</h2>
-                        <p class="life-plan-result-frame__placeholder">Coming soon</p>
+
+                        <div class="life-plan-chart" data-life-plan-chart>
+                            <div class="life-plan-chart__canvas-wrap">
+                                <canvas class="life-plan-chart__canvas" data-life-plan-chart-canvas aria-label="収入、支出、貯蓄合計の年次推移グラフ" role="img">
+                                    グラフを表示できない環境です。キャッシュフロー表をご確認ください。
+                                </canvas>
+                            </div>
+
+                            <div class="life-plan-chart__legend" data-life-plan-chart-legend aria-label="グラフ凡例"></div>
+                            <p class="life-plan-result-frame__note">金額の単位は万円です。</p>
+                            <p class="life-plan-chart__fallback" data-life-plan-chart-fallback hidden>グラフを表示できない環境です。キャッシュフロー表をご確認ください。</p>
+                            <script id="life-plan-chart-data" type="application/json">@Html.Raw(JsonSerializer.Serialize(Model.Result.ChartPoints, chartJsonOptions))</script>
+                        </div>
                     </div>
 
                     <div class="life-plan-result__actions">
                         <button class="app-button app-button--outline life-plan-result__change-conditions" type="button" data-life-plan-next="family">条件を変えて<br />シミュレーション</button>
                     </div>
+
+                    <section class="life-plan-assumptions" aria-labelledby="life-plan-assumptions-title">
+                        <h2 id="life-plan-assumptions-title" class="life-plan-assumptions__label">前提条件</h2>
+
+                        <div class="life-plan-assumptions__frame">
+                            <div class="life-plan-assumptions__column">
+                                <p>※本ツールはあくまでシミュレーションです。</p>
+                                <ul class="life-plan-assumptions__list">
+                                    @foreach (var note in Model.Result.Assumptions.GeneralNotes)
+                                    {
+                                        <li>@note</li>
+                                    }
+                                </ul>
+                            </div>
+
+                            <div class="life-plan-assumptions__column">
+                                <dl class="life-plan-assumptions__education">
+                                    @foreach (var educationCost in Model.Result.Assumptions.EducationCosts)
+                                    {
+                                        <div>
+                                            <dt>@educationCost.Stage</dt>
+                                            @foreach (var costLine in educationCost.CostLines)
+                                            {
+                                                <dd>@costLine</dd>
+                                            }
+                                        </div>
+                                    }
+                                </dl>
+                            </div>
+                        </div>
+                    </section>
                 </section>
             }
         </div>
@@ -484,6 +529,10 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    @if (Model.Result is not null)
+    {
+        <script src="~/js/life-plan-chart.js" asp-append-version="true"></script>
+    }
     <script>
         (() => {
             const tabButtons = [...document.querySelectorAll('[data-life-plan-tab]')];

@@ -67,6 +67,28 @@ public class LifePlanPageMapperResultTests
         Assert.Equal("savings", Assert.Single(viewModel.CashFlowRows, row => row.Label == "開始時点金融資産").CategoryKey);
     }
 
+    [Fact]
+    public void ToResultViewModel_CreatesChartPointsInManYen()
+    {
+        var result = CreateCalculationResult(
+            CreateAnnualRow(
+                2026,
+                husbandIncome: new PersonAnnualIncome(1_200_000, 300_000, 0),
+                wifeIncome: new PersonAnnualIncome(800_000, 0, 200_000),
+                expenses: new AnnualExpense(600_000, 120_000, 80_000, 40_000, 30_000, 20_000, 10_000, 50_000, 70_000),
+                savingsBalanceWithoutReturnYen: 3_450_000,
+                savingsBalanceWithReturnYen: 3_678_900));
+
+        var viewModel = LifePlanPageMapper.ToResultViewModel(result);
+        var point = Assert.Single(viewModel.ChartPoints);
+
+        Assert.Equal(2026, point.Year);
+        Assert.Equal(250m, point.TotalIncomeManYen);
+        Assert.Equal(102m, point.TotalExpenseManYen);
+        Assert.Equal(345m, point.SavingsBalanceWithoutReturnManYen);
+        Assert.Equal(367.89m, point.SavingsBalanceWithReturnManYen);
+    }
+
     private static LifePlanCalculationResult CreateCalculationResult(params AnnualCashFlowRow[] rows)
     {
         return new LifePlanCalculationResult(rows[0].Year, rows[^1].Year, rows);
@@ -79,7 +101,9 @@ public class LifePlanPageMapperResultTests
         IReadOnlyList<int?>? childAges = null,
         PersonAnnualIncome? husbandIncome = null,
         PersonAnnualIncome? wifeIncome = null,
-        AnnualExpense? expenses = null)
+        AnnualExpense? expenses = null,
+        long savingsBalanceWithoutReturnYen = 0,
+        long savingsBalanceWithReturnYen = 0)
     {
         return new AnnualCashFlowRow(
             year,
@@ -90,7 +114,7 @@ public class LifePlanPageMapperResultTests
             wifeIncome ?? new PersonAnnualIncome(0, 0, 0),
             expenses ?? new AnnualExpense(0, 0, 0, 0, 0, 0, 0, 0, 0),
             0,
-            0,
-            0);
+            savingsBalanceWithoutReturnYen,
+            savingsBalanceWithReturnYen);
     }
 }
