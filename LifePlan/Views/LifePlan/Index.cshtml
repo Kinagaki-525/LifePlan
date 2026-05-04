@@ -12,6 +12,7 @@
     var highSchoolEducationOptions = new SelectList(Model.HighSchoolEducationOptions, "Value", "Text");
     var universityEducationOptions = new SelectList(Model.UniversityEducationOptions, "Value", "Text");
     var graduateSchoolEducationOptions = new SelectList(Model.GraduateSchoolEducationOptions, "Value", "Text");
+    var hasResult = Model.Result is not null;
 }
 
 <section class="life-plan-page">
@@ -19,26 +20,32 @@
         <h1 class="life-plan-page__title">ライフプランシミュレーター</h1>
     </div>
 
-    @if (Model.IsSubmitted)
-    {
-        <div class="life-plan-alert life-plan-alert--success" role="alert">
-            入力内容を受け付けました。計算結果の表示は後続PRで実装します。
-        </div>
-    }
-
     <form asp-action="Index" method="post" class="life-plan-form" novalidate>
         <div asp-validation-summary="All" class="life-plan-alert life-plan-alert--danger" role="alert"></div>
 
-        <nav class="life-plan-tabs" aria-label="ライフプラン入力ステップ" role="tablist">
-            <button id="family-tab" class="life-plan-tabs__item" type="button" role="tab" data-life-plan-tab="family" aria-controls="family-panel" aria-selected="true">家族構成</button>
-            <button id="life-event-tab" class="life-plan-tabs__item" type="button" role="tab" data-life-plan-tab="life-event" aria-controls="life-event-panel" aria-selected="false" tabindex="-1">ライフイベント</button>
-            <button id="income-tab" class="life-plan-tabs__item" type="button" role="tab" data-life-plan-tab="income" aria-controls="income-panel" aria-selected="false" tabindex="-1">収入</button>
-            <button id="savings-tab" class="life-plan-tabs__item" type="button" role="tab" data-life-plan-tab="savings" aria-controls="savings-panel" aria-selected="false" tabindex="-1">貯蓄</button>
-            <button id="expense-tab" class="life-plan-tabs__item" type="button" role="tab" data-life-plan-tab="expense" aria-controls="expense-panel" aria-selected="false" tabindex="-1">支出</button>
-        </nav>
+        @if (hasResult)
+        {
+            <nav class="life-plan-tabs life-plan-tabs--readonly" aria-label="ライフプラン入力ステップ" role="tablist">
+                <button id="family-tab" class="life-plan-tabs__item" type="button" role="tab" data-life-plan-tab="family" aria-controls="family-panel" aria-selected="false">家族構成</button>
+                <button id="life-event-tab" class="life-plan-tabs__item" type="button" role="tab" data-life-plan-tab="life-event" aria-controls="life-event-panel" aria-selected="false">ライフイベント</button>
+                <button id="income-tab" class="life-plan-tabs__item" type="button" role="tab" data-life-plan-tab="income" aria-controls="income-panel" aria-selected="false">収入</button>
+                <button id="savings-tab" class="life-plan-tabs__item" type="button" role="tab" data-life-plan-tab="savings" aria-controls="savings-panel" aria-selected="false">貯蓄</button>
+                <button id="expense-tab" class="life-plan-tabs__item" type="button" role="tab" data-life-plan-tab="expense" aria-controls="expense-panel" aria-selected="false">支出</button>
+            </nav>
+        }
+        else
+        {
+            <nav class="life-plan-tabs" aria-label="ライフプラン入力ステップ" role="tablist">
+                <button id="family-tab" class="life-plan-tabs__item" type="button" role="tab" data-life-plan-tab="family" aria-controls="family-panel" aria-selected="true">家族構成</button>
+                <button id="life-event-tab" class="life-plan-tabs__item" type="button" role="tab" data-life-plan-tab="life-event" aria-controls="life-event-panel" aria-selected="false" tabindex="-1">ライフイベント</button>
+                <button id="income-tab" class="life-plan-tabs__item" type="button" role="tab" data-life-plan-tab="income" aria-controls="income-panel" aria-selected="false" tabindex="-1">収入</button>
+                <button id="savings-tab" class="life-plan-tabs__item" type="button" role="tab" data-life-plan-tab="savings" aria-controls="savings-panel" aria-selected="false" tabindex="-1">貯蓄</button>
+                <button id="expense-tab" class="life-plan-tabs__item" type="button" role="tab" data-life-plan-tab="expense" aria-controls="expense-panel" aria-selected="false" tabindex="-1">支出</button>
+            </nav>
+        }
 
         <div class="life-plan-panel">
-            <section id="family-panel" data-life-plan-panel="family" role="tabpanel" aria-labelledby="family-tab">
+            <section id="family-panel" data-life-plan-panel="family" role="tabpanel" aria-labelledby="family-tab" hidden="@hasResult">
                 <h2 id="family-tab-title" class="visually-hidden">家族構成</h2>
 
                 <div class="life-plan-field-grid life-plan-field-grid--two">
@@ -422,6 +429,55 @@
 
                 @await Html.PartialAsync("_LifePlanActions", new LifePlanActionsViewModel())
             </section>
+
+            @if (Model.Result is not null)
+            {
+                <section class="life-plan-result" data-life-plan-result aria-labelledby="cash-flow-table-title">
+                    <div class="life-plan-result-frame">
+                        <h2 id="cash-flow-table-title" class="life-plan-result-frame__label">キャッシュフロー表</h2>
+
+                        <div class="life-plan-cash-flow" role="region" aria-label="キャッシュフロー表" tabindex="0">
+                            <table class="life-plan-cash-flow__table">
+                                <caption class="visually-hidden">年次キャッシュフロー表。金額の単位は万円です。</caption>
+                                <thead>
+                                    <tr>
+                                        <th scope="col">区分</th>
+                                        <th scope="col">項目</th>
+                                        @foreach (var year in Model.Result.YearHeaders)
+                                        {
+                                            <th scope="col">@year</th>
+                                        }
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var row in Model.Result.CashFlowRows)
+                                    {
+                                        <tr class="life-plan-cash-flow__row--@row.CategoryKey">
+                                            <th scope="row" class="life-plan-cash-flow__category">@row.Category</th>
+                                            <th scope="row" class="life-plan-cash-flow__label">@row.Label</th>
+                                            @foreach (var value in row.Values)
+                                            {
+                                                <td>@value</td>
+                                            }
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <p class="life-plan-result-frame__note">金額の単位は万円です。</p>
+                    </div>
+
+                    <div class="life-plan-result-frame life-plan-result-frame--graph-placeholder" aria-labelledby="simulation-graph-title">
+                        <h2 id="simulation-graph-title" class="life-plan-result-frame__label">シミュレーショングラフ</h2>
+                        <p class="life-plan-result-frame__placeholder">Coming soon</p>
+                    </div>
+
+                    <div class="life-plan-result__actions">
+                        <button class="app-button app-button--outline life-plan-result__change-conditions" type="button" data-life-plan-next="family">条件を変えて<br />シミュレーション</button>
+                    </div>
+                </section>
+            }
         </div>
     </form>
 </section>
@@ -432,8 +488,12 @@
         (() => {
             const tabButtons = [...document.querySelectorAll('[data-life-plan-tab]')];
             const panes = [...document.querySelectorAll('[data-life-plan-panel]')];
+            const resultPanel = document.querySelector('[data-life-plan-result]');
+            const tabList = document.querySelector('.life-plan-tabs');
 
             const activateTab = (tabName) => {
+                tabList?.classList.remove('life-plan-tabs--readonly');
+
                 tabButtons.forEach((button) => {
                     const isActive = button.dataset.lifePlanTab === tabName;
                     button.setAttribute('aria-selected', String(isActive));
@@ -444,6 +504,8 @@
                     const isActive = pane.dataset.lifePlanPanel === tabName;
                     pane.toggleAttribute('hidden', !isActive);
                 });
+
+                resultPanel?.setAttribute('hidden', '');
             };
 
             tabButtons.forEach((button) => {

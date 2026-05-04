@@ -5,7 +5,7 @@
     ViewData["OgTitle"] = "ふたりの家計 | カップル・夫婦向けライフプラン＆家計管理アプリ";
     ViewData["OgDescription"] = "婚約から子育てまで、ふたりのお金の不安を解消。ライフプランシミュレーション・FP相談など無料で使えます。";
     ViewData["OgType"] = "website";
-    ViewData["CanonicalUrl"] = "https://www.futari-kakei.com/";  @* ← 本番URLに変更 *@
+    ViewData["CanonicalUrl"] = "https://www.futari-kakei.com/";
 }
 
 @* 構造化データ (JSON-LD) *@
@@ -63,13 +63,9 @@
                     <article class="feature-card">
                         <h3 class="feature-card__title">ライフプランシミュレーション</h3>
                         <p class="feature-card__text">収入・支出・イベントを入力して将来を可視化</p>
-                        @* TODO: 公開時に削除 *@
-                        <span class="feature-card__coming" aria-label="準備中">Coming Soon...</span>
-                        @* 
                         <a class="app-button app-button--primary feature-card__button"
                            asp-controller="LifePlan" asp-action="Index"
                            aria-label="ライフプランシミュレーションを使ってみる">使ってみる</a>
-                        *@
                     </article>
                 </li>
                 <li>
