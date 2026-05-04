@@ -35,5 +35,7 @@ namespace LifePlan.ViewModels.LifePlan
         public IReadOnlyList<SelectOptionViewModel> GraduateSchoolEducationOptions { get; set; } = [];
 
         public IReadOnlyList<SelectOptionViewModel> OccupationOptions { get; set; } = [];
+
+        public IReadOnlyList<SelectOptionViewModel> AnnualIncomeChangeRateOptions { get; set; } = [];
     }
 }

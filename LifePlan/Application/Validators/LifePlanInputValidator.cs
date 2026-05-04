@@ -86,6 +86,13 @@ namespace LifePlan.Application.Validators
                     "LifeEvents.Housing.InterestRatePercent",
                     LifePlanValidationMessages.HousingInterestRateRange()));
             }
+
+            if (housing.InterestRatePercent.HasValue && !HasDecimalPlacesAtMost(housing.InterestRatePercent.Value, 1))
+            {
+                errors.Add(new LifePlanValidationError(
+                    "LifeEvents.Housing.InterestRatePercent",
+                    LifePlanValidationMessages.OneDecimalPlace("想定金利")));
+            }
         }
 
         private static void ValidateCar(List<LifePlanValidationError> errors, CarEventInputViewModel car)
@@ -248,11 +255,9 @@ namespace LifePlan.Application.Validators
             decimal? value,
             string label)
         {
-            if (value.HasValue && !RateRules.IsAnnualIncomeChangeRateInRange(value.Value))
+            if (value.HasValue && !RateRules.IsAnnualIncomeChangeRateDefined(value.Value))
             {
-                errors.Add(new LifePlanValidationError(
-                    key,
-                    LifePlanValidationMessages.AnnualIncomeChangeRateRange(label)));
+                errors.Add(new LifePlanValidationError(key, LifePlanValidationMessages.DefinedOption(label)));
             }
         }
 
@@ -279,7 +284,25 @@ namespace LifePlan.Application.Validators
             if (value.HasValue && value.Value < 0)
             {
                 errors.Add(new LifePlanValidationError(key, LifePlanValidationMessages.NonNegative(label)));
+                return;
             }
+
+            if (value.HasValue && decimal.Truncate(value.Value) != value.Value)
+            {
+                errors.Add(new LifePlanValidationError(key, LifePlanValidationMessages.HalfWidthInteger(label)));
+            }
+        }
+
+        private static bool HasDecimalPlacesAtMost(decimal value, int decimalPlaces)
+        {
+            var scale = 1m;
+
+            for (var index = 0; index < decimalPlaces; index++)
+            {
+                scale *= 10m;
+            }
+
+            return decimal.Truncate(value * scale) == value * scale;
         }
 
         private static void ValidatePositive(

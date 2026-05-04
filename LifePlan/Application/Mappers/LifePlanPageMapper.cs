@@ -61,6 +61,20 @@ namespace LifePlan.Application.Mappers
                 .ToList();
         }
 
+        public static IReadOnlyList<SelectOptionViewModel> CreateAnnualIncomeChangeRateOptions()
+        {
+            return
+            [
+                new SelectOptionViewModel(string.Empty, "-（なし）"),
+                new SelectOptionViewModel(
+                    RateRules.LargeAnnualIncomeChangeRatePercent.ToString("0"),
+                    $"大きい（年{RateRules.LargeAnnualIncomeChangeRatePercent:0}%増）"),
+                new SelectOptionViewModel(
+                    RateRules.SmallAnnualIncomeChangeRatePercent.ToString("0"),
+                    $"小さい（年{RateRules.SmallAnnualIncomeChangeRatePercent:0}%増）")
+            ];
+        }
+
         public static LifePlanData ToLifePlanData(LifePlanViewModel model)
         {
             return new LifePlanData

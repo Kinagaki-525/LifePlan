@@ -19,28 +19,19 @@ namespace LifePlan.Application.Factories
                     ["LifeEvents.Marriage.CostManYen"] = NonNegative("結婚費用"),
                     ["LifeEvents.Marriage.HusbandAge"] = OptionalAdultAge("結婚実施年齢"),
                     ["LifeEvents.Housing.PurchaseHusbandAge"] = OptionalAdultAge("住宅購入時期"),
+                    ["LifeEvents.Housing.InterestRatePercent"] = HousingInterestRate(),
                     ["LifeEvents.Car.PurchaseAmountManYen"] = NonNegative("自動車購入額"),
                     ["LifeEvents.Car.FirstPurchaseHusbandAge"] = OptionalAdultAge("自動車の初回購入年齢"),
                     ["LifeEvents.TravelOther.AnnualCostManYen"] = NonNegative("旅行・その他の年間費用"),
                     ["LifeEvents.TravelOther.StartHusbandAge"] = OptionalAdultAge("旅行・その他の開始年齢"),
                     ["LifeEvents.TravelOther.EndHusbandAge"] = OptionalAdultAge("旅行・その他の終了年齢"),
                     ["IncomeExpense.HusbandIncome.AnnualIncomeManYen"] = NonNegative("夫の年収"),
-                    ["IncomeExpense.HusbandIncome.AnnualIncomeChangeRatePercent"] = RateRange(
-                        "夫の年収の変化",
-                        RateRules.MinAnnualIncomeChangeRatePercent,
-                        RateRules.MaxAnnualIncomeChangeRatePercent,
-                        LifePlanValidationMessages.AnnualIncomeChangeRateRange("夫の年収の変化")),
                     ["IncomeExpense.HusbandIncome.WorkStartAge"] = OptionalAdultAge("夫の就労開始年齢"),
                     ["IncomeExpense.HusbandIncome.WorkEndAge"] = OptionalAdultAge("夫の就労終了年齢"),
                     ["IncomeExpense.HusbandIncome.RetirementAllowanceManYen"] = NonNegative("夫の退職金"),
                     ["IncomeExpense.HusbandIncome.AnnualPensionManYen"] = NonNegative("夫の年金年額"),
                     ["IncomeExpense.HusbandIncome.PensionStartAge"] = OptionalAdultAge("夫の年金受取開始年齢"),
                     ["IncomeExpense.WifeIncome.AnnualIncomeManYen"] = NonNegative("妻の年収"),
-                    ["IncomeExpense.WifeIncome.AnnualIncomeChangeRatePercent"] = RateRange(
-                        "妻の年収の変化",
-                        RateRules.MinAnnualIncomeChangeRatePercent,
-                        RateRules.MaxAnnualIncomeChangeRatePercent,
-                        LifePlanValidationMessages.AnnualIncomeChangeRateRange("妻の年収の変化")),
                     ["IncomeExpense.WifeIncome.WorkStartAge"] = OptionalAdultAge("妻の就労開始年齢"),
                     ["IncomeExpense.WifeIncome.WorkEndAge"] = OptionalAdultAge("妻の就労終了年齢"),
                     ["IncomeExpense.WifeIncome.RetirementAllowanceManYen"] = NonNegative("妻の退職金"),
@@ -71,7 +62,11 @@ namespace LifePlan.Application.Factories
             var messages = rule.Messages.ToDictionary(pair => pair.Key, pair => pair.Value);
 
             attributes["required"] = "required";
+            attributes["maxlength"] = "3";
+            attributes["data-rule-digits"] = "true";
+            attributes["data-life-plan-half-width-integer"] = "true";
             messages["required"] = LifePlanValidationMessages.Required(label);
+            messages["digits"] = LifePlanValidationMessages.HalfWidthInteger(label);
 
             return CreateRule(attributes, messages);
         }
@@ -88,6 +83,22 @@ namespace LifePlan.Application.Factories
         private static LifePlanClientValidationRuleViewModel NonNegative(string label)
         {
             return MinRate(label, LifePlanValidationMessages.NonNegative(label));
+        }
+
+        private static LifePlanClientValidationRuleViewModel HousingInterestRate()
+        {
+            return CreateRule(
+                new Dictionary<string, string>
+                {
+                    ["min"] = RateRules.MinRatePercent.ToString("0", CultureInfo.InvariantCulture),
+                    ["step"] = "0.1"
+                },
+                new Dictionary<string, string>
+                {
+                    ["min"] = LifePlanValidationMessages.HousingInterestRateRange(),
+                    ["number"] = LifePlanValidationMessages.ValueMustBeANumber("想定金利"),
+                    ["step"] = LifePlanValidationMessages.OneDecimalPlace("想定金利")
+                });
         }
 
         private static LifePlanClientValidationRuleViewModel MinRate(string label, string message)
