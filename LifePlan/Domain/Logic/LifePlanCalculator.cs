@@ -15,17 +15,43 @@ namespace LifePlan.Domain.Logic
             var yearsUntilHusbandTurns100 = SimulationEndAge - input.Family.HusbandAge;
             var yearsUntilWifeTurns100 = SimulationEndAge - input.Family.WifeAge;
             var simulationYears = Math.Max(yearsUntilHusbandTurns100, yearsUntilWifeTurns100);
-            var annualRows = Enumerable.Range(0, simulationYears + 1)
-                .Select(yearOffset => CreateAnnualRow(input, currentYear, yearOffset))
-                .ToList();
+            var annualRows = CreateAnnualRows(input, currentYear, simulationYears);
 
             return new LifePlanCalculationResult(currentYear, currentYear + simulationYears, annualRows);
+        }
+
+        private static List<AnnualCashFlowRow> CreateAnnualRows(
+            LifePlanData input,
+            int currentYear,
+            int simulationYears)
+        {
+            var annualRows = new List<AnnualCashFlowRow>();
+            var startingAssetsYen = input.Assets.CurrentFinancialAssetsYen.GetValueOrDefault();
+            var previousBalanceWithReturnYen = startingAssetsYen;
+
+            for (var yearOffset = 0; yearOffset <= simulationYears; yearOffset++)
+            {
+                var row = CreateAnnualRow(
+                    input,
+                    currentYear,
+                    yearOffset,
+                    startingAssetsYen,
+                    previousBalanceWithReturnYen);
+
+                annualRows.Add(row);
+                startingAssetsYen = row.SavingsBalanceWithoutReturnYen;
+                previousBalanceWithReturnYen = row.SavingsBalanceWithReturnYen;
+            }
+
+            return annualRows;
         }
 
         private static AnnualCashFlowRow CreateAnnualRow(
             LifePlanData input,
             int currentYear,
-            int yearOffset)
+            int yearOffset,
+            long startingAssetsYen,
+            long previousBalanceWithReturnYen)
         {
             var husbandAge = CalculateAdultAge(input.Family.HusbandAge, yearOffset);
             var wifeAge = CalculateAdultAge(input.Family.WifeAge, yearOffset);
@@ -49,7 +75,41 @@ namespace LifePlan.Domain.Logic
                 childAges,
                 husbandIncome,
                 wifeIncome,
-                expenses);
+                expenses,
+                startingAssetsYen,
+                CalculateBalanceWithoutReturn(startingAssetsYen, husbandIncome, wifeIncome, expenses),
+                CalculateBalanceWithReturn(input, previousBalanceWithReturnYen, husbandIncome, wifeIncome, expenses));
+        }
+
+        private static long CalculateBalanceWithoutReturn(
+            long startingAssetsYen,
+            PersonAnnualIncome husbandIncome,
+            PersonAnnualIncome wifeIncome,
+            AnnualExpense expenses)
+        {
+            return startingAssetsYen + CalculateAnnualBalance(husbandIncome, wifeIncome, expenses);
+        }
+
+        private static long CalculateBalanceWithReturn(
+            LifePlanData input,
+            long previousBalanceWithReturnYen,
+            PersonAnnualIncome husbandIncome,
+            PersonAnnualIncome wifeIncome,
+            AnnualExpense expenses)
+        {
+            var assetsAfterReturnYen = ApplyAnnualReturn(
+                previousBalanceWithReturnYen,
+                input.Assets.ExpectedAnnualReturnRatePercent.GetValueOrDefault());
+
+            return assetsAfterReturnYen + CalculateAnnualBalance(husbandIncome, wifeIncome, expenses);
+        }
+
+        private static long CalculateAnnualBalance(
+            PersonAnnualIncome husbandIncome,
+            PersonAnnualIncome wifeIncome,
+            AnnualExpense expenses)
+        {
+            return husbandIncome.TotalIncomeYen + wifeIncome.TotalIncomeYen - expenses.TotalExpenseYen;
         }
 
         private static int? CalculateAdultAge(int initialAge, int yearOffset)
@@ -350,6 +410,11 @@ namespace LifePlan.Domain.Logic
             }
 
             return amountYen;
+        }
+
+        private static long ApplyAnnualReturn(long balanceYen, decimal annualReturnRatePercent)
+        {
+            return RoundToYen(balanceYen * (1m + annualReturnRatePercent / 100m));
         }
 
         private static long RoundToYen(decimal amountYen)
