@@ -114,7 +114,9 @@ namespace LifePlan.Application.Mappers
             return new LifePlanResultViewModel
             {
                 YearHeaders = rows.Select(row => row.Year.ToString()).ToList(),
-                CashFlowRows = cashFlowRows
+                CashFlowRows = cashFlowRows,
+                ChartPoints = rows.Select(ToChartPointViewModel).ToList(),
+                Assumptions = LifePlanAssumptionMapper.CreateAssumptions()
             };
         }
 
@@ -229,7 +231,24 @@ namespace LifePlan.Application.Mappers
 
         private static string ToManYenText(long yen)
         {
-            return (yen / 10000m).ToString("0.0");
+            return ToManYen(yen).ToString("0.0");
+        }
+
+        private static decimal ToManYen(long yen)
+        {
+            return yen / 10000m;
+        }
+
+        private static LifePlanChartPointViewModel ToChartPointViewModel(AnnualCashFlowRow row)
+        {
+            return new LifePlanChartPointViewModel
+            {
+                Year = row.Year,
+                TotalIncomeManYen = ToManYen(row.TotalIncomeYen),
+                TotalExpenseManYen = ToManYen(row.TotalExpenseYen),
+                SavingsBalanceWithoutReturnManYen = ToManYen(row.SavingsBalanceWithoutReturnYen),
+                SavingsBalanceWithReturnManYen = ToManYen(row.SavingsBalanceWithReturnYen)
+            };
         }
 
         private static PersonIncomeData ToPersonIncomeData(PersonIncomeInputViewModel input)
