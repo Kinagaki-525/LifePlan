@@ -1,3 +1,4 @@
+using LifePlan.Application.Factories;
 using LifePlan.Application.Interfaces;
 using LifePlan.Application.Mappers;
 using LifePlan.Application.Normalizers;
@@ -52,6 +53,7 @@ namespace LifePlan.Application.Services
 
             page.Family.Children = MergeChildInputs(page.Family.Children);
             page.LifeEvents.EducationPlans = MergeEducationPlans(page.LifeEvents.EducationPlans);
+            page.ClientValidation = LifePlanClientValidationRuleFactory.Create();
 
             PopulateSelectOptions(page);
 
