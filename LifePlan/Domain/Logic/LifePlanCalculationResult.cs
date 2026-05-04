@@ -12,11 +12,16 @@ namespace LifePlan.Domain.Logic
         IReadOnlyList<int?> ChildAges,
         PersonAnnualIncome HusbandIncome,
         PersonAnnualIncome WifeIncome,
-        AnnualExpense Expenses)
+        AnnualExpense Expenses,
+        long StartingAssetsYen,
+        long SavingsBalanceWithoutReturnYen,
+        long SavingsBalanceWithReturnYen)
     {
         public long TotalIncomeYen => HusbandIncome.TotalIncomeYen + WifeIncome.TotalIncomeYen;
 
         public long TotalExpenseYen => Expenses.TotalExpenseYen;
+
+        public long AnnualBalanceYen => TotalIncomeYen - TotalExpenseYen;
     }
 
     public record PersonAnnualIncome(
