@@ -1,10 +1,11 @@
 using LifePlan.Application.Interfaces;
 using LifePlan.Application.Services;
+using LifePlan.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews(options => options.ConfigureLifePlanModelBindingMessages());
 builder.Services.AddScoped<ILifePlanPageService, LifePlanPageService>();
 
 var app = builder.Build();

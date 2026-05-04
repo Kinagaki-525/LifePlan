@@ -32,6 +32,7 @@ MyApp
 ├─ Infrastructure
 │  ├─ Data
 │  └─ Repositories
+├─ Extensions
 └─ Program.cs
 ```
 
@@ -189,6 +190,13 @@ MyApp
 - `Infrastructure/Data` を使って取得・保存処理を実装する
 - Controller や View から直接参照させない
 
+### Extensions
+
+- ASP.NET Core MVC や DI など、起動時設定を読みやすく分離するための拡張メソッドを置く
+- `Program.cs` にはアプリ起動構成の流れを残し、詳細なオプション設定は必要に応じて `Extensions` へ切り出す
+- 業務ロジック、入力検証条件、画面フロー制御は持たない
+- 既存レイヤーの責務を置き換える場所ではなく、フレームワーク設定の集約に限定する
+
 ## Dependency Direction
 
 - `Controllers` は `Application` を呼ぶ
@@ -198,6 +206,8 @@ MyApp
 - `Views` は `ViewModels` を使う
 - `Controllers` から `Infrastructure` を直接参照しない
 - `Views` に `Domain/Entities` を直接渡さない
+- `Program.cs` は起動時設定として `Extensions` を呼び出してよい
+- `Extensions` は設定に必要な範囲で `Application` の定数・メッセージ定義などを参照してよいが、Application Service や Domain の処理を実行しない
 
 ## DTO and Mapper Policy
 
