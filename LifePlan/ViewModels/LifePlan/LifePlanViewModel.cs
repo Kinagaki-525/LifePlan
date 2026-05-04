@@ -14,6 +14,8 @@ namespace LifePlan.ViewModels.LifePlan
 
         public bool IsSubmitted { get; set; }
 
+        public LifePlanClientValidationViewModel ClientValidation { get; set; } = new();
+
         public IReadOnlyList<SelectOptionViewModel> ChildAgeOptions { get; set; } = [];
 
         public IReadOnlyList<SelectOptionViewModel> EducationOptions { get; set; } = [];

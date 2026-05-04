@@ -20,6 +20,7 @@ MyApp
 ├─ Application
 │  ├─ Services
 │  ├─ Interfaces
+│  ├─ Factories
 │  ├─ Validators
 │  ├─ Normalizers
 │  └─ Results
@@ -122,6 +123,15 @@ MyApp
 - 実装詳細ではなく、アプリケーションから見た必要契約を表現する
 - Service interface 名は実装クラス名に `I` を付けた名前を基本とする（例：`ILifePlanPageService` / `LifePlanPageService`）
 
+### Application/Factories
+
+- ViewModel、画面用設定、クライアント検証メタデータなど、Application 層が画面や処理へ渡すオブジェクトの組み立てを置く
+- Factory は入力値の検証、業務判定、画面フロー制御そのものを行わない
+- Service は Factory を呼び出して結果を利用するだけに留め、細かい生成手順を抱え込まない
+- View や Controller に複雑な生成処理を直接書かず、責務が大きくなる場合は Factory への切り出しを検討する
+- クライアント検証メタデータを生成する Factory は、エラーメッセージ文言を直接持たず、`LifePlanValidationMessages` から取得する
+- DOM 操作や JavaScript 実行など、ブラウザ側の処理は持たない
+
 ### Application/Validators
 
 - ViewModel など Application 層が受け取った入力値のサーバー側検証を置く
@@ -129,6 +139,14 @@ MyApp
 - Domain/Rules や Domain/ReferenceData を参照して、仕様上の入力制約を確認する
 - 検証結果は Controller が `ModelState` へ反映できるキーとメッセージで返す
 - 画面フロー制御や Domain Entity への変換は持たない
+
+### Validation Messages
+
+- 入力バリデーションのエラーメッセージは `LifePlanValidationMessages` を正本とする
+- サーバー側 Validator、MVC モデルバインドメッセージ、クライアント検証メタデータは、可能な限り `LifePlanValidationMessages` から生成する
+- View や `wwwroot/js` にエラーメッセージ文言を直接書かない
+- クライアント側検証は UX 改善のための補助とし、最終的な正しさはサーバー側 Validator で担保する
+- クライアント側に実装しづらい条件付き検証・複数項目間検証は、サーバー側 Validator を正とし、異なる条件で無理に再実装しない
 
 ### Application/Normalizers
 
@@ -232,6 +250,17 @@ MyApp
 - 既存 UI に沿った軽微なスタイル調整を優先する
 - 不要に複雑なセレクタや過剰な詳細度は避ける
 - デザイン変更は既存レイアウトとの整合性を保つ
+
+## wwwroot/js
+
+- JavaScript はブラウザ上の振る舞いを担当する
+- タブ切り替え、表示状態の変更、クライアント検証メタデータの DOM 反映など、画面上の操作に限定する
+- 業務ルール、入力検証の正本、エラーメッセージ文言を JavaScript に直接持たせない
+- サーバー側で生成された設定やメッセージを使う場合は、Razor が JSON として出力し、JavaScript はそれを読み取って反映する
+- JavaScript に渡す情報は、ユーザーに見えてよい表示用・入力補助用の情報に限定する
+- クライアント側の検証結果や状態を信頼せず、重要な検証・認可・計算は必ずサーバー側で行う
+- JavaScript から Domain / Application の責務を再実装しない
+- ページ固有の処理は機能名が分かるファイルへ分離し、共通化できる処理だけ `site.js` へ寄せる
 
 ## Avoid
 
