@@ -10,6 +10,8 @@ namespace LifePlan.ViewModels.LifePlan
 
         public IncomeExpenseInputViewModel IncomeExpense { get; set; } = new();
 
+        public LifePlanResultViewModel? Result { get; set; }
+
         public bool IsSubmitted { get; set; }
 
         public IReadOnlyList<SelectOptionViewModel> ChildAgeOptions { get; set; } = [];

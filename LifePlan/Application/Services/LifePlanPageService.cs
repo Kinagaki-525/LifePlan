@@ -35,6 +35,7 @@ namespace LifePlan.Application.Services
             var data = normalizedInput is null ? null : LifePlanPageMapper.ToLifePlanData(normalizedInput);
             var calculationResult = data is null ? null : new LifePlanCalculator().Calculate(data, DateTime.Today.Year);
             page.IsSubmitted = isValid;
+            page.Result = calculationResult is null ? null : LifePlanPageMapper.ToResultViewModel(calculationResult);
 
             return new LifePlanSubmitResult
             {
