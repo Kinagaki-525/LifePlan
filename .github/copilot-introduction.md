@@ -52,6 +52,18 @@ MyApp
 - 変更後は可能ならビルド確認を行う
 - 実装だけでなく、責務の分離や依存方向が妥当かも確認する
 
+## Testing
+
+- テストプロジェクトは `LifePlan.Tests` を使用する
+- テストフレームワークは xUnit を使用する
+- テストファイルは、本体コードの名前空間・フォルダ構成に対応させて配置する
+  - 例: `LifePlan/Domain/Logic/LifePlanCalculator.cs` のテストは `LifePlan.Tests/Domain/Logic/` に置く
+- 計算ロジックや `Domain/Rules` を変更する場合は、原則として単体テストを追加・更新する
+- 初期方針では `Domain/Logic` の純粋な計算ロジックを主なテスト対象とする
+- Application Service、Validator、Normalizer は、分岐や画面フローへの影響が増える場合にテスト追加を検討する
+- UI、Controller のテストは、必要な検証観点が明確になった時点で別途方針化する
+- 通常確認は `dotnet build LifePlan.sln -m:1` と `dotnet test LifePlan.sln -m:1` を基本にする
+
 ## Document Priority
 
 - 実装方針に迷った場合は、`docs/implementation-plan.md` より `.github/copilot-introduction.md` の責務分離・依存方向ルールを優先する
