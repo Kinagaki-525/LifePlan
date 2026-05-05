@@ -57,7 +57,11 @@ namespace LifePlan.Application.Factories
             var messages = rule.Messages.ToDictionary(pair => pair.Key, pair => pair.Value);
 
             attributes["required"] = "required";
+            attributes["maxlength"] = "3";
+            attributes["data-rule-digits"] = "true";
+            attributes["data-life-plan-half-width-integer"] = "true";
             messages["required"] = LifePlanValidationMessages.Required(label);
+            messages["digits"] = LifePlanValidationMessages.HalfWidthInteger(label);
 
             return CreateRule(attributes, messages);
         }

@@ -93,6 +93,13 @@ namespace LifePlan.Application.Validators
                     "LifeEvents.Housing.InterestRatePercent",
                     LifePlanValidationMessages.OneDecimalPlace("想定金利")));
             }
+
+            if (housing.InterestRatePercent.HasValue && !HasDecimalPlacesAtMost(housing.InterestRatePercent.Value, 1))
+            {
+                errors.Add(new LifePlanValidationError(
+                    "LifeEvents.Housing.InterestRatePercent",
+                    LifePlanValidationMessages.OneDecimalPlace("想定金利")));
+            }
         }
 
         private static void ValidateCar(List<LifePlanValidationError> errors, CarEventInputViewModel car)
@@ -258,6 +265,7 @@ namespace LifePlan.Application.Validators
             if (value.HasValue && !ContainsRate(RateOptionCatalog.AnnualIncomeChangeRates, value.Value))
             {
                 errors.Add(new LifePlanValidationError(key, LifePlanValidationMessages.DefinedOption(label)));
+                errors.Add(new LifePlanValidationError(key, LifePlanValidationMessages.DefinedOption(label)));
             }
         }
 
@@ -290,7 +298,25 @@ namespace LifePlan.Application.Validators
             {
                 errors.Add(new LifePlanValidationError(key, LifePlanValidationMessages.NonNegative(label)));
                 return;
+                return;
             }
+
+            if (value.HasValue && decimal.Truncate(value.Value) != value.Value)
+            {
+                errors.Add(new LifePlanValidationError(key, LifePlanValidationMessages.HalfWidthInteger(label)));
+            }
+        }
+
+        private static bool HasDecimalPlacesAtMost(decimal value, int decimalPlaces)
+        {
+            var scale = 1m;
+
+            for (var index = 0; index < decimalPlaces; index++)
+            {
+                scale *= 10m;
+            }
+
+            return decimal.Truncate(value * scale) == value * scale;
 
             if (value.HasValue && decimal.Truncate(value.Value) != value.Value)
             {
