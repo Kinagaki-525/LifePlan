@@ -44,11 +44,6 @@ namespace LifePlan.Application.Factories
                         RateRules.MaxExpectedAnnualReturnRatePercent,
                         LifePlanValidationMessages.ExpectedAnnualReturnRateRange()),
                     ["IncomeExpense.Expenses.MonthlyBasicLivingCostManYen"] = NonNegative("毎月の基本生活費"),
-                    ["IncomeExpense.Expenses.InflationRatePercent"] = RateRange(
-                        "想定インフレ率",
-                        RateRules.MinRatePercent,
-                        RateRules.MaxInflationRatePercent,
-                        LifePlanValidationMessages.InflationRateRange()),
                     ["IncomeExpense.Expenses.MonthlyRentManYen"] = NonNegative("毎月の家賃"),
                     ["IncomeExpense.Expenses.OtherAnnualCostManYen"] = NonNegative("その他支出")
                 }

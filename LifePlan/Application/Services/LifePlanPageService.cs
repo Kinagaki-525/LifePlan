@@ -87,7 +87,8 @@ namespace LifePlan.Application.Services
             page.UniversityEducationOptions = LifePlanPageMapper.ToEducationOptionsByStage(EducationCostMaster.Entries, "大学");
             page.GraduateSchoolEducationOptions = LifePlanPageMapper.ToEducationOptionsByStage(EducationCostMaster.Entries, "大学院");
             page.OccupationOptions = LifePlanPageMapper.ToOccupationOptions(OccupationReferenceData.All);
-            page.AnnualIncomeChangeRateOptions = LifePlanPageMapper.CreateAnnualIncomeChangeRateOptions();
+            page.AnnualIncomeChangeRateOptions = LifePlanRateSelectOptionFactory.CreateAnnualIncomeChangeRateOptions();
+            page.InflationRateOptions = LifePlanRateSelectOptionFactory.CreateInflationRateOptions();
         }
 
         private static List<ChildInputViewModel> MergeChildInputs(List<ChildInputViewModel>? postedChildren)
