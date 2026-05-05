@@ -170,11 +170,11 @@ namespace LifePlan.Application.Validators
             ValidateNonNegative(errors, "IncomeExpense.Expenses.OtherAnnualCostManYen", expenses.OtherAnnualCostManYen, "その他支出");
 
             if (expenses.InflationRatePercent.HasValue &&
-                !RateRules.IsInflationRateInRange(expenses.InflationRatePercent.Value))
+                !ContainsRate(RateOptionCatalog.InflationRates, expenses.InflationRatePercent.Value))
             {
                 errors.Add(new LifePlanValidationError(
                     "IncomeExpense.Expenses.InflationRatePercent",
-                    LifePlanValidationMessages.InflationRateRange()));
+                    LifePlanValidationMessages.DefinedOption("想定インフレ率")));
             }
         }
 
@@ -255,10 +255,15 @@ namespace LifePlan.Application.Validators
             decimal? value,
             string label)
         {
-            if (value.HasValue && !RateRules.IsAnnualIncomeChangeRateDefined(value.Value))
+            if (value.HasValue && !ContainsRate(RateOptionCatalog.AnnualIncomeChangeRates, value.Value))
             {
                 errors.Add(new LifePlanValidationError(key, LifePlanValidationMessages.DefinedOption(label)));
             }
+        }
+
+        private static bool ContainsRate(IReadOnlyList<RateOptionEntry> options, decimal value)
+        {
+            return options.Any(option => option.RatePercent == value);
         }
 
         private static void ValidateOptionalAdultAge(

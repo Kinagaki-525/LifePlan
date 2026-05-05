@@ -44,11 +44,6 @@ namespace LifePlan.Application.Factories
                         RateRules.MaxExpectedAnnualReturnRatePercent,
                         LifePlanValidationMessages.ExpectedAnnualReturnRateRange()),
                     ["IncomeExpense.Expenses.MonthlyBasicLivingCostManYen"] = NonNegative("毎月の基本生活費"),
-                    ["IncomeExpense.Expenses.InflationRatePercent"] = RateRange(
-                        "想定インフレ率",
-                        RateRules.MinRatePercent,
-                        RateRules.MaxInflationRatePercent,
-                        LifePlanValidationMessages.InflationRateRange()),
                     ["IncomeExpense.Expenses.MonthlyRentManYen"] = NonNegative("毎月の家賃"),
                     ["IncomeExpense.Expenses.OtherAnnualCostManYen"] = NonNegative("その他支出")
                 }
@@ -62,11 +57,7 @@ namespace LifePlan.Application.Factories
             var messages = rule.Messages.ToDictionary(pair => pair.Key, pair => pair.Value);
 
             attributes["required"] = "required";
-            attributes["maxlength"] = "3";
-            attributes["data-rule-digits"] = "true";
-            attributes["data-life-plan-half-width-integer"] = "true";
             messages["required"] = LifePlanValidationMessages.Required(label);
-            messages["digits"] = LifePlanValidationMessages.HalfWidthInteger(label);
 
             return CreateRule(attributes, messages);
         }

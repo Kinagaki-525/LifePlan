@@ -14,6 +14,7 @@
     var universityEducationOptions = new SelectList(Model.UniversityEducationOptions, "Value", "Text");
     var graduateSchoolEducationOptions = new SelectList(Model.GraduateSchoolEducationOptions, "Value", "Text");
     var annualIncomeChangeRateOptions = new SelectList(Model.AnnualIncomeChangeRateOptions, "Value", "Text");
+    var inflationRateOptions = new SelectList(Model.InflationRateOptions, "Value", "Text");
     var hasResult = Model.Result is not null;
     var chartJsonOptions = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
 }
@@ -411,7 +412,7 @@
                         </div>
                         <div class="life-plan-field-row">
                             <label asp-for="IncomeExpense.Expenses.InflationRatePercent" class="life-plan-field-row__label">想定インフレ率</label>
-                            <input asp-for="IncomeExpense.Expenses.InflationRatePercent" class="form-control life-plan-control" type="number" min="0" max="5" step="0.1" />
+                            <select asp-for="IncomeExpense.Expenses.InflationRatePercent" asp-items="inflationRateOptions" class="form-select life-plan-control"></select>
                             <span class="life-plan-help">※毎月の基本支出のインフレ率を加味する場合は選択してください</span>
                             <span asp-validation-for="IncomeExpense.Expenses.InflationRatePercent" class="life-plan-validation"></span>
                         </div>

@@ -49,11 +49,6 @@ namespace LifePlan.Application.Validators
             return $"{label}は小数第1位までで入力してください。";
         }
 
-        public static string InflationRateRange()
-        {
-            return $"想定インフレ率は{RateRules.MinRatePercent}〜{RateRules.MaxInflationRatePercent}%で入力してください。";
-        }
-
         public static string DefinedOption(string label)
         {
             return $"{label}は定義済みの選択肢から選んでください。";

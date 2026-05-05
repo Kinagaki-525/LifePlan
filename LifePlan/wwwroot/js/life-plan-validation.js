@@ -8,7 +8,6 @@
 
         if (window.jQuery?.validator && config.numberMessage) {
             window.jQuery.validator.messages.number = config.numberMessage;
-            window.jQuery.validator.messages.step = '小数第1位までで入力してください。';
         }
 
         Object.entries(config.rules ?? {}).forEach(([fieldName, rule]) => {

@@ -12,12 +12,12 @@ public class LifePlanCalculatorExpenseTests
     {
         var input = CreateInput();
         input.IncomeExpense.Expenses.MonthlyBasicLivingCostYen = 100_000;
-        input.IncomeExpense.Expenses.InflationRatePercent = 5m;
+        input.IncomeExpense.Expenses.InflationRatePercent = 2m;
 
         var result = Calculate(input);
 
         Assert.Equal(1_200_000, result.AnnualRows[0].Expenses.BasicLivingCostYen);
-        Assert.Equal(1_260_000, result.AnnualRows[1].Expenses.BasicLivingCostYen);
+        Assert.Equal(1_224_000, result.AnnualRows[1].Expenses.BasicLivingCostYen);
     }
 
     [Fact]
