@@ -442,6 +442,23 @@ body {
   box-shadow: var(--ui-control-focus-shadow);
 }
 
+.life-plan-child-field--disabled .life-plan-field-row__label,
+.life-plan-child-field--disabled .life-plan-unit {
+  color: var(--ui-color-muted);
+}
+
+.life-plan-education-row--disabled {
+  color: var(--ui-color-muted);
+}
+
+.life-plan-child-field--disabled .life-plan-control,
+.life-plan-education-row--disabled .life-plan-control {
+  background-color: var(--ui-color-border);
+  color: var(--ui-color-muted);
+  cursor: not-allowed;
+  opacity: 1;
+}
+
 .life-plan-control-with-unit {
   display: inline-flex;
   align-items: center;
