@@ -11,6 +11,7 @@
     const canvas = root?.querySelector('[data-life-plan-chart-canvas]');
     const fallback = root?.querySelector('[data-life-plan-chart-fallback]');
     const legend = root?.querySelector('[data-life-plan-chart-legend]');
+    const seriesOptions = root?.querySelector('[data-life-plan-chart-series-options]');
     const data = readChartData();
 
     if (!root || !canvas || data.length === 0) {
@@ -25,9 +26,28 @@
       return;
     }
 
-    renderLegend(legend);
+    const seriesControls = renderSeriesControls(seriesOptions);
 
-    const redraw = () => drawChart(canvas, context, data);
+    const getVisibleSeries = () => {
+      if (seriesControls.length === 0) {
+        return seriesDefinitions;
+      }
+
+      return seriesControls
+        .filter((control) => control.input.checked)
+        .map((control) => control.series);
+    };
+
+    const redraw = () => {
+      const visibleSeries = getVisibleSeries();
+      renderLegend(legend, visibleSeries);
+      drawChart(canvas, context, data, visibleSeries);
+    };
+
+    seriesControls.forEach((control) => {
+      control.input.addEventListener('change', redraw);
+    });
+
     redraw();
 
     if ('ResizeObserver' in window) {
@@ -59,12 +79,40 @@
     fallback?.removeAttribute('hidden');
   };
 
-  const renderLegend = (legend) => {
+  const renderSeriesControls = (seriesOptions) => {
+    if (!seriesOptions) {
+      return [];
+    }
+
+    const controls = seriesDefinitions.map((series) => {
+      const option = document.createElement('label');
+      option.className = 'life-plan-chart__series-option';
+
+      const input = document.createElement('input');
+      input.className = 'form-check-input';
+      input.type = 'checkbox';
+      input.value = series.key;
+      input.checked = true;
+
+      const label = document.createElement('span');
+      label.textContent = series.label;
+
+      option.append(input, label);
+
+      return { series, option, input };
+    });
+
+    seriesOptions.replaceChildren(...controls.map((control) => control.option));
+
+    return controls;
+  };
+
+  const renderLegend = (legend, visibleSeries) => {
     if (!legend) {
       return;
     }
 
-    legend.replaceChildren(...seriesDefinitions.map((series) => {
+    legend.replaceChildren(...visibleSeries.map((series) => {
       const item = document.createElement('span');
       item.className = 'life-plan-chart__legend-item';
 
@@ -81,7 +129,7 @@
     }));
   };
 
-  const drawChart = (canvas, context, data) => {
+  const drawChart = (canvas, context, data, visibleSeries) => {
     const parent = canvas.parentElement;
     const width = Math.floor(parent.clientWidth);
     const height = Math.floor(canvas.clientHeight || 360);
@@ -97,11 +145,11 @@
     context.clearRect(0, 0, width, height);
 
     const plotArea = createPlotArea(width, height);
-    const scale = createScale(data);
+    const scale = createScale(data, visibleSeries);
 
     drawGrid(context, plotArea, scale);
     drawAxes(context, plotArea, scale);
-    drawSeries(context, data, plotArea, scale);
+    drawSeries(context, data, plotArea, scale, visibleSeries);
   };
 
   const createPlotArea = (width, height) => ({
@@ -113,11 +161,11 @@
     height
   });
 
-  const createScale = (data) => {
+  const createScale = (data, visibleSeries) => {
     const values = [0];
 
     data.forEach((point) => {
-      seriesDefinitions.forEach((series) => {
+      visibleSeries.forEach((series) => {
         values.push(toNumber(point[series.key]));
       });
     });
@@ -189,10 +237,10 @@
     context.restore();
   };
 
-  const drawSeries = (context, data, plotArea, scale) => {
+  const drawSeries = (context, data, plotArea, scale, visibleSeries) => {
     drawYearLabels(context, data, plotArea);
 
-    seriesDefinitions.forEach((series) => {
+    visibleSeries.forEach((series) => {
       context.save();
       context.strokeStyle = getSeriesColor(series);
       context.lineWidth = 2.5;
@@ -219,6 +267,8 @@
   const drawYearLabels = (context, data, plotArea) => {
     const plotWidth = plotArea.width - plotArea.left - plotArea.right;
     const interval = Math.max(1, Math.ceil(data.length / Math.max(2, Math.floor(plotWidth / 72))));
+    const minimumLabelGap = 42;
+    const lastX = toX(data.length - 1, data.length, plotArea);
 
     context.save();
     context.fillStyle = getCssColor('--ui-color-text', '#333333');
@@ -228,13 +278,14 @@
     context.textBaseline = 'top';
 
     data.forEach((point, index) => {
-      const shouldDraw = index === 0 || index === data.length - 1 || index % interval === 0;
+      const x = toX(index, data.length, plotArea);
+      const overlapsLastLabel = index !== data.length - 1 && Math.abs(lastX - x) < minimumLabelGap;
+      const shouldDraw = index === 0 || index === data.length - 1 || (index % interval === 0 && !overlapsLastLabel);
 
       if (!shouldDraw) {
         return;
       }
 
-      const x = toX(index, data.length, plotArea);
       const axisY = plotArea.height - plotArea.bottom;
       drawLine(context, x, axisY, x, axisY + 5);
       context.fillText(String(point.year), x, axisY + 10);
