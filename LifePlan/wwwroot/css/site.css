@@ -10,6 +10,14 @@
   --ui-color-danger: #b42318;
   --ui-color-focus: #258cfb;
   --ui-color-reference-header: rgba(76, 175, 125, 0.16);
+  --ui-color-cash-flow-family: #f3f8ff;
+  --ui-color-cash-flow-income: #f1fbf5;
+  --ui-color-cash-flow-expense: #fff6f3;
+  --ui-color-cash-flow-savings: #f7f4ff;
+  --ui-color-chart-income: #2f8f5b;
+  --ui-color-chart-expense: #d96045;
+  --ui-color-chart-savings-without-return: #2f67b1;
+  --ui-color-chart-savings-with-return: #6f5fc7;
   --ui-font-family-base: "Noto Sans JP", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --ui-font-size-root-sm: 14px;
   --ui-font-size-root-md: 16px;
@@ -64,6 +72,8 @@
   --ui-education-label-width: 3.75rem;
   --ui-action-submit-min-width: 200px;
   --ui-reference-panel-width: 540px;
+  --ui-result-frame-min-height: 720px;
+  --ui-result-label-width: 130px;
   --ui-footer-column-gap: 5rem;
   --ui-life-plan-page-bottom-padding: 15rem;
   --ui-life-plan-action-gap: 7rem;
@@ -340,6 +350,20 @@ body {
   color: var(--ui-color-surface);
 }
 
+.life-plan-tabs--readonly .life-plan-tabs__item {
+  background: var(--ui-color-border);
+  color: var(--ui-color-text);
+  cursor: pointer;
+  opacity: 1;
+}
+
+.life-plan-tabs__item:disabled {
+  background: var(--ui-color-border);
+  color: var(--ui-color-text);
+  cursor: default;
+  opacity: 1;
+}
+
 .life-plan-panel {
   padding: var(--ui-space-xl) var(--ui-space-4xl) var(--ui-space-3xl);
   background: var(--ui-color-surface);
@@ -368,11 +392,11 @@ body {
   padding-bottom: var(--ui-space-lg);
 }
 
-.life-plan-input-card__label {
+.life-plan-input-card__label,
+.life-plan-result-frame__label {
   position: absolute;
   top: var(--ui-card-label-offset);
   left: 0;
-  min-width: var(--ui-card-label-min-width);
   min-height: var(--ui-card-label-min-height);
   padding: 0.45rem var(--ui-space-md);
   border-radius: var(--ui-radius-sm);
@@ -382,6 +406,10 @@ body {
   font-weight: 400;
   line-height: var(--ui-line-height-tight);
   text-align: center;
+}
+
+.life-plan-input-card__label {
+  min-width: var(--ui-card-label-min-width);
 }
 
 .life-plan-field-row {
@@ -412,6 +440,40 @@ body {
 .life-plan-control:focus {
   border-color: var(--ui-color-primary);
   box-shadow: var(--ui-control-focus-shadow);
+}
+
+.life-plan-child-field--disabled .life-plan-field-row__label,
+.life-plan-child-field--disabled .life-plan-unit {
+  color: var(--ui-color-muted);
+}
+
+.life-plan-education-row--disabled {
+  color: var(--ui-color-muted);
+}
+
+.life-plan-child-field--disabled .life-plan-control,
+.life-plan-education-row--disabled .life-plan-control {
+  background-color: var(--ui-color-border);
+  color: var(--ui-color-muted);
+  cursor: not-allowed;
+  opacity: 1;
+}
+
+.life-plan-control-with-unit {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ui-space-md);
+}
+
+.life-plan-control[type="number"] {
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+.life-plan-control[type="number"]::-webkit-outer-spin-button,
+.life-plan-control[type="number"]::-webkit-inner-spin-button {
+  margin: 0;
+  -webkit-appearance: none;
 }
 
 .life-plan-unit,
@@ -617,7 +679,7 @@ body {
 
 .life-plan-alert {
   width: min(100%, var(--ui-content-width));
-  margin: var(--ui-space-lg) auto 0;
+  margin: var(--ui-space-lg) auto var(--ui-space-lg);
   padding: var(--ui-space-md);
   border-radius: var(--ui-radius-sm);
   background: var(--ui-color-surface);
@@ -631,6 +693,259 @@ body {
 .life-plan-alert--danger {
   border: var(--ui-border-width-sm) solid var(--ui-color-danger);
   color: var(--ui-color-danger);
+}
+
+.life-plan-result {
+  display: grid;
+  gap: var(--ui-space-lg);
+  min-width: 0;
+}
+
+.life-plan-result-frame {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+  min-height: var(--ui-result-frame-min-height);
+  margin-top: var(--ui-space-3xl);
+  padding: var(--ui-space-2xl) var(--ui-space-lg) var(--ui-space-lg);
+  border: var(--ui-border-width-md) solid var(--ui-color-primary);
+  border-radius: var(--ui-radius-sm);
+  background: var(--ui-color-surface);
+}
+
+.life-plan-result-frame--graph {
+  min-height: 30rem;
+}
+
+.life-plan-result-frame__label {
+  min-width: var(--ui-result-label-width);
+}
+
+.life-plan-result-frame__note {
+  margin: var(--ui-space-md) 0 0;
+  color: var(--ui-color-muted);
+  font-size: var(--ui-font-size-small);
+  text-align: right;
+}
+
+.life-plan-result-frame__placeholder {
+  margin: 0;
+  color: var(--ui-color-muted);
+  font-size: var(--ui-font-size-brand);
+  font-weight: 600;
+}
+
+.life-plan-chart {
+  display: grid;
+  gap: var(--ui-space-md);
+  width: 100%;
+  min-width: 0;
+}
+
+.life-plan-chart__canvas-wrap {
+  width: 100%;
+  min-width: 0;
+  padding: var(--ui-space-md);
+  border: var(--ui-border-width-sm) solid var(--ui-color-border);
+  border-radius: var(--ui-radius-sm);
+  background: var(--ui-color-surface);
+}
+
+.life-plan-chart__canvas {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: 22.5rem;
+}
+
+.life-plan-chart__legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ui-space-sm) var(--ui-space-lg);
+  color: var(--ui-color-text);
+  font-size: var(--ui-font-size-small);
+}
+
+.life-plan-chart__legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ui-space-xs);
+}
+
+.life-plan-chart__legend-marker {
+  width: 1rem;
+  height: 0.25rem;
+  border-radius: var(--ui-radius-pill);
+}
+
+.life-plan-chart__fallback {
+  margin: 0;
+  color: var(--ui-color-muted);
+  font-size: var(--ui-font-size-small);
+}
+
+.life-plan-result__actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.life-plan-result__change-conditions {
+  min-height: auto;
+  padding: var(--ui-space-xs) var(--ui-space-lg);
+  line-height: var(--ui-line-height-normal);
+}
+
+.life-plan-assumptions {
+  display: grid;
+  gap: var(--ui-space-xs);
+}
+
+.life-plan-assumptions__label {
+  width: 11.25rem;
+  min-height: var(--ui-card-label-min-height);
+  margin: 0;
+  padding: 0.45rem var(--ui-space-md);
+  border-radius: var(--ui-radius-sm);
+  background: var(--ui-color-primary);
+  color: var(--ui-color-surface);
+  font-size: var(--ui-font-size-body);
+  font-weight: 400;
+  line-height: var(--ui-line-height-tight);
+  text-align: center;
+}
+
+.life-plan-assumptions__frame {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--ui-space-xl);
+  padding: var(--ui-space-md) var(--ui-space-lg);
+  border: var(--ui-border-width-md) solid var(--ui-color-primary);
+  border-radius: var(--ui-radius-sm);
+  background: var(--ui-color-surface);
+  color: var(--ui-color-text);
+  font-size: var(--ui-font-size-small);
+  line-height: var(--ui-line-height-relaxed);
+}
+
+.life-plan-assumptions__column {
+  min-width: 0;
+}
+
+.life-plan-assumptions__column p,
+.life-plan-assumptions__list,
+.life-plan-assumptions__education {
+  margin: 0;
+}
+
+.life-plan-assumptions__list {
+  padding: 0;
+  list-style: none;
+}
+
+.life-plan-assumptions__column p + .life-plan-assumptions__list {
+  margin-top: var(--ui-space-md);
+}
+
+.life-plan-assumptions__education {
+  display: grid;
+  gap: 0;
+}
+
+.life-plan-assumptions__education div {
+  display: grid;
+  grid-template-columns: 8.5rem minmax(0, 1fr);
+  column-gap: var(--ui-space-xs);
+}
+
+.life-plan-assumptions__education dt {
+  font-weight: 400;
+}
+
+.life-plan-assumptions__education dd {
+  margin: 0;
+}
+
+.life-plan-assumptions__education div dd + dd {
+  grid-column: 2;
+}
+
+.life-plan-cash-flow {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+  border: var(--ui-border-width-sm) solid var(--ui-color-border);
+  border-radius: var(--ui-radius-sm);
+}
+
+.life-plan-cash-flow__table {
+  min-width: max-content;
+  width: 100%;
+  margin: 0;
+  border-collapse: collapse;
+  color: var(--ui-color-text);
+  font-size: var(--ui-font-size-small);
+}
+
+.life-plan-cash-flow__table th,
+.life-plan-cash-flow__table td {
+  min-width: 6.5rem;
+  padding: var(--ui-space-sm);
+  border: var(--ui-border-width-sm) solid var(--ui-color-border);
+  text-align: right;
+  white-space: nowrap;
+}
+
+.life-plan-cash-flow__table thead th {
+  background: var(--ui-color-reference-header);
+  font-weight: 700;
+  text-align: center;
+}
+
+.life-plan-cash-flow__category,
+.life-plan-cash-flow__label {
+  position: sticky;
+  z-index: 1;
+  background: var(--ui-color-surface);
+  text-align: left;
+}
+
+.life-plan-cash-flow__category {
+  left: 0;
+  min-width: 6rem;
+}
+
+.life-plan-cash-flow__label {
+  left: 6rem;
+  min-width: 10rem;
+}
+
+.life-plan-cash-flow__row--family > th,
+.life-plan-cash-flow__row--family > td {
+  background: var(--ui-color-cash-flow-family);
+}
+
+.life-plan-cash-flow__row--income > th,
+.life-plan-cash-flow__row--income > td {
+  background: var(--ui-color-cash-flow-income);
+}
+
+.life-plan-cash-flow__row--expense > th,
+.life-plan-cash-flow__row--expense > td {
+  background: var(--ui-color-cash-flow-expense);
+}
+
+.life-plan-cash-flow__row--savings > th,
+.life-plan-cash-flow__row--savings > td {
+  background: var(--ui-color-cash-flow-savings);
+}
+
+.life-plan-cash-flow__table thead th:first-child,
+.life-plan-cash-flow__table thead th:nth-child(2) {
+  z-index: 2;
+  background: var(--ui-color-reference-header);
 }
 
 .validation-summary-valid {
@@ -694,6 +1009,15 @@ body {
   .life-plan-actions .app-button {
     width: 100%;
   }
+
+  .life-plan-assumptions__frame,
+  .life-plan-assumptions__education div {
+    grid-template-columns: 1fr;
+  }
+
+  .life-plan-assumptions__education div dd + dd {
+    grid-column: auto;
+  }
 }
 
 @media (max-width: 575.98px) {
@@ -723,6 +1047,12 @@ body {
 
   .life-plan-panel {
     padding: var(--ui-space-xl) var(--ui-space-md) var(--ui-space-2xl);
+  }
+
+  .life-plan-result-frame {
+    min-height: 28rem;
+    padding-right: var(--ui-space-md);
+    padding-left: var(--ui-space-md);
   }
 
   .life-plan-field-row,

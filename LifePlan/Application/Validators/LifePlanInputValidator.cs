@@ -33,7 +33,7 @@ namespace LifePlan.Application.Validators
                 {
                     errors.Add(new LifePlanValidationError(
                         $"Family.Children[{index}].Age",
-                        $"子どもの年齢は{AgeRules.MinChildAge}〜{AgeRules.MaxChildAge}で入力してください。"));
+                        LifePlanValidationMessages.ChildAgeRange()));
                 }
             }
         }
@@ -49,7 +49,7 @@ namespace LifePlan.Application.Validators
             {
                 errors.Add(new LifePlanValidationError(
                     "Savings.ExpectedAnnualReturnRatePercent",
-                    $"想定運用年利は{RateRules.MinRatePercent}〜{RateRules.MaxExpectedAnnualReturnRatePercent}で入力してください。"));
+                    LifePlanValidationMessages.ExpectedAnnualReturnRateRange()));
             }
         }
 
@@ -84,7 +84,14 @@ namespace LifePlan.Application.Validators
             {
                 errors.Add(new LifePlanValidationError(
                     "LifeEvents.Housing.InterestRatePercent",
-                    $"住宅ローンの想定金利は{RateRules.MinRatePercent}%以上で入力してください。"));
+                    LifePlanValidationMessages.HousingInterestRateRange()));
+            }
+
+            if (housing.InterestRatePercent.HasValue && !HasDecimalPlacesAtMost(housing.InterestRatePercent.Value, 1))
+            {
+                errors.Add(new LifePlanValidationError(
+                    "LifeEvents.Housing.InterestRatePercent",
+                    LifePlanValidationMessages.OneDecimalPlace("想定金利")));
             }
         }
 
@@ -136,7 +143,7 @@ namespace LifePlan.Application.Validators
 
             if (EducationCostMaster.Entries.All(entry => entry.Stage != stage || entry.Value != value))
             {
-                errors.Add(new LifePlanValidationError(key, $"{stage}の教育費は定義済みの選択肢から選んでください。"));
+                errors.Add(new LifePlanValidationError(key, LifePlanValidationMessages.EducationDefinedOption(stage)));
             }
         }
 
@@ -152,7 +159,7 @@ namespace LifePlan.Application.Validators
             {
                 errors.Add(new LifePlanValidationError(
                     "LifeEvents.TravelOther.EndHusbandAge",
-                    "旅行・その他の終了年齢は開始年齢以上にしてください。"));
+                    LifePlanValidationMessages.EndAgeMustBeStartAgeOrLater("旅行・その他の終了年齢")));
             }
         }
 
@@ -163,11 +170,11 @@ namespace LifePlan.Application.Validators
             ValidateNonNegative(errors, "IncomeExpense.Expenses.OtherAnnualCostManYen", expenses.OtherAnnualCostManYen, "その他支出");
 
             if (expenses.InflationRatePercent.HasValue &&
-                !RateRules.IsInflationRateInRange(expenses.InflationRatePercent.Value))
+                !ContainsRate(RateOptionCatalog.InflationRates, expenses.InflationRatePercent.Value))
             {
                 errors.Add(new LifePlanValidationError(
                     "IncomeExpense.Expenses.InflationRatePercent",
-                    $"想定インフレ率は{RateRules.MinRatePercent}〜{RateRules.MaxInflationRatePercent}%で入力してください。"));
+                    LifePlanValidationMessages.DefinedOption("想定インフレ率")));
             }
         }
 
@@ -179,7 +186,7 @@ namespace LifePlan.Application.Validators
         {
             if (!age.HasValue)
             {
-                errors.Add(new LifePlanValidationError(key, $"{label}は必須です。"));
+                errors.Add(new LifePlanValidationError(key, LifePlanValidationMessages.Required(label)));
                 return;
             }
 
@@ -187,7 +194,7 @@ namespace LifePlan.Application.Validators
             {
                 errors.Add(new LifePlanValidationError(
                     key,
-                    $"{label}は{AgeRules.MinAdultAge}〜{AgeRules.MaxAdultAge}で入力してください。"));
+                    LifePlanValidationMessages.AdultAgeRange(label)));
             }
         }
 
@@ -212,7 +219,7 @@ namespace LifePlan.Application.Validators
             {
                 errors.Add(new LifePlanValidationError(
                     $"{prefix}.WorkEndAge",
-                    $"{ownerLabel}の就労終了年齢は就労開始年齢以上にしてください。"));
+                    LifePlanValidationMessages.WorkEndAgeMustBeStartAgeOrLater(ownerLabel)));
             }
 
             if (income.WorkEndAge.HasValue &&
@@ -221,7 +228,7 @@ namespace LifePlan.Application.Validators
             {
                 errors.Add(new LifePlanValidationError(
                     $"{prefix}.PensionStartAge",
-                    $"{ownerLabel}の年金受取開始年齢は就労終了年齢より後にしてください。"));
+                    LifePlanValidationMessages.PensionStartAgeMustBeAfterWorkEndAge(ownerLabel)));
             }
         }
 
@@ -238,7 +245,7 @@ namespace LifePlan.Application.Validators
 
             if (OccupationReferenceData.All.All(occupation => occupation.Value != value))
             {
-                errors.Add(new LifePlanValidationError(key, $"{label}は定義済みの選択肢から選んでください。"));
+                errors.Add(new LifePlanValidationError(key, LifePlanValidationMessages.DefinedOption(label)));
             }
         }
 
@@ -248,12 +255,15 @@ namespace LifePlan.Application.Validators
             decimal? value,
             string label)
         {
-            if (value.HasValue && !RateRules.IsAnnualIncomeChangeRateInRange(value.Value))
+            if (value.HasValue && !ContainsRate(RateOptionCatalog.AnnualIncomeChangeRates, value.Value))
             {
-                errors.Add(new LifePlanValidationError(
-                    key,
-                    $"{label}は{RateRules.MinAnnualIncomeChangeRatePercent}〜{RateRules.MaxAnnualIncomeChangeRatePercent}%で入力してください。"));
+                errors.Add(new LifePlanValidationError(key, LifePlanValidationMessages.DefinedOption(label)));
             }
+        }
+
+        private static bool ContainsRate(IReadOnlyList<RateOptionEntry> options, decimal value)
+        {
+            return options.Any(option => option.RatePercent == value);
         }
 
         private static void ValidateOptionalAdultAge(
@@ -266,7 +276,7 @@ namespace LifePlan.Application.Validators
             {
                 errors.Add(new LifePlanValidationError(
                     key,
-                    $"{label}は{AgeRules.MinAdultAge}〜{AgeRules.MaxAdultAge}で入力してください。"));
+                    LifePlanValidationMessages.AdultAgeRange(label)));
             }
         }
 
@@ -278,8 +288,26 @@ namespace LifePlan.Application.Validators
         {
             if (value.HasValue && value.Value < 0)
             {
-                errors.Add(new LifePlanValidationError(key, $"{label}は0以上で入力してください。"));
+                errors.Add(new LifePlanValidationError(key, LifePlanValidationMessages.NonNegative(label)));
+                return;
             }
+
+            if (value.HasValue && decimal.Truncate(value.Value) != value.Value)
+            {
+                errors.Add(new LifePlanValidationError(key, LifePlanValidationMessages.HalfWidthInteger(label)));
+            }
+        }
+
+        private static bool HasDecimalPlacesAtMost(decimal value, int decimalPlaces)
+        {
+            var scale = 1m;
+
+            for (var index = 0; index < decimalPlaces; index++)
+            {
+                scale *= 10m;
+            }
+
+            return decimal.Truncate(value * scale) == value * scale;
         }
 
         private static void ValidatePositive(
@@ -290,7 +318,7 @@ namespace LifePlan.Application.Validators
         {
             if (value.HasValue && value.Value < 1)
             {
-                errors.Add(new LifePlanValidationError(key, $"{label}は1以上で入力してください。"));
+                errors.Add(new LifePlanValidationError(key, LifePlanValidationMessages.Positive(label)));
             }
         }
     }

@@ -1,3 +1,4 @@
+using LifePlan.Application.Factories;
 using LifePlan.Application.Interfaces;
 using LifePlan.Application.Mappers;
 using LifePlan.Application.Normalizers;
@@ -35,6 +36,7 @@ namespace LifePlan.Application.Services
             var data = normalizedInput is null ? null : LifePlanPageMapper.ToLifePlanData(normalizedInput);
             var calculationResult = data is null ? null : new LifePlanCalculator().Calculate(data, DateTime.Today.Year);
             page.IsSubmitted = isValid;
+            page.Result = calculationResult is null ? null : LifePlanPageMapper.ToResultViewModel(calculationResult);
 
             return new LifePlanSubmitResult
             {
@@ -51,6 +53,7 @@ namespace LifePlan.Application.Services
 
             page.Family.Children = MergeChildInputs(page.Family.Children);
             page.LifeEvents.EducationPlans = MergeEducationPlans(page.LifeEvents.EducationPlans);
+            page.ClientValidation = LifePlanClientValidationRuleFactory.Create();
 
             PopulateSelectOptions(page);
 
@@ -84,6 +87,8 @@ namespace LifePlan.Application.Services
             page.UniversityEducationOptions = LifePlanPageMapper.ToEducationOptionsByStage(EducationCostMaster.Entries, "大学");
             page.GraduateSchoolEducationOptions = LifePlanPageMapper.ToEducationOptionsByStage(EducationCostMaster.Entries, "大学院");
             page.OccupationOptions = LifePlanPageMapper.ToOccupationOptions(OccupationReferenceData.All);
+            page.AnnualIncomeChangeRateOptions = LifePlanRateSelectOptionFactory.CreateAnnualIncomeChangeRateOptions();
+            page.InflationRateOptions = LifePlanRateSelectOptionFactory.CreateInflationRateOptions();
         }
 
         private static List<ChildInputViewModel> MergeChildInputs(List<ChildInputViewModel>? postedChildren)

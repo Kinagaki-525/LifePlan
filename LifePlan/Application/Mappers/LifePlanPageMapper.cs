@@ -1,6 +1,7 @@
 using LifePlan.Domain.ReferenceData;
 using LifePlan.Domain.Rules;
 using LifePlan.Domain.Entities;
+using LifePlan.Domain.Logic;
 using LifePlan.ViewModels.LifePlan;
 
 namespace LifePlan.Application.Mappers
@@ -60,6 +61,16 @@ namespace LifePlan.Application.Mappers
                 .ToList();
         }
 
+        public static IReadOnlyList<SelectOptionViewModel> CreateAnnualIncomeChangeRateOptions()
+        {
+            return
+            [
+                new SelectOptionViewModel(string.Empty, "-（なし）"),
+                .. RateOptionCatalog.AnnualIncomeChangeRates
+                    .Select(option => new SelectOptionViewModel(option.RatePercent.ToString("0"), option.DisplayName))
+            ];
+        }
+
         public static LifePlanData ToLifePlanData(LifePlanViewModel model)
         {
             return new LifePlanData
@@ -69,7 +80,6 @@ namespace LifePlan.Application.Mappers
                     HusbandAge = model.Family.HusbandAge.GetValueOrDefault(),
                     WifeAge = model.Family.WifeAge.GetValueOrDefault(),
                     Children = model.Family.Children
-                        .Where(child => child.Age.HasValue)
                         .Select(child => new ChildData { Age = child.Age })
                         .ToList()
                 },
@@ -97,6 +107,29 @@ namespace LifePlan.Application.Mappers
             };
         }
 
+        public static LifePlanResultViewModel ToResultViewModel(LifePlanCalculationResult result)
+        {
+            var rows = result.AnnualRows;
+            var cashFlowRows = new List<CashFlowTableRowViewModel>
+            {
+                CreateRow("家族構成", "family", "夫", rows.Select(row => ToAgeText(row.HusbandAge))),
+                CreateRow("家族構成", "family", "妻", rows.Select(row => ToAgeText(row.WifeAge)))
+            };
+
+            AddChildRows(cashFlowRows, rows);
+            AddIncomeRows(cashFlowRows, rows);
+            AddExpenseRows(cashFlowRows, rows);
+            AddSavingsRows(cashFlowRows, rows);
+
+            return new LifePlanResultViewModel
+            {
+                YearHeaders = rows.Select(row => row.Year.ToString()).ToList(),
+                CashFlowRows = cashFlowRows,
+                ChartPoints = rows.Select(ToChartPointViewModel).ToList(),
+                Assumptions = LifePlanAssumptionMapper.CreateAssumptions()
+            };
+        }
+
         private static IReadOnlyList<string> CreateChildLabels()
         {
             return
@@ -106,6 +139,126 @@ namespace LifePlan.Application.Mappers
                 "第3子",
                 "第4子"
             ];
+        }
+
+        private static void AddChildRows(
+            List<CashFlowTableRowViewModel> cashFlowRows,
+            IReadOnlyList<AnnualCashFlowRow> rows)
+        {
+            var maxChildCount = rows
+                .Select(row => row.ChildAges.Count)
+                .DefaultIfEmpty()
+                .Max();
+
+            for (var index = 0; index < maxChildCount; index++)
+            {
+                var values = rows
+                    .Select(row => index < row.ChildAges.Count ? ToAgeText(row.ChildAges[index]) : "-")
+                    .ToList();
+
+                if (values.All(value => value == "-"))
+                {
+                    continue;
+                }
+
+                cashFlowRows.Add(new CashFlowTableRowViewModel
+                {
+                    Category = "家族構成",
+                    Label = $"第{index + 1}子",
+                    CategoryKey = "family",
+                    Values = values
+                });
+            }
+        }
+
+        private static void AddIncomeRows(
+            List<CashFlowTableRowViewModel> cashFlowRows,
+            IReadOnlyList<AnnualCashFlowRow> rows)
+        {
+            cashFlowRows.Add(CreateMoneyRow("収入", "income", "夫 給与", rows.Select(row => row.HusbandIncome.SalaryYen)));
+            cashFlowRows.Add(CreateMoneyRow("収入", "income", "夫 退職金", rows.Select(row => row.HusbandIncome.RetirementAllowanceYen)));
+            cashFlowRows.Add(CreateMoneyRow("収入", "income", "夫 年金", rows.Select(row => row.HusbandIncome.PensionYen)));
+            cashFlowRows.Add(CreateMoneyRow("収入", "income", "妻 給与", rows.Select(row => row.WifeIncome.SalaryYen)));
+            cashFlowRows.Add(CreateMoneyRow("収入", "income", "妻 退職金", rows.Select(row => row.WifeIncome.RetirementAllowanceYen)));
+            cashFlowRows.Add(CreateMoneyRow("収入", "income", "妻 年金", rows.Select(row => row.WifeIncome.PensionYen)));
+            cashFlowRows.Add(CreateMoneyRow("収入", "income", "収入合計", rows.Select(row => row.TotalIncomeYen)));
+        }
+
+        private static void AddExpenseRows(
+            List<CashFlowTableRowViewModel> cashFlowRows,
+            IReadOnlyList<AnnualCashFlowRow> rows)
+        {
+            cashFlowRows.Add(CreateMoneyRow("支出", "expense", "基本生活費", rows.Select(row => row.Expenses.BasicLivingCostYen)));
+            cashFlowRows.Add(CreateMoneyRow("支出", "expense", "家賃", rows.Select(row => row.Expenses.RentYen)));
+            cashFlowRows.Add(CreateMoneyRow("支出", "expense", "その他支出", rows.Select(row => row.Expenses.OtherAnnualCostYen)));
+            cashFlowRows.Add(CreateMoneyRow("支出", "expense", "結婚", rows.Select(row => row.Expenses.MarriageYen)));
+            cashFlowRows.Add(CreateMoneyRow("支出", "expense", "住宅頭金", rows.Select(row => row.Expenses.HousingDownPaymentYen)));
+            cashFlowRows.Add(CreateMoneyRow("支出", "expense", "住宅ローン返済", rows.Select(row => row.Expenses.HousingLoanRepaymentYen)));
+            cashFlowRows.Add(CreateMoneyRow("支出", "expense", "自動車", rows.Select(row => row.Expenses.CarYen)));
+            cashFlowRows.Add(CreateMoneyRow("支出", "expense", "教育費", rows.Select(row => row.Expenses.EducationYen)));
+            cashFlowRows.Add(CreateMoneyRow("支出", "expense", "旅行・その他", rows.Select(row => row.Expenses.TravelOtherYen)));
+            cashFlowRows.Add(CreateMoneyRow("支出", "expense", "支出合計", rows.Select(row => row.TotalExpenseYen)));
+        }
+
+        private static void AddSavingsRows(
+            List<CashFlowTableRowViewModel> cashFlowRows,
+            IReadOnlyList<AnnualCashFlowRow> rows)
+        {
+            cashFlowRows.Add(CreateMoneyRow("貯蓄", "savings", "開始時点金融資産", rows.Select(row => row.StartingAssetsYen)));
+            cashFlowRows.Add(CreateMoneyRow("貯蓄", "savings", "収入－支出", rows.Select(row => row.AnnualBalanceYen)));
+            cashFlowRows.Add(CreateMoneyRow("貯蓄", "savings", "貯蓄合計（0%運用）", rows.Select(row => row.SavingsBalanceWithoutReturnYen)));
+            cashFlowRows.Add(CreateMoneyRow("貯蓄", "savings", "貯蓄合計（想定年利運用）", rows.Select(row => row.SavingsBalanceWithReturnYen)));
+        }
+
+        private static CashFlowTableRowViewModel CreateMoneyRow(
+            string category,
+            string categoryKey,
+            string label,
+            IEnumerable<long> values)
+        {
+            return CreateRow(category, categoryKey, label, values.Select(ToManYenText));
+        }
+
+        private static CashFlowTableRowViewModel CreateRow(
+            string category,
+            string categoryKey,
+            string label,
+            IEnumerable<string> values)
+        {
+            return new CashFlowTableRowViewModel
+            {
+                Category = category,
+                Label = label,
+                CategoryKey = categoryKey,
+                Values = values.ToList()
+            };
+        }
+
+        private static string ToAgeText(int? age)
+        {
+            return age.HasValue ? age.Value.ToString() : "-";
+        }
+
+        private static string ToManYenText(long yen)
+        {
+            return ToManYen(yen).ToString("0.0");
+        }
+
+        private static decimal ToManYen(long yen)
+        {
+            return yen / 10000m;
+        }
+
+        private static LifePlanChartPointViewModel ToChartPointViewModel(AnnualCashFlowRow row)
+        {
+            return new LifePlanChartPointViewModel
+            {
+                Year = row.Year,
+                TotalIncomeManYen = ToManYen(row.TotalIncomeYen),
+                TotalExpenseManYen = ToManYen(row.TotalExpenseYen),
+                SavingsBalanceWithoutReturnManYen = ToManYen(row.SavingsBalanceWithoutReturnYen),
+                SavingsBalanceWithReturnManYen = ToManYen(row.SavingsBalanceWithReturnYen)
+            };
         }
 
         private static PersonIncomeData ToPersonIncomeData(PersonIncomeInputViewModel input)

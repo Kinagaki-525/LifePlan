@@ -10,7 +10,11 @@ namespace LifePlan.ViewModels.LifePlan
 
         public IncomeExpenseInputViewModel IncomeExpense { get; set; } = new();
 
+        public LifePlanResultViewModel? Result { get; set; }
+
         public bool IsSubmitted { get; set; }
+
+        public LifePlanClientValidationViewModel ClientValidation { get; set; } = new();
 
         public IReadOnlyList<SelectOptionViewModel> ChildAgeOptions { get; set; } = [];
 
@@ -31,5 +35,9 @@ namespace LifePlan.ViewModels.LifePlan
         public IReadOnlyList<SelectOptionViewModel> GraduateSchoolEducationOptions { get; set; } = [];
 
         public IReadOnlyList<SelectOptionViewModel> OccupationOptions { get; set; } = [];
+
+        public IReadOnlyList<SelectOptionViewModel> AnnualIncomeChangeRateOptions { get; set; } = [];
+
+        public IReadOnlyList<SelectOptionViewModel> InflationRateOptions { get; set; } = [];
     }
 }
