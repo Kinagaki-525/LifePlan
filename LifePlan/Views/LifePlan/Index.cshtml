@@ -88,7 +88,7 @@
                                 <input asp-for="Family.Children[index].Label" type="hidden" />
                                 <label asp-for="Family.Children[index].Age" class="life-plan-field-row__label">@Model.Family.Children[index].Label</label>
                                 <span class="life-plan-control-with-unit">
-                                    <select asp-for="Family.Children[index].Age" asp-items="childAgeOptions" class="form-select life-plan-control"></select>
+                                    <select asp-for="Family.Children[index].Age" asp-items="childAgeOptions" class="form-select life-plan-control" data-life-plan-child-age="true"></select>
                                     <span class="life-plan-unit">歳</span>
                                 </span>
                                 <span asp-validation-for="Family.Children[index].Age" class="life-plan-validation"></span>
@@ -200,7 +200,7 @@
                     <div class="life-plan-education-list">
                         @for (var index = 0; index < Model.LifeEvents.EducationPlans.Count; index++)
                         {
-                            <div class="life-plan-education-row">
+                            <div class="life-plan-education-row" data-life-plan-education-row="@index">
                                 <input asp-for="LifeEvents.EducationPlans[index].Label" type="hidden" />
                                 <h4 class="life-plan-education-row__title">@Model.LifeEvents.EducationPlans[index].Label</h4>
                                 <div class="life-plan-education-grid">
@@ -583,6 +583,7 @@
     <partial name="_ValidationScriptsPartial" />
     <script id="life-plan-client-validation" type="application/json">@Html.Raw(JsonSerializer.Serialize(Model.ClientValidation, chartJsonOptions))</script>
     <script src="~/js/life-plan-validation.js" asp-append-version="true"></script>
+    <script src="~/js/life-plan-child-age-control.js" asp-append-version="true"></script>
     @if (Model.Result is not null)
     {
         <script src="~/js/life-plan-chart.js" asp-append-version="true"></script>
