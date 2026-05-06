@@ -744,6 +744,38 @@ body {
   min-width: 0;
 }
 
+.life-plan-chart__series {
+  padding: 0;
+  margin: 0;
+  border: 0;
+  color: var(--ui-color-text);
+  font-size: var(--ui-font-size-small);
+}
+
+.life-plan-chart__series-title {
+  display: block;
+  width: auto;
+  padding: 0;
+  margin: 0 0 var(--ui-space-xs);
+  font-weight: 700;
+  line-height: var(--ui-line-height-relaxed);
+}
+
+.life-plan-chart__series-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ui-space-sm) var(--ui-space-lg);
+  align-items: center;
+}
+
+.life-plan-chart__series-option {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ui-space-xs);
+  margin: 0;
+  cursor: pointer;
+}
+
 .life-plan-chart__canvas-wrap {
   width: 100%;
   min-width: 0;
