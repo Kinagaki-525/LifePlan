@@ -57,8 +57,10 @@
                         <h3 id="husband-age-title" class="life-plan-input-card__label">夫</h3>
                         <div class="life-plan-field-row">
                             <label asp-for="Family.HusbandAge" class="life-plan-field-row__label">年齢</label>
-                            <input asp-for="Family.HusbandAge" class="form-control life-plan-control" type="text" min="16" max="100" maxlength="3" data-life-plan-half-width-integer="true" />
-                            <input asp-for="Family.HusbandAge" class="form-control life-plan-control" type="text" min="16" max="100" maxlength="3" data-life-plan-half-width-integer="true" />
+                            <span class="life-plan-control-with-unit">
+                                <input asp-for="Family.HusbandAge" class="form-control life-plan-control" type="text" min="16" max="100" maxlength="3" data-life-plan-half-width-integer="true" />
+                                <span class="life-plan-unit">歳</span>
+                            </span>
                         </div>
                         <span asp-validation-for="Family.HusbandAge" class="life-plan-validation"></span>
                     </section>
@@ -67,8 +69,10 @@
                         <h3 id="wife-age-title" class="life-plan-input-card__label">妻</h3>
                         <div class="life-plan-field-row">
                             <label asp-for="Family.WifeAge" class="life-plan-field-row__label">年齢</label>
-                            <input asp-for="Family.WifeAge" class="form-control life-plan-control" type="text" min="16" max="100" maxlength="3" data-life-plan-half-width-integer="true" />
-                            <input asp-for="Family.WifeAge" class="form-control life-plan-control" type="text" min="16" max="100" maxlength="3" data-life-plan-half-width-integer="true" />
+                            <span class="life-plan-control-with-unit">
+                                <input asp-for="Family.WifeAge" class="form-control life-plan-control" type="text" min="16" max="100" maxlength="3" data-life-plan-half-width-integer="true" />
+                                <span class="life-plan-unit">歳</span>
+                            </span>
                         </div>
                         <span asp-validation-for="Family.WifeAge" class="life-plan-validation"></span>
                     </section>
@@ -83,7 +87,10 @@
                             <div class="life-plan-child-field">
                                 <input asp-for="Family.Children[index].Label" type="hidden" />
                                 <label asp-for="Family.Children[index].Age" class="life-plan-field-row__label">@Model.Family.Children[index].Label</label>
-                                <select asp-for="Family.Children[index].Age" asp-items="childAgeOptions" class="form-select life-plan-control"></select>
+                                <span class="life-plan-control-with-unit">
+                                    <select asp-for="Family.Children[index].Age" asp-items="childAgeOptions" class="form-select life-plan-control"></select>
+                                    <span class="life-plan-unit">歳</span>
+                                </span>
                                 <span asp-validation-for="Family.Children[index].Age" class="life-plan-validation"></span>
                             </div>
                         }
@@ -104,14 +111,15 @@
                         <div class="life-plan-field-row">
                             <label asp-for="LifeEvents.Marriage.CostManYen" class="life-plan-field-row__label">結婚費用</label>
                             <input asp-for="LifeEvents.Marriage.CostManYen" class="form-control life-plan-control" type="text" min="0" data-life-plan-half-width-integer="true" />
-                            <input asp-for="LifeEvents.Marriage.CostManYen" class="form-control life-plan-control" type="text" min="0" data-life-plan-half-width-integer="true" />
                             <span class="life-plan-unit">万円</span>
                             <span asp-validation-for="LifeEvents.Marriage.CostManYen" class="life-plan-validation"></span>
                         </div>
                         <div class="life-plan-field-row">
                             <label asp-for="LifeEvents.Marriage.HusbandAge" class="life-plan-field-row__label">発生時期</label>
-                            <input asp-for="LifeEvents.Marriage.HusbandAge" class="form-control life-plan-control" type="text" min="16" max="100" maxlength="3" data-life-plan-half-width-integer="true" />
-                            <input asp-for="LifeEvents.Marriage.HusbandAge" class="form-control life-plan-control" type="text" min="16" max="100" maxlength="3" data-life-plan-half-width-integer="true" />
+                            <span class="life-plan-control-with-unit">
+                                <input asp-for="LifeEvents.Marriage.HusbandAge" class="form-control life-plan-control" type="text" min="16" max="100" maxlength="3" data-life-plan-half-width-integer="true" />
+                                <span class="life-plan-unit">歳</span>
+                            </span>
                             <span class="life-plan-help">※夫の年齢を入力してください</span>
                             <span asp-validation-for="LifeEvents.Marriage.HusbandAge" class="life-plan-validation"></span>
                         </div>
@@ -124,33 +132,36 @@
                         <div class="life-plan-field-row">
                             <label asp-for="LifeEvents.Housing.DownPaymentManYen" class="life-plan-field-row__label">頭金</label>
                             <input asp-for="LifeEvents.Housing.DownPaymentManYen" class="form-control life-plan-control" type="text" data-life-plan-half-width-integer="true" />
-                            <input asp-for="LifeEvents.Housing.DownPaymentManYen" class="form-control life-plan-control" type="text" data-life-plan-half-width-integer="true" />
                             <span class="life-plan-unit">万円</span>
                             <span asp-validation-for="LifeEvents.Housing.DownPaymentManYen" class="life-plan-validation"></span>
                         </div>
                         <div class="life-plan-field-row">
                             <label asp-for="LifeEvents.Housing.BorrowingAmountManYen" class="life-plan-field-row__label">借入額</label>
                             <input asp-for="LifeEvents.Housing.BorrowingAmountManYen" class="form-control life-plan-control" type="text" data-life-plan-half-width-integer="true" />
-                            <input asp-for="LifeEvents.Housing.BorrowingAmountManYen" class="form-control life-plan-control" type="text" data-life-plan-half-width-integer="true" />
                             <span class="life-plan-unit">万円</span>
                             <span asp-validation-for="LifeEvents.Housing.BorrowingAmountManYen" class="life-plan-validation"></span>
                         </div>
                         <div class="life-plan-field-row">
                             <label asp-for="LifeEvents.Housing.PurchaseHusbandAge" class="life-plan-field-row__label">購入時期</label>
-                            <input asp-for="LifeEvents.Housing.PurchaseHusbandAge" class="form-control life-plan-control" type="text" min="16" max="100" maxlength="3" data-life-plan-half-width-integer="true" />
-                            <input asp-for="LifeEvents.Housing.PurchaseHusbandAge" class="form-control life-plan-control" type="text" min="16" max="100" maxlength="3" data-life-plan-half-width-integer="true" />
+                            <span class="life-plan-control-with-unit">
+                                <input asp-for="LifeEvents.Housing.PurchaseHusbandAge" class="form-control life-plan-control" type="text" min="16" max="100" maxlength="3" data-life-plan-half-width-integer="true" />
+                                <span class="life-plan-unit">歳</span>
+                            </span>
                             <span class="life-plan-help">※夫の年齢を入力してください</span>
                             <span asp-validation-for="LifeEvents.Housing.PurchaseHusbandAge" class="life-plan-validation"></span>
                         </div>
                         <div class="life-plan-field-row">
                             <label asp-for="LifeEvents.Housing.LoanYears" class="life-plan-field-row__label">ローン年数</label>
                             <input asp-for="LifeEvents.Housing.LoanYears" class="form-control life-plan-control" type="text" maxlength="3" data-life-plan-half-width-integer="true" />
-                            <input asp-for="LifeEvents.Housing.LoanYears" class="form-control life-plan-control" type="text" maxlength="3" data-life-plan-half-width-integer="true" />
+                            <span class="life-plan-unit">年</span>
                             <span asp-validation-for="LifeEvents.Housing.LoanYears" class="life-plan-validation"></span>
                         </div>
                         <div class="life-plan-field-row">
                             <label asp-for="LifeEvents.Housing.InterestRatePercent" class="life-plan-field-row__label">想定金利</label>
-                            <input asp-for="LifeEvents.Housing.InterestRatePercent" class="form-control life-plan-control" type="number" step="0.1" />
+                            <span class="life-plan-control-with-unit">
+                                <input asp-for="LifeEvents.Housing.InterestRatePercent" class="form-control life-plan-control" type="number" step="0.1" />
+                                <span class="life-plan-unit">%</span>
+                            </span>
                             <span class="life-plan-help">※参考：変動1〜2%、固定1.5〜3%</span>
                             <span asp-validation-for="LifeEvents.Housing.InterestRatePercent" class="life-plan-validation"></span>
                         </div>
@@ -163,21 +174,22 @@
                         <div class="life-plan-field-row">
                             <label asp-for="LifeEvents.Car.PurchaseAmountManYen" class="life-plan-field-row__label">金額</label>
                             <input asp-for="LifeEvents.Car.PurchaseAmountManYen" class="form-control life-plan-control" type="text" min="0" data-life-plan-half-width-integer="true" />
-                            <input asp-for="LifeEvents.Car.PurchaseAmountManYen" class="form-control life-plan-control" type="text" min="0" data-life-plan-half-width-integer="true" />
                             <span class="life-plan-unit">万円</span>
                             <span asp-validation-for="LifeEvents.Car.PurchaseAmountManYen" class="life-plan-validation"></span>
                         </div>
                         <div class="life-plan-field-row">
                             <label asp-for="LifeEvents.Car.FirstPurchaseHusbandAge" class="life-plan-field-row__label">購入時期</label>
-                            <input asp-for="LifeEvents.Car.FirstPurchaseHusbandAge" class="form-control life-plan-control" type="text" min="16" max="100" maxlength="3" data-life-plan-half-width-integer="true" />
-                            <input asp-for="LifeEvents.Car.FirstPurchaseHusbandAge" class="form-control life-plan-control" type="text" min="16" max="100" maxlength="3" data-life-plan-half-width-integer="true" />
+                            <span class="life-plan-control-with-unit">
+                                <input asp-for="LifeEvents.Car.FirstPurchaseHusbandAge" class="form-control life-plan-control" type="text" min="16" max="100" maxlength="3" data-life-plan-half-width-integer="true" />
+                                <span class="life-plan-unit">歳</span>
+                            </span>
                             <span class="life-plan-help">※夫の年齢を入力してください</span>
                             <span asp-validation-for="LifeEvents.Car.FirstPurchaseHusbandAge" class="life-plan-validation"></span>
                         </div>
                         <div class="life-plan-field-row">
                             <label asp-for="LifeEvents.Car.ReplacementIntervalYears" class="life-plan-field-row__label">買い替え間隔</label>
                             <input asp-for="LifeEvents.Car.ReplacementIntervalYears" class="form-control life-plan-control" type="text" maxlength="3" data-life-plan-half-width-integer="true" />
-                            <input asp-for="LifeEvents.Car.ReplacementIntervalYears" class="form-control life-plan-control" type="text" maxlength="3" data-life-plan-half-width-integer="true" />
+                            <span class="life-plan-unit">年</span>
                             <span asp-validation-for="LifeEvents.Car.ReplacementIntervalYears" class="life-plan-validation"></span>
                         </div>
                     </div>
@@ -253,17 +265,20 @@
                         <div class="life-plan-field-row">
                             <label asp-for="LifeEvents.TravelOther.AnnualCostManYen" class="life-plan-field-row__label">金額（年間）</label>
                             <input asp-for="LifeEvents.TravelOther.AnnualCostManYen" class="form-control life-plan-control" type="text" min="0" data-life-plan-half-width-integer="true" />
-                            <input asp-for="LifeEvents.TravelOther.AnnualCostManYen" class="form-control life-plan-control" type="text" min="0" data-life-plan-half-width-integer="true" />
                             <span class="life-plan-unit">万円</span>
                             <span asp-validation-for="LifeEvents.TravelOther.AnnualCostManYen" class="life-plan-validation"></span>
                         </div>
                         <div class="life-plan-period-row">
                             <label class="life-plan-field-row__label">購入時期</label>
-                            <input asp-for="LifeEvents.TravelOther.StartHusbandAge" class="form-control life-plan-control" type="text" min="16" max="100" maxlength="3" data-life-plan-half-width-integer="true" aria-label="旅行・その他の開始年齢" />
-                            <input asp-for="LifeEvents.TravelOther.StartHusbandAge" class="form-control life-plan-control" type="text" min="16" max="100" maxlength="3" data-life-plan-half-width-integer="true" aria-label="旅行・その他の開始年齢" />
+                            <span class="life-plan-control-with-unit">
+                                <input asp-for="LifeEvents.TravelOther.StartHusbandAge" class="form-control life-plan-control" type="text" min="16" max="100" maxlength="3" data-life-plan-half-width-integer="true" aria-label="旅行・その他の開始年齢" />
+                                <span class="life-plan-unit">歳</span>
+                            </span>
                             <span>〜</span>
-                            <input asp-for="LifeEvents.TravelOther.EndHusbandAge" class="form-control life-plan-control" type="text" min="16" max="100" maxlength="3" data-life-plan-half-width-integer="true" aria-label="旅行・その他の終了年齢" />
-                            <input asp-for="LifeEvents.TravelOther.EndHusbandAge" class="form-control life-plan-control" type="text" min="16" max="100" maxlength="3" data-life-plan-half-width-integer="true" aria-label="旅行・その他の終了年齢" />
+                            <span class="life-plan-control-with-unit">
+                                <input asp-for="LifeEvents.TravelOther.EndHusbandAge" class="form-control life-plan-control" type="text" min="16" max="100" maxlength="3" data-life-plan-half-width-integer="true" aria-label="旅行・その他の終了年齢" />
+                                <span class="life-plan-unit">歳</span>
+                            </span>
                             <span class="life-plan-help">※夫の年齢を入力してください</span>
                             <span asp-validation-for="LifeEvents.TravelOther.StartHusbandAge" class="life-plan-validation"></span>
                             <span asp-validation-for="LifeEvents.TravelOther.EndHusbandAge" class="life-plan-validation"></span>
@@ -290,23 +305,25 @@
                         <div class="life-plan-field-row">
                             <label asp-for="IncomeExpense.HusbandIncome.AnnualIncomeManYen" class="life-plan-field-row__label">年収（手取り）</label>
                             <input asp-for="IncomeExpense.HusbandIncome.AnnualIncomeManYen" class="form-control life-plan-control" type="text" min="0" data-life-plan-half-width-integer="true" />
-                            <input asp-for="IncomeExpense.HusbandIncome.AnnualIncomeManYen" class="form-control life-plan-control" type="text" min="0" data-life-plan-half-width-integer="true" />
                             <span class="life-plan-unit">万円</span>
                             <span asp-validation-for="IncomeExpense.HusbandIncome.AnnualIncomeManYen" class="life-plan-validation"></span>
                         </div>
                         <div class="life-plan-field-row life-plan-field-row--wide">
                             <label asp-for="IncomeExpense.HusbandIncome.AnnualIncomeChangeRatePercent" class="life-plan-field-row__label">年収の変化</label>
                             <select asp-for="IncomeExpense.HusbandIncome.AnnualIncomeChangeRatePercent" asp-items="annualIncomeChangeRateOptions" class="form-select life-plan-control"></select>
-                            <select asp-for="IncomeExpense.HusbandIncome.AnnualIncomeChangeRatePercent" asp-items="annualIncomeChangeRateOptions" class="form-select life-plan-control"></select>
                             <span asp-validation-for="IncomeExpense.HusbandIncome.AnnualIncomeChangeRatePercent" class="life-plan-validation"></span>
                         </div>
                         <div class="life-plan-period-row">
                             <label class="life-plan-field-row__label">就労期間</label>
-                            <input asp-for="IncomeExpense.HusbandIncome.WorkStartAge" class="form-control life-plan-control" type="text" min="16" max="100" maxlength="3" data-life-plan-half-width-integer="true" aria-label="夫の就労開始年齢" />
-                            <input asp-for="IncomeExpense.HusbandIncome.WorkStartAge" class="form-control life-plan-control" type="text" min="16" max="100" maxlength="3" data-life-plan-half-width-integer="true" aria-label="夫の就労開始年齢" />
+                            <span class="life-plan-control-with-unit">
+                                <input asp-for="IncomeExpense.HusbandIncome.WorkStartAge" class="form-control life-plan-control" type="text" min="16" max="100" maxlength="3" data-life-plan-half-width-integer="true" aria-label="夫の就労開始年齢" />
+                                <span class="life-plan-unit">歳</span>
+                            </span>
                             <span>〜</span>
-                            <input asp-for="IncomeExpense.HusbandIncome.WorkEndAge" class="form-control life-plan-control" type="text" min="16" max="100" maxlength="3" data-life-plan-half-width-integer="true" aria-label="夫の就労終了年齢" />
-                            <input asp-for="IncomeExpense.HusbandIncome.WorkEndAge" class="form-control life-plan-control" type="text" min="16" max="100" maxlength="3" data-life-plan-half-width-integer="true" aria-label="夫の就労終了年齢" />
+                            <span class="life-plan-control-with-unit">
+                                <input asp-for="IncomeExpense.HusbandIncome.WorkEndAge" class="form-control life-plan-control" type="text" min="16" max="100" maxlength="3" data-life-plan-half-width-integer="true" aria-label="夫の就労終了年齢" />
+                                <span class="life-plan-unit">歳</span>
+                            </span>
                             <span class="life-plan-help">※年齢を入力してください</span>
                             <span asp-validation-for="IncomeExpense.HusbandIncome.WorkStartAge" class="life-plan-validation"></span>
                             <span asp-validation-for="IncomeExpense.HusbandIncome.WorkEndAge" class="life-plan-validation"></span>
@@ -314,13 +331,11 @@
                         <div class="life-plan-field-row">
                             <label asp-for="IncomeExpense.HusbandIncome.RetirementAllowanceManYen" class="life-plan-field-row__label">退職金</label>
                             <input asp-for="IncomeExpense.HusbandIncome.RetirementAllowanceManYen" class="form-control life-plan-control" type="text" min="0" data-life-plan-half-width-integer="true" />
-                            <input asp-for="IncomeExpense.HusbandIncome.RetirementAllowanceManYen" class="form-control life-plan-control" type="text" min="0" data-life-plan-half-width-integer="true" />
                             <span class="life-plan-unit">万円</span>
                             <span asp-validation-for="IncomeExpense.HusbandIncome.RetirementAllowanceManYen" class="life-plan-validation"></span>
                         </div>
                         <div class="life-plan-field-row">
                             <label asp-for="IncomeExpense.HusbandIncome.AnnualPensionManYen" class="life-plan-field-row__label">年金（年額）</label>
-                            <input asp-for="IncomeExpense.HusbandIncome.AnnualPensionManYen" class="form-control life-plan-control" type="text" min="0" data-life-plan-half-width-integer="true" />
                             <input asp-for="IncomeExpense.HusbandIncome.AnnualPensionManYen" class="form-control life-plan-control" type="text" min="0" data-life-plan-half-width-integer="true" />
                             <span class="life-plan-unit">万円</span>
                             <span class="life-plan-reference">
@@ -330,8 +345,10 @@
                         </div>
                         <div class="life-plan-field-row">
                             <label asp-for="IncomeExpense.HusbandIncome.PensionStartAge" class="life-plan-field-row__label">年金受取開始年齢</label>
-                            <input asp-for="IncomeExpense.HusbandIncome.PensionStartAge" class="form-control life-plan-control" type="text" min="16" max="100" maxlength="3" data-life-plan-half-width-integer="true" />
-                            <input asp-for="IncomeExpense.HusbandIncome.PensionStartAge" class="form-control life-plan-control" type="text" min="16" max="100" maxlength="3" data-life-plan-half-width-integer="true" />
+                            <span class="life-plan-control-with-unit">
+                                <input asp-for="IncomeExpense.HusbandIncome.PensionStartAge" class="form-control life-plan-control" type="text" min="16" max="100" maxlength="3" data-life-plan-half-width-integer="true" />
+                                <span class="life-plan-unit">歳</span>
+                            </span>
                             <span asp-validation-for="IncomeExpense.HusbandIncome.PensionStartAge" class="life-plan-validation"></span>
                         </div>
                     </div>
@@ -350,23 +367,25 @@
                         <div class="life-plan-field-row">
                             <label asp-for="IncomeExpense.WifeIncome.AnnualIncomeManYen" class="life-plan-field-row__label">年収（手取り）</label>
                             <input asp-for="IncomeExpense.WifeIncome.AnnualIncomeManYen" class="form-control life-plan-control" type="text" min="0" data-life-plan-half-width-integer="true" />
-                            <input asp-for="IncomeExpense.WifeIncome.AnnualIncomeManYen" class="form-control life-plan-control" type="text" min="0" data-life-plan-half-width-integer="true" />
                             <span class="life-plan-unit">万円</span>
                             <span asp-validation-for="IncomeExpense.WifeIncome.AnnualIncomeManYen" class="life-plan-validation"></span>
                         </div>
                         <div class="life-plan-field-row life-plan-field-row--wide">
                             <label asp-for="IncomeExpense.WifeIncome.AnnualIncomeChangeRatePercent" class="life-plan-field-row__label">年収の変化</label>
                             <select asp-for="IncomeExpense.WifeIncome.AnnualIncomeChangeRatePercent" asp-items="annualIncomeChangeRateOptions" class="form-select life-plan-control"></select>
-                            <select asp-for="IncomeExpense.WifeIncome.AnnualIncomeChangeRatePercent" asp-items="annualIncomeChangeRateOptions" class="form-select life-plan-control"></select>
                             <span asp-validation-for="IncomeExpense.WifeIncome.AnnualIncomeChangeRatePercent" class="life-plan-validation"></span>
                         </div>
                         <div class="life-plan-period-row">
                             <label class="life-plan-field-row__label">就労期間</label>
-                            <input asp-for="IncomeExpense.WifeIncome.WorkStartAge" class="form-control life-plan-control" type="text" min="16" max="100" maxlength="3" data-life-plan-half-width-integer="true" aria-label="妻の就労開始年齢" />
-                            <input asp-for="IncomeExpense.WifeIncome.WorkStartAge" class="form-control life-plan-control" type="text" min="16" max="100" maxlength="3" data-life-plan-half-width-integer="true" aria-label="妻の就労開始年齢" />
+                            <span class="life-plan-control-with-unit">
+                                <input asp-for="IncomeExpense.WifeIncome.WorkStartAge" class="form-control life-plan-control" type="text" min="16" max="100" maxlength="3" data-life-plan-half-width-integer="true" aria-label="妻の就労開始年齢" />
+                                <span class="life-plan-unit">歳</span>
+                            </span>
                             <span>〜</span>
-                            <input asp-for="IncomeExpense.WifeIncome.WorkEndAge" class="form-control life-plan-control" type="text" min="16" max="100" maxlength="3" data-life-plan-half-width-integer="true" aria-label="妻の就労終了年齢" />
-                            <input asp-for="IncomeExpense.WifeIncome.WorkEndAge" class="form-control life-plan-control" type="text" min="16" max="100" maxlength="3" data-life-plan-half-width-integer="true" aria-label="妻の就労終了年齢" />
+                            <span class="life-plan-control-with-unit">
+                                <input asp-for="IncomeExpense.WifeIncome.WorkEndAge" class="form-control life-plan-control" type="text" min="16" max="100" maxlength="3" data-life-plan-half-width-integer="true" aria-label="妻の就労終了年齢" />
+                                <span class="life-plan-unit">歳</span>
+                            </span>
                             <span class="life-plan-help">※年齢を入力してください</span>
                             <span asp-validation-for="IncomeExpense.WifeIncome.WorkStartAge" class="life-plan-validation"></span>
                             <span asp-validation-for="IncomeExpense.WifeIncome.WorkEndAge" class="life-plan-validation"></span>
@@ -374,13 +393,11 @@
                         <div class="life-plan-field-row">
                             <label asp-for="IncomeExpense.WifeIncome.RetirementAllowanceManYen" class="life-plan-field-row__label">退職金</label>
                             <input asp-for="IncomeExpense.WifeIncome.RetirementAllowanceManYen" class="form-control life-plan-control" type="text" min="0" data-life-plan-half-width-integer="true" />
-                            <input asp-for="IncomeExpense.WifeIncome.RetirementAllowanceManYen" class="form-control life-plan-control" type="text" min="0" data-life-plan-half-width-integer="true" />
                             <span class="life-plan-unit">万円</span>
                             <span asp-validation-for="IncomeExpense.WifeIncome.RetirementAllowanceManYen" class="life-plan-validation"></span>
                         </div>
                         <div class="life-plan-field-row">
                             <label asp-for="IncomeExpense.WifeIncome.AnnualPensionManYen" class="life-plan-field-row__label">年金（年額）</label>
-                            <input asp-for="IncomeExpense.WifeIncome.AnnualPensionManYen" class="form-control life-plan-control" type="text" min="0" data-life-plan-half-width-integer="true" />
                             <input asp-for="IncomeExpense.WifeIncome.AnnualPensionManYen" class="form-control life-plan-control" type="text" min="0" data-life-plan-half-width-integer="true" />
                             <span class="life-plan-unit">万円</span>
                             <span class="life-plan-reference">
@@ -390,8 +407,10 @@
                         </div>
                         <div class="life-plan-field-row">
                             <label asp-for="IncomeExpense.WifeIncome.PensionStartAge" class="life-plan-field-row__label">年金受取開始年齢</label>
-                            <input asp-for="IncomeExpense.WifeIncome.PensionStartAge" class="form-control life-plan-control" type="text" min="16" max="100" maxlength="3" data-life-plan-half-width-integer="true" />
-                            <input asp-for="IncomeExpense.WifeIncome.PensionStartAge" class="form-control life-plan-control" type="text" min="16" max="100" maxlength="3" data-life-plan-half-width-integer="true" />
+                            <span class="life-plan-control-with-unit">
+                                <input asp-for="IncomeExpense.WifeIncome.PensionStartAge" class="form-control life-plan-control" type="text" min="16" max="100" maxlength="3" data-life-plan-half-width-integer="true" />
+                                <span class="life-plan-unit">歳</span>
+                            </span>
                             <span asp-validation-for="IncomeExpense.WifeIncome.PensionStartAge" class="life-plan-validation"></span>
                         </div>
                     </div>
@@ -408,7 +427,6 @@
                     <div class="life-plan-field-row">
                         <label asp-for="Savings.CurrentFinancialAssetsManYen" class="life-plan-field-row__label">現在の金融資産保有額</label>
                         <input asp-for="Savings.CurrentFinancialAssetsManYen" class="form-control life-plan-control" type="text" min="0" data-life-plan-half-width-integer="true" />
-                        <input asp-for="Savings.CurrentFinancialAssetsManYen" class="form-control life-plan-control" type="text" min="0" data-life-plan-half-width-integer="true" />
                         <span class="life-plan-unit">万円</span>
                         <span asp-validation-for="Savings.CurrentFinancialAssetsManYen" class="life-plan-validation"></span>
                     </div>
@@ -418,7 +436,10 @@
                     <h3 id="savings-return-title" class="life-plan-input-card__label">想定運用年利</h3>
                     <div class="life-plan-field-row">
                         <label asp-for="Savings.ExpectedAnnualReturnRatePercent" class="life-plan-field-row__label">想定運用年利</label>
-                        <input asp-for="Savings.ExpectedAnnualReturnRatePercent" class="form-control life-plan-control" type="number" min="0" max="20" step="0.1" />
+                        <span class="life-plan-control-with-unit">
+                            <input asp-for="Savings.ExpectedAnnualReturnRatePercent" class="form-control life-plan-control" type="number" min="0" max="20" step="0.1" />
+                            <span class="life-plan-unit">%</span>
+                        </span>
                         <span class="life-plan-help">※本シミュレーションで使用する想定の運用年利を入力してください</span>
                         <span asp-validation-for="Savings.ExpectedAnnualReturnRatePercent" class="life-plan-validation"></span>
                     </div>
@@ -436,7 +457,6 @@
                         <div class="life-plan-field-row">
                             <label asp-for="IncomeExpense.Expenses.MonthlyBasicLivingCostManYen" class="life-plan-field-row__label">基本生活費（月間）</label>
                             <input asp-for="IncomeExpense.Expenses.MonthlyBasicLivingCostManYen" class="form-control life-plan-control" type="text" min="0" data-life-plan-half-width-integer="true" />
-                            <input asp-for="IncomeExpense.Expenses.MonthlyBasicLivingCostManYen" class="form-control life-plan-control" type="text" min="0" data-life-plan-half-width-integer="true" />
                             <span class="life-plan-unit">万円</span>
                             <span asp-validation-for="IncomeExpense.Expenses.MonthlyBasicLivingCostManYen" class="life-plan-validation"></span>
                         </div>
@@ -449,13 +469,11 @@
                         <div class="life-plan-field-row">
                             <label asp-for="IncomeExpense.Expenses.MonthlyRentManYen" class="life-plan-field-row__label">家賃（月額）</label>
                             <input asp-for="IncomeExpense.Expenses.MonthlyRentManYen" class="form-control life-plan-control" type="text" min="0" data-life-plan-half-width-integer="true" />
-                            <input asp-for="IncomeExpense.Expenses.MonthlyRentManYen" class="form-control life-plan-control" type="text" min="0" data-life-plan-half-width-integer="true" />
                             <span class="life-plan-help">万円　※住宅購入時に不要となります</span>
                             <span asp-validation-for="IncomeExpense.Expenses.MonthlyRentManYen" class="life-plan-validation"></span>
                         </div>
                         <div class="life-plan-field-row">
                             <label asp-for="IncomeExpense.Expenses.OtherAnnualCostManYen" class="life-plan-field-row__label">その他支出（年間）</label>
-                            <input asp-for="IncomeExpense.Expenses.OtherAnnualCostManYen" class="form-control life-plan-control" type="text" min="0" data-life-plan-half-width-integer="true" />
                             <input asp-for="IncomeExpense.Expenses.OtherAnnualCostManYen" class="form-control life-plan-control" type="text" min="0" data-life-plan-half-width-integer="true" />
                             <span class="life-plan-unit">万円</span>
                             <span asp-validation-for="IncomeExpense.Expenses.OtherAnnualCostManYen" class="life-plan-validation"></span>

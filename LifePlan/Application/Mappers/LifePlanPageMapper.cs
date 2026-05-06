@@ -66,12 +66,8 @@ namespace LifePlan.Application.Mappers
             return
             [
                 new SelectOptionViewModel(string.Empty, "-（なし）"),
-                new SelectOptionViewModel(
-                    RateRules.LargeAnnualIncomeChangeRatePercent.ToString("0"),
-                    $"大きい（年{RateRules.LargeAnnualIncomeChangeRatePercent:0}%増）"),
-                new SelectOptionViewModel(
-                    RateRules.SmallAnnualIncomeChangeRatePercent.ToString("0"),
-                    $"小さい（年{RateRules.SmallAnnualIncomeChangeRatePercent:0}%増）")
+                .. RateOptionCatalog.AnnualIncomeChangeRates
+                    .Select(option => new SelectOptionViewModel(option.RatePercent.ToString("0"), option.DisplayName))
             ];
         }
 

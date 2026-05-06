@@ -442,6 +442,12 @@ body {
   box-shadow: var(--ui-control-focus-shadow);
 }
 
+.life-plan-control-with-unit {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ui-space-md);
+}
+
 .life-plan-control[type="number"] {
   appearance: textfield;
   -moz-appearance: textfield;
