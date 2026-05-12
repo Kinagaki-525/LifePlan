@@ -1,6 +1,173 @@
 ﻿@{
-    ViewData["Title"] = "Privacy Policy";
+    ViewData["Title"] = "プライバシーポリシー";
 }
-<h1>@ViewData["Title"]</h1>
 
-<p>Use this page to detail your site's privacy policy.</p>
+<!-- ========================================
+     プライバシーポリシー本文
+     （ヘッダー・フッターは _Layout.cshtml が自動で表示）
+======================================== -->
+
+<style>
+  /* =============================================
+     プライバシーポリシー専用スタイル
+  ============================================= */
+  .privacy-wrap {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 48px 32px 80px;
+    font-family: 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', 'Noto Sans JP', sans-serif;
+    font-size: 14px;
+    line-height: 1.8;
+    color: #1a1a1a;
+  }
+
+  /* ページタイトル（左に緑のボーダー） */
+  .privacy-wrap .page-title {
+    font-size: 22px;
+    font-weight: 700;
+    border-left: 4px solid #4caf7d;
+    padding-left: 12px;
+    margin-bottom: 24px;
+  }
+
+  /* 冒頭の説明文 */
+  .privacy-wrap .intro-text {
+    font-size: 13px;
+    margin-bottom: 32px;
+  }
+
+  /* 各セクション */
+  .privacy-wrap .policy-section {
+    margin-bottom: 28px;
+  }
+
+  /* セクションタイトル */
+  .privacy-wrap .policy-section h2 {
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+
+  /* セクション本文 */
+  .privacy-wrap .policy-section p {
+    font-size: 13px;
+    margin-bottom: 6px;
+  }
+
+  /* 箇条書きリスト */
+  .privacy-wrap .policy-section ul {
+    list-style: none;
+    padding-left: 16px;
+    margin-top: 4px;
+  }
+
+  .privacy-wrap .policy-section ul li {
+    font-size: 13px;
+    position: relative;
+    padding-left: 14px;
+    margin-bottom: 2px;
+  }
+
+  /* 箇条書きの「・」 */
+  .privacy-wrap .policy-section ul li::before {
+    content: "・";
+    position: absolute;
+    left: 0;
+    color: #888888;
+  }
+</style>
+
+<div class="privacy-wrap">
+
+  <h1 class="page-title">プライバシーポリシー</h1>
+
+  <p class="intro-text">
+    「ふたりの家計」（以下、「本サービス」といいます。）は、ユーザーの個人情報の重要性を認識し、以下の方針に基づき適切に取り扱います。
+  </p>
+
+  <section class="policy-section">
+    <h2>1. 取得する情報</h2>
+    <p>本サービスでは、以下の情報を取得する場合があります。</p>
+    <ul>
+      <li>氏名</li>
+      <li>メールアドレス</li>
+      <li>アカウント情報</li>
+      <li>家計情報、ライフプラン情報</li>
+      <li>お問い合わせ内容</li>
+      <li>Cookie等を用いたアクセス情報</li>
+      <li>利用端末情報、IPアドレス、ブラウザ情報</li>
+    </ul>
+  </section>
+
+  <section class="policy-section">
+    <h2>2. 利用目的</h2>
+    <p>取得した情報は、以下の目的で利用します。</p>
+    <ul>
+      <li>本サービスの提供・運営</li>
+      <li>本人確認</li>
+      <li>お問い合わせ対応</li>
+      <li>サービス改善・機能開発</li>
+      <li>利用状況の分析</li>
+      <li>不正利用防止</li>
+      <li>重要なお知らせの通知</li>
+    </ul>
+  </section>
+
+  <section class="policy-section">
+    <h2>3. アクセス解析ツールについて</h2>
+    <p>本サービスでは、サービス改善のためにアクセス解析ツール（Google Analytics等）を利用する場合があります。</p>
+    <p>これらのツールでは、Cookieを利用して利用状況を収集することがあります。収集される情報は各提供事業者のプライバシーポリシーに基づいて管理されます。</p>
+  </section>
+
+  <section class="policy-section">
+    <h2>4. 広告配信について</h2>
+    <p>本サービスでは、第三者配信の広告サービスを利用する場合があります。</p>
+    <p>広告配信事業者は、ユーザーの興味に応じた広告を表示するため、Cookieを使用する場合があります。</p>
+  </section>
+
+  <section class="policy-section">
+    <h2>5. 個人情報の第三者提供</h2>
+    <p>本サービスは、以下の場合を除き、ユーザーの同意なく第三者に個人情報を提供しません。</p>
+    <ul>
+      <li>法令に基づく場合</li>
+      <li>人の生命、身体または財産の保護に必要な場合</li>
+      <li>公的機関からの要請があった場合</li>
+    </ul>
+  </section>
+
+  <section class="policy-section">
+    <h2>6. 情報の管理</h2>
+    <p>本サービスは、個人情報への不正アクセス、紛失、漏えい等を防止するため、適切な安全管理措置を講じます。</p>
+  </section>
+
+  <section class="policy-section">
+    <h2>7. 外部サービス連携</h2>
+    <p>本サービスでは、以下の外部サービスを利用する場合があります。</p>
+    <ul>
+      <li>Google</li>
+      <li>Firebase</li>
+      <li>Stripe</li>
+      <li>Apple</li>
+      <li>LINE</li>
+    </ul>
+    <p>各サービスとの連携時には、各事業者のプライバシーポリシーが適用される場合があります。</p>
+  </section>
+
+  <section class="policy-section">
+    <h2>8. ユーザーの権利</h2>
+    <p>ユーザーは、自身の個人情報について、開示、訂正、削除を求めることができます。</p>
+    <p>希望される場合は、下記お問い合わせ窓口までご連絡ください。</p>
+  </section>
+
+  <section class="policy-section">
+    <h2>9. プライバシーポリシーの変更</h2>
+    <p>本サービスは、必要に応じて本ポリシーを変更することがあります。変更後の内容は、本サービス上に掲載した時点で効力を生じるものとします。</p>
+  </section>
+
+  <section class="policy-section">
+    <h2>10. お問い合わせ</h2>
+    <p>本ポリシーに関するお問い合わせは、以下までお願いいたします。</p>
+    <p>メールアドレス：<a href="mailto:futari.kakei@gmail.com">futari.kakei@gmail.com</a></p>
+  </section>
+
+</div>
