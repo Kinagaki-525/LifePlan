@@ -1,85 +1,11 @@
 ﻿@{
     ViewData["Title"] = "プライバシーポリシー";
+    ViewData["Description"] = "ふたりの家計のプライバシーポリシーです。取得する情報、利用目的、第三者提供、外部サービス連携、個人情報の管理とお問い合わせ窓口についてご案内します。";
 }
-
-<!-- ========================================
-     プライバシーポリシー本文
-     （ヘッダー・フッターは _Layout.cshtml が自動で表示）
-======================================== -->
-
-<style>
-  /* =============================================
-     プライバシーポリシー専用スタイル
-  ============================================= */
-  .privacy-wrap {
-    max-width: 860px;
-    margin: 0 auto;
-    padding: 48px 32px 80px;
-    font-family: 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', 'Noto Sans JP', sans-serif;
-    font-size: 14px;
-    line-height: 1.8;
-    color: #1a1a1a;
-  }
-
-  /* ページタイトル（左に緑のボーダー） */
-  .privacy-wrap .page-title {
-    font-size: 22px;
-    font-weight: 700;
-    border-left: 4px solid #4caf7d;
-    padding-left: 12px;
-    margin-bottom: 24px;
-  }
-
-  /* 冒頭の説明文 */
-  .privacy-wrap .intro-text {
-    font-size: 13px;
-    margin-bottom: 32px;
-  }
-
-  /* 各セクション */
-  .privacy-wrap .policy-section {
-    margin-bottom: 28px;
-  }
-
-  /* セクションタイトル */
-  .privacy-wrap .policy-section h2 {
-    font-size: 14px;
-    font-weight: 700;
-    margin-bottom: 6px;
-  }
-
-  /* セクション本文 */
-  .privacy-wrap .policy-section p {
-    font-size: 13px;
-    margin-bottom: 6px;
-  }
-
-  /* 箇条書きリスト */
-  .privacy-wrap .policy-section ul {
-    list-style: none;
-    padding-left: 16px;
-    margin-top: 4px;
-  }
-
-  .privacy-wrap .policy-section ul li {
-    font-size: 13px;
-    position: relative;
-    padding-left: 14px;
-    margin-bottom: 2px;
-  }
-
-  /* 箇条書きの「・」 */
-  .privacy-wrap .policy-section ul li::before {
-    content: "・";
-    position: absolute;
-    left: 0;
-    color: #888888;
-  }
-</style>
 
 <div class="privacy-wrap">
 
-  <h1 class="page-title">プライバシーポリシー</h1>
+  <h1 class="page-title">@ViewData["Title"]</h1>
 
   <p class="intro-text">
     「ふたりの家計」（以下、「本サービス」といいます。）は、ユーザーの個人情報の重要性を認識し、以下の方針に基づき適切に取り扱います。
