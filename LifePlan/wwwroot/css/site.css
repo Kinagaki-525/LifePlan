@@ -114,6 +114,7 @@
   --ui-top-worries-padding-block-mobile: 32px 0 40px;
   --ui-top-features-padding-block-pc: 72px 0;
   --ui-top-features-padding-block-mobile: 40px 0;
+  --ui-privacy-content-width: 860px;
 }
 
 html {
@@ -237,6 +238,89 @@ body {
 
 .app-shell {
   min-height: calc(100vh - var(--ui-header-height));
+}
+
+.privacy-wrap {
+  width: min(100%, var(--ui-privacy-content-width));
+  margin: 0 auto;
+  padding: var(--ui-space-2xl) var(--ui-space-xl) var(--ui-space-4xl);
+  color: var(--ui-color-text);
+  font-size: var(--ui-font-size-body);
+  line-height: 1.8;
+}
+
+.privacy-wrap .page-title {
+  display: flex;
+  align-items: center;
+  gap: var(--ui-space-sm);
+  margin: 0 0 var(--ui-space-lg);
+  color: var(--ui-color-text);
+  font-size: var(--ui-font-size-title);
+  font-weight: 700;
+  line-height: var(--ui-line-height-relaxed);
+}
+
+.privacy-wrap .page-title::before {
+  width: 4px;
+  height: 2.5rem;
+  flex: 0 0 auto;
+  background: var(--ui-color-primary);
+  content: "";
+}
+
+.privacy-wrap .intro-text {
+  margin: 0 0 var(--ui-space-xl);
+  color: var(--ui-color-text);
+  font-size: var(--ui-font-size-body);
+}
+
+.privacy-wrap .policy-section {
+  margin-bottom: var(--ui-space-xl);
+}
+
+.privacy-wrap .policy-section h2 {
+  margin: 0 0 var(--ui-space-xs);
+  color: var(--ui-color-text);
+  font-size: var(--ui-font-size-body);
+  font-weight: 700;
+  line-height: var(--ui-line-height-relaxed);
+}
+
+.privacy-wrap .policy-section p {
+  margin: 0 0 var(--ui-space-xs);
+  color: var(--ui-color-text);
+  font-size: var(--ui-font-size-small);
+}
+
+.privacy-wrap .policy-section ul {
+  display: grid;
+  gap: var(--ui-space-2xs);
+  padding: 0;
+  margin: var(--ui-space-xs) 0 0;
+  list-style: none;
+}
+
+.privacy-wrap .policy-section li {
+  position: relative;
+  padding-left: var(--ui-space-lg);
+  color: var(--ui-color-text);
+  font-size: var(--ui-font-size-small);
+}
+
+.privacy-wrap .policy-section li::before {
+  position: absolute;
+  left: var(--ui-space-xs);
+  color: var(--ui-color-muted);
+  content: "\2022";
+}
+
+.privacy-wrap a {
+  color: var(--ui-color-primary);
+}
+
+.privacy-wrap a:hover,
+.privacy-wrap a:focus {
+  color: var(--ui-color-primary-dark);
 }
 
 .app-footer {
