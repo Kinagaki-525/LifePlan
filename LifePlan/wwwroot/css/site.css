@@ -1224,6 +1224,16 @@ body {
   margin: 0 auto;
 }
 
+.top-affiliate-notice {
+  width: min(100%, var(--ui-top-content-width));
+  margin: 0 auto;
+  padding: var(--ui-space-xs) var(--ui-space-lg) 0;
+  color: var(--ui-color-muted);
+  font-size: var(--ui-font-size-small);
+  line-height: var(--ui-line-height-relaxed);
+  text-align: right;
+}
+
 .top-hero,
 .top-worries {
   background: var(--ui-color-surface);
@@ -1300,6 +1310,7 @@ body {
 }
 
 .feature-card {
+  position: relative;
   display: grid;
   min-height: var(--ui-top-feature-card-min-height);
   align-content: center;
@@ -1339,6 +1350,23 @@ body {
 .feature-card__coming {
   color: var(--ui-color-muted);
   background: var(--ui-color-border);
+}
+
+.feature-card__pr {
+  position: absolute;
+  right: var(--ui-space-sm);
+  bottom: var(--ui-space-sm);
+  display: inline-flex;
+  min-width: 2.75rem;
+  min-height: 1.75rem;
+  align-items: center;
+  justify-content: center;
+  padding: 0 var(--ui-space-2xs);
+  border-radius: var(--ui-radius-sm);
+  background: var(--ui-color-border);
+  color: var(--ui-color-text);
+  font-size: var(--ui-top-font-size-small);
+  line-height: var(--ui-line-height-normal);
 }
 
 .app-footer {
