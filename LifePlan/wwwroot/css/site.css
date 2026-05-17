@@ -80,7 +80,6 @@
   --ui-top-divider-width: 80px;
   --ui-top-divider-height: 2px;
   --ui-top-cta-width: 160px;
-  --ui-top-coming-min-height: 32px;
   --ui-top-worry-min-height: 64px;
   --ui-top-feature-card-min-height: 240px;
   --ui-top-footer-min-height: 320px;
@@ -1345,7 +1344,7 @@ body {
 .feature-card__coming {
   display: inline-flex;
   width: var(--ui-top-cta-width);
-  min-height: var(--ui-top-coming-min-height);
+  min-height: var(--ui-button-min-height);
   align-items: center;
   justify-content: center;
   margin: 0 auto;
