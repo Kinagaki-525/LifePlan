@@ -2,6 +2,7 @@ using LifePlan.Application.Interfaces;
 using LifePlan.Application.Options;
 using LifePlan.Application.Services;
 using LifePlan.Extensions;
+using LifePlan.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +11,8 @@ builder.Services.AddControllersWithViews(options => options.ConfigureLifePlanMod
 builder.Services.Configure<AffiliateLinksOptions>(builder.Configuration.GetSection(AffiliateLinksOptions.SectionName));
 builder.Services.AddScoped<IAffiliateLinkService, AffiliateLinkService>();
 builder.Services.AddScoped<ILifePlanPageService, LifePlanPageService>();
+builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("Smtp"));
+builder.Services.AddScoped<IEmailSender, SmtpEmailSender>();
 
 var app = builder.Build();
 

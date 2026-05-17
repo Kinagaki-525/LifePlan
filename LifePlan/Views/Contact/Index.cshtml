@@ -1,0 +1,101 @@
+@model LifePlan.Models.ContactViewModel
+@{
+    ViewData["Title"] = "お問い合わせ";
+    ViewData["Description"] = "ふたりの家計へのお問い合わせフォームです。サービスについてのご相談やご意見、お知らせのご要望などお気軽にご連絡ください。";
+}
+
+<link rel="stylesheet" href="~/css/contact.css" asp-append-version="true" />
+
+<main class="contact-page">
+    <div class="contact-container">
+        <h1 class="contact-heading">お問い合わせフォーム</h1>
+        <p class="contact-description">
+            内容をご記入の上、送信してください。通常1〜2営業日以内にご返信します。
+        </p>
+
+        <form asp-action="Index" asp-controller="Contact" method="post" class="contact-form" novalidate>
+            @Html.AntiForgeryToken()
+
+            @* サーバーエラー表示 *@
+            @if (!ViewData.ModelState.IsValid)
+            {
+                <div class="server-error">
+                    @Html.ValidationSummary(true)
+                </div>
+            }
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label asp-for="Name">お名前 <span class="required">*</span></label>
+                    <input asp-for="Name" placeholder="山田　太郎" class="form-control" />
+                    <span asp-validation-for="Name" class="field-error"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Company">会社名</label>
+                    <input asp-for="Company" placeholder="株式会社〇〇" class="form-control" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Email">メールアドレス <span class="required">*</span></label>
+                <input asp-for="Email" placeholder="example@email.com" class="form-control" />
+                <span asp-validation-for="Email" class="field-error"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Category">お問い合わせ種別 <span class="required">*</span></label>
+                <div class="select-wrapper">
+                    <select asp-for="Category" class="form-control">
+                        <option value="" disabled selected>選択してください</option>
+                        <option value="service">サービスについて</option>
+                        <option value="bug">不具合報告</option>
+                        <option value="lifeplan">家計・ライフプラン相談</option>
+                        <option value="request">要望・改善アイデア</option>
+                        <option value="partnership">提携・広告について</option>
+                        <option value="other">その他</option>
+                    </select>
+                    <span class="select-arrow">∨</span>
+                </div>
+                <span asp-validation-for="Category" class="field-error"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Subject">件名 <span class="required">*</span></label>
+                <input asp-for="Subject" placeholder="お問い合わせの件名" class="form-control" />
+                <span asp-validation-for="Subject" class="field-error"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Message">お問い合わせ内容 <span class="required">*</span></label>
+                <textarea asp-for="Message" rows="6"
+                          placeholder="お問い合わせの詳細をご記入ください"
+                          class="form-control"></textarea>
+                <span asp-validation-for="Message" class="field-error"></span>
+            </div>
+
+            <div class="form-check">
+                <input asp-for="AgreePrivacy" type="checkbox" />
+                <label asp-for="AgreePrivacy">
+                    <a asp-area="" asp-controller="Home" asp-action="Privacy">プライバシーポリシー</a>に同意する
+                </label>
+                <span asp-validation-for="AgreePrivacy" class="field-error"></span>
+            </div>
+
+            <button type="submit" class="btn-submit">送信する</button>
+        </form>
+    </div>
+</main>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        (function ($) {
+            if ($.validator && $.validator.unobtrusive) {
+                $.validator.addMethod("requiredtrue", function (value, element, params) {
+                    return element.checked === true;
+                });
+                $.validator.unobtrusive.adapters.addBool("requiredtrue");
+            }
+        })(jQuery);
+    </script>
+}
