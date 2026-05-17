@@ -80,7 +80,6 @@
   --ui-top-divider-width: 80px;
   --ui-top-divider-height: 2px;
   --ui-top-cta-width: 160px;
-  --ui-top-coming-min-height: 32px;
   --ui-top-worry-min-height: 64px;
   --ui-top-feature-card-min-height: 240px;
   --ui-top-footer-min-height: 320px;
@@ -115,6 +114,12 @@
   --ui-top-features-padding-block-pc: 72px 0;
   --ui-top-features-padding-block-mobile: 40px 0;
   --ui-privacy-content-width: 860px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
 html {
@@ -790,7 +795,6 @@ body {
   width: 100%;
   min-width: 0;
   max-width: 100%;
-  box-sizing: border-box;
   min-height: var(--ui-result-frame-min-height);
   margin-top: var(--ui-space-3xl);
   padding: var(--ui-space-2xl) var(--ui-space-lg) var(--ui-space-lg);
@@ -1340,10 +1344,11 @@ body {
 .feature-card__coming {
   display: inline-flex;
   width: var(--ui-top-cta-width);
-  min-height: var(--ui-top-coming-min-height);
+  min-height: var(--ui-button-min-height);
   align-items: center;
   justify-content: center;
   margin: 0 auto;
+  padding: 0;
   font-size: var(--ui-top-font-size-small);
 }
 
@@ -1367,6 +1372,13 @@ body {
   color: var(--ui-color-text);
   font-size: var(--ui-top-font-size-small);
   line-height: var(--ui-line-height-normal);
+}
+
+.feature-card__tracking-pixel {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  border: 0;
 }
 
 .app-footer {
