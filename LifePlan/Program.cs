@@ -1,12 +1,15 @@
 using LifePlan.Application.Interfaces;
 using LifePlan.Application.Services;
 using LifePlan.Extensions;
+using LifePlan.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews(options => options.ConfigureLifePlanModelBindingMessages());
 builder.Services.AddScoped<ILifePlanPageService, LifePlanPageService>();
+builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("Smtp"));
+builder.Services.AddScoped<IEmailSender, SmtpEmailSender>();
 
 var app = builder.Build();
 
