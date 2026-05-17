@@ -1,4 +1,5 @@
 using LifePlan.Application.Interfaces;
+using LifePlan.Application.Options;
 using LifePlan.Application.Services;
 using LifePlan.Extensions;
 
@@ -6,6 +7,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews(options => options.ConfigureLifePlanModelBindingMessages());
+builder.Services.Configure<AffiliateLinksOptions>(builder.Configuration.GetSection(AffiliateLinksOptions.SectionName));
+builder.Services.AddScoped<IAffiliateLinkService, AffiliateLinkService>();
 builder.Services.AddScoped<ILifePlanPageService, LifePlanPageService>();
 
 var app = builder.Build();

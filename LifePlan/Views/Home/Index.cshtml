@@ -1,3 +1,5 @@
+@model HomeIndexViewModel
+
 @{
     ViewData["Title"] = "ふたりの家計 | カップル・夫婦向けライフプラン＆家計管理アプリ";
     ViewData["Description"] = "婚約から子育てまで、カップル・夫婦のお金の悩みをサポート。ライフプランシミュレーションやFP相談など、ふたりの未来設計をまるごとサポートする無料アプリです。";
@@ -102,13 +104,26 @@
                     <article class="feature-card">
                         <h3 class="feature-card__title">FP相談</h3>
                         <p class="feature-card__text">お金のプロに無料で相談できる</p>
-                        <a class="app-button app-button--primary feature-card__button"
-                           href="https://px.a8.net/svt/ejp?a8mat=4B3HQI+16V8C2+20NK+63WO2"
-                           target="_blank"
-                           rel="sponsored nofollow noopener noreferrer"
-                           aria-label="FP相談を使ってみる">使ってみる</a>
-                        <span class="feature-card__pr" aria-label="広告">PR</span>
-                        <img border="0" width="1" height="1" src="https://www15.a8.net/0.gif?a8mat=4B3HQI+16V8C2+20NK+63WO2" alt="">
+                        @if (Model.FpConsultationLink is { } fpConsultationLink)
+                        {
+                            <a class="app-button app-button--primary feature-card__button"
+                               href="@fpConsultationLink.Url"
+                               target="_blank"
+                               rel="@fpConsultationLink.Rel"
+                               aria-label="FP相談を使ってみる">使ってみる</a>
+                            @if (fpConsultationLink.IsSponsored)
+                            {
+                                <span class="feature-card__pr" aria-label="広告">PR</span>
+                            }
+                            @if (fpConsultationLink.HasTrackingPixel)
+                            {
+                                <img class="feature-card__tracking-pixel" src="@fpConsultationLink.TrackingPixelUrl" alt="">
+                            }
+                        }
+                        else
+                        {
+                            <span class="feature-card__coming" aria-label="準備中">Coming Soon...</span>
+                        }
                     </article>
                 </li>
             </ul>
