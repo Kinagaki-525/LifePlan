@@ -117,6 +117,12 @@
   --ui-privacy-content-width: 860px;
 }
 
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 html {
   font-size: var(--ui-font-size-root-sm);
 }
@@ -790,7 +796,6 @@ body {
   width: 100%;
   min-width: 0;
   max-width: 100%;
-  box-sizing: border-box;
   min-height: var(--ui-result-frame-min-height);
   margin-top: var(--ui-space-3xl);
   padding: var(--ui-space-2xl) var(--ui-space-lg) var(--ui-space-lg);
