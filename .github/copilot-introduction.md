@@ -69,7 +69,7 @@ MyApp
 
 ## Document Priority
 
-- 実装方針に迷った場合は、`docs/implementation-plan.md` より `.github/copilot-introduction.md` の責務分離・依存方向ルールを優先する
+- 実装方針に迷った場合は、対象機能の実装方針（例：`docs/simulator/implementation-plan.md`, `docs/articles/implementation-plan.md`）より `.github/copilot-introduction.md` の責務分離・依存方向ルールを優先する
 - 実装計画と作業ルールが矛盾する場合は、作業ルールに合わせて実装し、必要に応じて実装計画側の更新を提案する
 
 ## Code Readability
@@ -251,7 +251,7 @@ MyApp
 
 ## CSS and UI
 
-- Figma由来のUI実装やCSS追加を行う場合は、`docs/ui-implementation-guidelines.md` を参照する
+- Figma由来のUI実装やCSS追加を行う場合は、`docs/common/ui-implementation-guidelines.md` を参照する
 - Figmaから取得したReact、Tailwind、絶対配置コードはそのまま貼り付けず、Razor、Bootstrap、`wwwroot/css/site.css` に合わせて変換する
 - まず `wwwroot/css/site.css` の既存方針に合わせる
 - パディング、マージン、フォントサイズ、角丸、影、主要カラーは、可能な限り共通トークンまたは共通CSSクラスへ寄せる

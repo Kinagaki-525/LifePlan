@@ -5,6 +5,23 @@ theme:
   language: ja
 
 nav:
-  - 統合仕様: index.md
-  - 詳細元資料: web-app-spec.md
-  - UI実装ガイドライン: ui-implementation-guidelines.md
+  - ドキュメント索引: index.md
+  - シミュレーター:
+      - 統合仕様: simulator/index.md
+      - 実装方針: simulator/implementation-plan.md
+      - 詳細元資料: simulator/web-app-spec.md
+      - 分割仕様:
+          - ガイド: simulator/specs/guide.md
+          - 概要: simulator/specs/overview.md
+          - 入力仕様: simulator/specs/input-spec.md
+          - 計算仕様: simulator/specs/calculation-spec.md
+          - 出力仕様: simulator/specs/output-spec.md
+          - 未決事項: simulator/specs/open-issues.md
+  - 記事機能:
+      - 概要: articles/README.md
+      - 仕様: articles/feature-spec.md
+      - 実装方針: articles/implementation-plan.md
+      - 記事作成ガイド: articles/content-authoring-guide.md
+      - 未決事項: articles/open-issues.md
+  - 共通:
+      - UI実装ガイドライン: common/ui-implementation-guidelines.md

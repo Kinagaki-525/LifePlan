@@ -2,7 +2,7 @@
 
 ## 1. 概要
 
-本ドキュメントは、`docs/index.md` で定義されたライフプランシミュレーター機能の実装方針を示す。
+本ドキュメントは、`docs/simulator/index.md` で定義されたライフプランシミュレーター機能の実装方針を示す。
 
 ## 2. 画面構成
 
@@ -36,7 +36,7 @@ LifePlan/
 │       └─ Index.cshtml          # 入力・結果画面
 ├─ ViewModels/
 │  ├─ HomeViewModel.cs           # TOPページ用（不要なら省略可）
-│  └─ LifePlanViewModel.cs       # シミュレーター画面データ（入力項目はdocs/index.md 3.入力仕様を参照）
+│  └─ LifePlanViewModel.cs       # シミュレーター画面データ（入力項目はdocs/simulator/index.md 3.入力仕様を参照）
 ├─ Application/
 │  ├─ Interfaces/
 │  │  └─ ILifePlanPageService.cs # シミュレーター画面サービス契約
@@ -52,7 +52,7 @@ LifePlan/
 │  ├─ Entities/
 │  │  └─ LifePlanData.cs         # 業務データ
 │  ├─ Logic/
-│  │  └─ LifePlanCalculator.cs   # 計算ロジック（計算仕様はdocs/index.md 4.計算仕様を参照）
+│  │  └─ LifePlanCalculator.cs   # 計算ロジック（計算仕様はdocs/simulator/index.md 4.計算仕様を参照）
 │  ├─ ReferenceData/
 │  │  ├─ EducationCostMaster.cs  # 教育費マスタ
 │  │  ├─ PensionReferenceData.cs # 年金参考データ

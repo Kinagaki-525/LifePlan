@@ -9,16 +9,17 @@
 ## Source of Truth
 
 - 作業ルールと責務分離は `.github/copilot-introduction.md` を優先する。
-- 要件仕様は `docs/index.md` を正とする。
-- 実装方針・PR分割は `docs/implementation-plan.md` を参照する。
+- ライフプランシミュレーターの要件仕様は `docs/simulator/index.md` を正とする。
+- ライフプランシミュレーターの実装方針・PR分割は `docs/simulator/implementation-plan.md` を参照する。
+- 記事表示機能の要件仕様・実装方針は `docs/articles/` 配下を参照する。
 
 ## Conflict Resolution
 
 - 各ドキュメントに矛盾がある場合は、実装前に関連箇所を確認する。
 - 優先順位だけで安全に判断できる軽微な差分は、以下の順で判断する。
   1. `.github/copilot-introduction.md`
-  2. `docs/index.md`
-  3. `docs/implementation-plan.md`
+  2. 対象機能の仕様書（例：`docs/simulator/index.md`, `docs/articles/feature-spec.md`）
+  3. 対象機能の実装方針（例：`docs/simulator/implementation-plan.md`, `docs/articles/implementation-plan.md`）
 - 仕様・責務・画面挙動・データ構造に影響する矛盾がある場合は、実装前にユーザーへ質問する。
 - 判断に迷う場合も、推測で進めずユーザーへ確認する。
 

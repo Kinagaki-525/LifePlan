@@ -179,4 +179,4 @@
 
 ## 7. 実装時の確認事項
 - 住宅ローン計算式は、借入額 data10 を元本、想定金利 data11 を年利（%）としてWebアプリ側で実装する
-- 未確定事項は `docs/specs/open-issues.md` に集約する
+- 未確定事項は `docs/simulator/specs/open-issues.md` に集約する
