@@ -1,14 +1,26 @@
+using LifePlan.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using LifePlan.Models;
+using LifePlan.ViewModels.Home;
 using System.Diagnostics;
 
 namespace LifePlan.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly IAffiliateLinkService affiliateLinkService;
+
+        public HomeController(IAffiliateLinkService affiliateLinkService)
+        {
+            this.affiliateLinkService = affiliateLinkService;
+        }
+
         public IActionResult Index()
         {
-            return View();
+            return View(new HomeIndexViewModel
+            {
+                FpConsultationLink = affiliateLinkService.GetFpConsultationLink()
+            });
         }
 
         public IActionResult Privacy()

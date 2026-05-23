@@ -23,6 +23,7 @@ MyApp
 │  ├─ Factories
 │  ├─ Validators
 │  ├─ Normalizers
+│  ├─ Options
 │  └─ Results
 ├─ Domain
 │  ├─ Entities
@@ -156,6 +157,14 @@ MyApp
 - 入力値の妥当性検証は持たず、Validator が検証済みの入力を前提に扱う
 - View 表示用の選択肢や画面状態の補完は持たない
 
+### Application/Options
+
+- `appsettings.json` などの設定値を ASP.NET Core の Options パターンで受け取る型を置く
+- Application Service や Factory が利用する、アプリケーション機能単位の設定契約を表現する
+- 接続文字列、永続化技術、外部APIクライアント実装など Infrastructure 寄りの詳細設定は置かない
+- View や Controller から直接参照させず、Service や Factory を通して ViewModel へ変換する
+- 設定値の妥当性検証、業務判定、画面フロー制御は持たない
+
 ### Application/Results
 
 - Application Service の処理結果を表す型を置く
@@ -220,9 +229,11 @@ MyApp
 - `Controllers` は `Application` を呼ぶ
 - `Controllers` は原則として `Application/Interfaces` の Service interface に依存する
 - `Application` は `Domain` と `Application/Interfaces` に依存する
+- `Application/Services` や `Application/Factories` は、必要に応じて `Application/Options` の設定契約を利用してよい
 - `Infrastructure` は `Application/Interfaces` を実装する
 - `Views` は `ViewModels` を使う
 - `Controllers` から `Infrastructure` を直接参照しない
+- `Views` や `Controllers` から `Application/Options` を直接参照しない
 - `Views` に `Domain/Entities` を直接渡さない
 - `Program.cs` は起動時設定として `Extensions` を呼び出してよい
 - `Extensions` は設定に必要な範囲で `Application` の定数・メッセージ定義などを参照してよいが、Application Service や Domain の処理を実行しない
@@ -250,6 +261,15 @@ MyApp
 - 既存 UI に沿った軽微なスタイル調整を優先する
 - 不要に複雑なセレクタや過剰な詳細度は避ける
 - デザイン変更は既存レイアウトとの整合性を保つ
+
+## Affiliate Links
+
+- アフィリエイトリンクのクリックURL、計測ピクセルURL、`rel` 属性、PR表示有無は View に直接書かず、設定値と ViewModel 経由で扱う
+- アフィリエイト事業者が発行したURLは、分解・推測・再構成せず、発行コードのURL全体を設定値として保持する
+- 計測ピクセルは表示用画像ではなく広告計測用リソースとして扱い、URLが設定されている場合のみ View で `<img>` を出力する
+- 広告リンクには原則として `sponsored nofollow noopener noreferrer` を付ける。事業者テンプレートより安全側の属性が必要な場合は、設定値で明示する
+- PR表示やアフィリエイト利用表示は、リンク本体とセットで確認する。複数画面へ展開する場合も、PR表示漏れが起きないよう ViewModel の状態から出し分ける
+- View はカード、テキストリンク、ボタンなどの見た目だけを担当し、リンク取得・既定値補完・空URL時の扱いは Application Service / Factory に寄せる
 
 ## wwwroot/js
 
