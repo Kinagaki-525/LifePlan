@@ -35,14 +35,16 @@ LifePlan/
 │  │  └─ IArticleRepository.cs
 │  ├─ Mappers/
 │  │  └─ ArticlePageMapper.cs
-│  ├─ Options/
-│  │  └─ MicroCmsOptions.cs
+│  ├─ ReferenceData/
+│  │  └─ ArticleCategoryCatalog.cs
 │  ├─ Results/
 │  │  ├─ ArticleListResult.cs
 │  │  └─ ArticleDetailResult.cs
 │  └─ Services/
 │     └─ ArticlePageService.cs
 ├─ Infrastructure/
+│  ├─ Options/
+│  │  └─ MicroCmsOptions.cs
 │  └─ Repositories/
 │     └─ MicroCmsArticleRepository.cs
 └─ wwwroot/
@@ -60,8 +62,9 @@ LifePlan/
 | `IArticlePageService` / `ArticlePageService` | 一覧・詳細画面の処理フロー、取得失敗時の画面用結果生成 |
 | `IArticleRepository` | アプリケーションから見た記事取得契約 |
 | `MicroCmsArticleRepository` | `HttpClient` による microCMS API 呼び出し |
-| `MicroCmsOptions` | microCMS の設定値受け取り |
+| `MicroCmsOptions` | Infrastructure 側で microCMS 接続設定を受け取る |
 | `MicroCmsArticleDto` | microCMS レスポンス構造 |
+| `ArticleCategoryCatalog` | カテゴリ表示名とURL用slugの固定対応表 |
 | `ArticlePageMapper` | DTO から ViewModel への変換 |
 | `Article*ViewModel` | Razor 表示用データ |
 
@@ -77,12 +80,17 @@ LifePlan/
 
 `MicroCmsOptions` には `ServiceDomain`, `ApiKey`, `ArticlesEndpoint` を持たせる。
 
+`MicroCmsOptions` は外部APIクライアント実装が利用する設定のため、`Application/Options` ではなく `Infrastructure/Options` に配置する。
+
 ## 5. 取得処理
 
 - 一覧は `GET /api/v1/articles` で取得する。
 - 詳細は `GET /api/v1/articles/{id}` で取得する。
+- 一覧のページサイズは6件固定とする。
+- 一覧取得時の `limit` は6、`offset` は `(page - 1) * 6` とする。
 - APIキーは `X-MICROCMS-API-KEY` ヘッダーに付与する。
 - `HttpClient.BaseAddress` は `https://{ServiceDomain}.microcms.io/` とする。
+- カテゴリ指定がある場合は、`ArticleCategoryCatalog` で slug から日本語カテゴリ名へ変換し、microCMS の `filters` に渡す。
 - `CancellationToken` を Controller から Service、Repository へ渡せる形を優先する。
 - API 呼び出し失敗時はログに残し、画面には安全なメッセージだけを返す。
 
@@ -99,27 +107,35 @@ LifePlan/
 
 依存関係を増やさない方針を優先するなら、初期実装は信頼前提とし、編集権限を限定する。ただし、外部ライターや複数編集者が本文HTMLを触る運用ならサニタイズ導入を検討する。
 
+記事詳細ページのデザインは仮仕様とし、一覧ページと同じ右サイドバー用 ViewModel を再利用する。本文表示、記事ヘッダー、戻るリンク、見つからない表示は `ArticleDetailViewModel` に必要な表示用プロパティを持たせ、View で外部API DTOを直接参照しない。
+
 ## 7. 実装ステップ
 
-1. `MicroCmsOptions` と設定キーを追加する。
+1. `MicroCmsOptions` と設定キーを `Infrastructure` 側に追加する。
 2. microCMS レスポンス DTO を追加する。
-3. `IArticleRepository` と `MicroCmsArticleRepository` を追加し、GET取得を実装する。
-4. `ArticlePageService` と Result を追加する。
-5. DTO から ViewModel への Mapper を追加する。
-6. `ArticlesController` を追加する。
-7. `Views/Articles/Index.cshtml` と `Details.cshtml` を追加する。
-8. 一覧ページのカテゴリフィルタ、記事カード、ページネーション、右サイドバーを実装する。
-9. `_Layout.cshtml` の記事導線を有効化する。
-10. 必要に応じて記事画面用 CSS を追加する。
-11. Service / Mapper / Repository のテスト方針を確定し、可能な範囲で単体テストを追加する。
-12. `dotnet build LifePlan.sln -m:1` を実行する。
-13. 計算ロジックには触れないため、通常は `dotnet test LifePlan.sln -m:1` は任意。ただし Mapper や Service テストを追加した場合は実行する。
+3. `ArticleCategoryCatalog` を追加し、カテゴリ表示名とslugの固定対応表を定義する。
+4. `IArticleRepository` と `MicroCmsArticleRepository` を追加し、GET取得を実装する。
+5. `ArticlePageService` と Result を追加する。
+6. DTO から ViewModel への Mapper を追加する。
+7. `ArticlesController` を追加する。
+8. `Views/Articles/Index.cshtml` と `Details.cshtml` を追加する。
+9. 一覧ページのカテゴリフィルタ、記事カード、ページネーション、右サイドバーを実装する。
+10. `_Layout.cshtml` の記事導線を有効化する。
+11. 必要に応じて記事画面用 CSS を追加する。
+12. Service / Mapper / Repository のテスト方針を確定し、可能な範囲で単体テストを追加する。
+13. `dotnet build LifePlan.sln -m:1` を実行する。
+14. 計算ロジックには触れないため、通常は `dotnet test LifePlan.sln -m:1` は任意。ただし Mapper や Service テストを追加した場合は実行する。
 
 ## 8. テスト観点
 
 - 一覧レスポンスを ViewModel に変換できる。
 - 詳細レスポンスを ViewModel に変換できる。
+- 詳細レスポンスの `metaDescription` が空の場合に `description` を代替利用できる。
+- 詳細取得で記事が見つからない場合に、エラー詳細を露出しない表示用結果を返せる。
 - `tags` のカンマ区切りが表示用のタグ配列へ変換される。
+- カテゴリslugが日本語カテゴリ名へ変換され、microCMS の絞り込み条件に使われる。
+- `page` から `limit=6` と `offset=(page - 1) * 6` が生成される。
+- 範囲外ページ指定時に1ページ目へ戻せる。
 - サムネイルが null の場合でも画面表示が壊れない。
 - microCMS 取得失敗時に、Controller がエラー詳細を露出しない ViewModel を返す。
 - APIキー未設定時に起動時または取得時に分かりやすく失敗する。
