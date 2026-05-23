@@ -1,10 +1,12 @@
-@model LifePlan.Models.ContactViewModel
+@model ContactViewModel
 @{
     ViewData["Title"] = "お問い合わせ";
     ViewData["Description"] = "ふたりの家計へのお問い合わせフォームです。サービスについてのご相談やご意見、お知らせのご要望などお気軽にご連絡ください。";
 }
 
-<link rel="stylesheet" href="~/css/contact.css" asp-append-version="true" />
+@section Styles {
+    <link rel="stylesheet" href="~/css/contact.css" asp-append-version="true" />
+}
 
 <main class="contact-page">
     <div class="contact-container">
@@ -16,7 +18,6 @@
         <form asp-action="Index" asp-controller="Contact" method="post" class="contact-form" novalidate>
             @Html.AntiForgeryToken()
 
-            @* サーバーエラー表示 *@
             @if (!ViewData.ModelState.IsValid)
             {
                 <div class="server-error">

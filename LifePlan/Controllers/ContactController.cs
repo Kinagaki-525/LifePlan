@@ -1,41 +1,41 @@
 using LifePlan.Application.Interfaces;
-using LifePlan.Models;
+using LifePlan.ViewModels.Contact;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LifePlan.Controllers
 {
     public class ContactController : Controller
     {
-        private readonly IEmailSender _emailSender;
-        private readonly ILogger<ContactController> _logger;
+        private readonly IContactPageService contactPageService;
 
-        public ContactController(IEmailSender emailSender, ILogger<ContactController> logger)
+        public ContactController(IContactPageService contactPageService)
         {
-            _emailSender = emailSender;
-            _logger = logger;
+            this.contactPageService = contactPageService;
         }
 
         [HttpGet]
-        public IActionResult Index() => View(new ContactViewModel());
+        public IActionResult Index()
+        {
+            return View(contactPageService.CreateInitialPage());
+        }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Index(ContactViewModel model)
         {
-            if (!ModelState.IsValid) return View(model);
+            var result = await contactPageService.Submit(model, !ModelState.IsValid);
 
-            try
+            if (result.IsSent)
             {
-                await _emailSender.SendContactAsync(model);
                 return RedirectToAction(nameof(Thanks));
             }
-            catch (Exception ex)
+
+            if (!string.IsNullOrWhiteSpace(result.ErrorMessage))
             {
-                _logger.LogError(ex, "メール送信失敗");
-                ModelState.AddModelError(string.Empty, "送信に失敗しました。しばらくしてから再度お試しください。"
-                );
-                return View(model);
+                ModelState.AddModelError(string.Empty, result.ErrorMessage);
             }
+
+            return View(result.Page);
         }
 
         [HttpGet]

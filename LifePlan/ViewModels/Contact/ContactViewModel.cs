@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace LifePlan.Models  // ← プロジェクト名に変更
+namespace LifePlan.ViewModels.Contact
 {
     public class ContactViewModel
     {

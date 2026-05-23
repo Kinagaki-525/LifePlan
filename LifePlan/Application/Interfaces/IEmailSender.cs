@@ -1,10 +1,9 @@
-using System.Threading.Tasks;
-using LifePlan.Models;
+using LifePlan.Application.Dto;
 
 namespace LifePlan.Application.Interfaces
 {
     public interface IEmailSender
     {
-        Task SendContactAsync(ContactViewModel model);
+        Task SendContactAsync(ContactEmailMessage message);
     }
 }

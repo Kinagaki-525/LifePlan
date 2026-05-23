@@ -1,14 +1,10 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
-namespace LifePlan.Models
+namespace LifePlan.ViewModels.Contact
 {
     public sealed class RequiredTrueAttribute : ValidationAttribute, IClientModelValidator
     {
-        public RequiredTrueAttribute()
-        {
-        }
-
         public override bool IsValid(object? value)
         {
             return value is bool boolean && boolean;
