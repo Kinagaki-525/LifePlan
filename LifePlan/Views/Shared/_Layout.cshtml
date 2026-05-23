@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/LifePlan.styles.css" asp-append-version="true" />
+    @await RenderSectionAsync("Styles", required: false)
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-X680Q0X8C8"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -93,9 +94,7 @@
                 <span>&copy;2026ふたりの家計</span>
                 @* TODO: 公開時にコメントアウトを削除 *@
                 <a asp-area="" asp-controller="Home" asp-action="Privacy">プライバシーポリシー</a>
-                @*
-                <a asp-area="" asp-controller="Home" asp-action="Privacy">お問い合わせ</a>
-                *@
+                <a asp-area="" asp-controller="Contact" asp-action="Index">お問い合わせ</a>
             </div>
         </div>
     </footer>
