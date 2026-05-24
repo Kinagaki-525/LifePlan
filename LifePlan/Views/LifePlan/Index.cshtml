@@ -19,6 +19,10 @@
     var chartJsonOptions = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
 }
 
+@section Styles {
+    <link rel="stylesheet" href="~/css/life-plan.css" asp-append-version="true" />
+}
+
 <section class="life-plan-page">
     <div class="life-plan-page__heading">
         <h1 class="life-plan-page__title">ライフプランシミュレーター</h1>
@@ -526,6 +530,11 @@
                         <h2 id="simulation-graph-title" class="life-plan-result-frame__label">シミュレーショングラフ</h2>
 
                         <div class="life-plan-chart" data-life-plan-chart>
+                            <fieldset class="life-plan-chart__series">
+                                <legend class="life-plan-chart__series-title">表示項目</legend>
+                                <div class="life-plan-chart__series-options" data-life-plan-chart-series-options></div>
+                            </fieldset>
+
                             <div class="life-plan-chart__canvas-wrap">
                                 <canvas class="life-plan-chart__canvas" data-life-plan-chart-canvas aria-label="収入、支出、貯蓄合計の年次推移グラフ" role="img">
                                     グラフを表示できない環境です。キャッシュフロー表をご確認ください。

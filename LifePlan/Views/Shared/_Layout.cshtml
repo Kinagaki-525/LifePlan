@@ -4,19 +4,45 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - ふたりの家計</title>
+    @if (ViewData["Description"] is string description && !string.IsNullOrWhiteSpace(description))
+    {
+        <meta name="description" content="@description" />
+    }
     <script type="importmap"></script>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/LifePlan.styles.css" asp-append-version="true" />
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-X680Q0X8C8"></script>
+
+    <!-- Google Tag Manager -->
+    @await RenderSectionAsync("Styles", required: false)
     <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-X680Q0X8C8');
+        (function (window, document, tagName, dataLayerName, containerId) {
+            window[dataLayerName] = window[dataLayerName] || [];
+            window[dataLayerName].push({
+                'gtm.start': new Date().getTime(),
+                event: 'gtm.js'
+            });
+
+            var firstScript = document.getElementsByTagName(tagName)[0];
+            var gtmScript = document.createElement(tagName);
+            var dataLayerQuery = dataLayerName !== 'dataLayer' ? '&l=' + dataLayerName : '';
+
+            gtmScript.async = true;
+            gtmScript.src = 'https://www.googletagmanager.com/gtm.js?id=' + containerId + dataLayerQuery;
+            firstScript.parentNode.insertBefore(gtmScript, firstScript);
+        })(window, document, 'script', 'dataLayer', 'GTM-MW9PVDB6');
     </script>
+    <!-- End Google Tag Manager -->
 </head>
 <body>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript>
+        <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MW9PVDB6"
+                height="0"
+                width="0"
+                style="display:none;visibility:hidden"></iframe>
+    </noscript>
+    <!-- End Google Tag Manager (noscript) -->
     @{
         var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
         var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
@@ -88,10 +114,8 @@
             <div class="app-footer__bottom">
                 <span>&copy;2026ふたりの家計</span>
                 @* TODO: 公開時にコメントアウトを削除 *@
-                @*
                 <a asp-area="" asp-controller="Home" asp-action="Privacy">プライバシーポリシー</a>
-                <a asp-area="" asp-controller="Home" asp-action="Privacy">お問い合わせ</a>
-                *@
+                <a asp-area="" asp-controller="Contact" asp-action="Index">お問い合わせ</a>
             </div>
         </div>
     </footer>
