@@ -17,4 +17,4 @@
 - API キーはコードやクライアント JavaScript に置かず、Azure App Service の環境変数またはローカルの User Secrets で管理する。
 - Controller は Application Service の interface に依存し、外部 API 呼び出しの詳細を持たない。
 - microCMS のレスポンス DTO と画面表示用 ViewModel は分ける。
-- 記事本文 HTML の表示は XSS リスクを考慮し、許可する HTML の扱いを実装前に決める。
+- 記事本文 HTML はサーバー側でサニタイズし、許可済み HTML だけを ViewModel 経由で表示する。
