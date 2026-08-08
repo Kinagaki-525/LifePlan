@@ -7,4 +7,8 @@
     <UserSecretsId>d7170844-b737-42f5-8f41-ddf3ea65538c</UserSecretsId>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="HtmlSanitizer" Version="9.0.892" />
+  </ItemGroup>
+
 </Project>

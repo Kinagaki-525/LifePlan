@@ -1,0 +1,160 @@
+@model ArticleDetailViewModel
+
+@{
+    ViewData["Title"] = Model.Title;
+    ViewData["Description"] = Model.MetaDescription;
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/articles.css" asp-append-version="true" />
+}
+
+<section class="articles-page" aria-labelledby="article-detail-title">
+    <div class="articles-page__inner">
+        @if (Model.HasError)
+        {
+            <article class="article-detail article-detail--message">
+                <a class="article-detail__back" href="@Model.BackUrl">記事一覧へ戻る</a>
+                <h1 id="article-detail-title" class="article-detail__title">@Model.Title</h1>
+                <p class="article-alert" role="alert">@Model.ErrorMessage</p>
+            </article>
+        }
+        else
+        {
+            <div class="articles-page__layout">
+                <article class="article-detail">
+                    @if (Model.Breadcrumbs.Count > 0)
+                    {
+                        <nav class="article-breadcrumb" aria-label="パンくずリスト">
+                            <ol class="article-breadcrumb__list">
+                                @foreach (var breadcrumb in Model.Breadcrumbs)
+                                {
+                                    <li class="article-breadcrumb__item">
+                                        @if (!string.IsNullOrWhiteSpace(breadcrumb.Url))
+                                        {
+                                            <a class="article-breadcrumb__link" href="@breadcrumb.Url">@breadcrumb.Text</a>
+                                        }
+                                        else
+                                        {
+                                            <span class="article-breadcrumb__current" aria-current="page">@breadcrumb.Text</span>
+                                        }
+                                    </li>
+                                }
+                            </ol>
+                        </nav>
+                    }
+
+                    <header class="article-detail__header">
+                        @if (!string.IsNullOrWhiteSpace(Model.CategoryUrl))
+                        {
+                            <a class="article-label" href="@Model.CategoryUrl">@Model.CategoryDisplayName</a>
+                        }
+                        else if (!string.IsNullOrWhiteSpace(Model.CategoryDisplayName))
+                        {
+                            <span class="article-label">@Model.CategoryDisplayName</span>
+                        }
+
+                        <h1 id="article-detail-title" class="article-detail__title">@Model.Title</h1>
+
+                        @if (!string.IsNullOrWhiteSpace(Model.MetaDescription))
+                        {
+                            <p class="article-detail__lead">@Model.MetaDescription</p>
+                        }
+
+                        <div class="article-detail__meta">
+                            @if (!string.IsNullOrWhiteSpace(Model.PublishedDateText))
+                            {
+                                <time class="article-detail__date">@Model.PublishedDateText</time>
+                            }
+
+                            @if (Model.Tags.Count > 0)
+                            {
+                                <ul class="article-detail__tags" aria-label="タグ">
+                                    @foreach (var tag in Model.Tags)
+                                    {
+                                        <li>#@tag</li>
+                                    }
+                                </ul>
+                            }
+                        </div>
+                    </header>
+
+                    @if (!string.IsNullOrWhiteSpace(Model.ThumbnailUrl))
+                    {
+                        <img class="article-detail__thumbnail"
+                             src="@Model.ThumbnailUrl"
+                             width="@(Model.ThumbnailWidth ?? 960)"
+                             height="@(Model.ThumbnailHeight ?? 540)"
+                             alt="" />
+                    }
+
+                    @if (!string.IsNullOrWhiteSpace(Model.PointSummary))
+                    {
+                        <section class="article-detail-points" aria-labelledby="article-detail-points-title">
+                            <h2 id="article-detail-points-title" class="article-detail-points__title">この記事のポイント</h2>
+                            <p class="article-detail-points__text">@Model.PointSummary</p>
+                        </section>
+                    }
+
+                    <div class="article-detail__body">
+                        @Html.Raw(Model.BodyText)
+                    </div>
+                </article>
+
+                @if (Model.Sidebar is not null)
+                {
+                    <aside class="article-sidebar" aria-label="記事サイドバー">
+                        <section class="article-sidebar-cta">
+                            <h2 class="article-sidebar-cta__title">@Model.Sidebar.CtaHeading</h2>
+                            <a class="article-sidebar-cta__button" href="@Model.Sidebar.CtaUrl">@Model.Sidebar.CtaButtonText</a>
+                        </section>
+
+                        <section class="article-sidebar-section" aria-labelledby="recent-articles-title">
+                            <h2 id="recent-articles-title" class="article-sidebar-section__title">新着記事</h2>
+                            @if (Model.Sidebar.RecentArticles.Count == 0)
+                            {
+                                <p class="article-sidebar-section__empty">新着記事はまだありません。</p>
+                            }
+                            else
+                            {
+                                <ul class="article-recent-list">
+                                    @foreach (var article in Model.Sidebar.RecentArticles)
+                                    {
+                                        <li>
+                                            <a class="article-recent-list__item" href="@article.DetailUrl">
+                                                <img class="article-recent-list__thumbnail"
+                                                     src="@article.ThumbnailUrl"
+                                                     width="96"
+                                                     height="72"
+                                                     alt="" />
+                                                <span class="article-recent-list__body">
+                                                    <span class="article-recent-list__title">@article.Title</span>
+                                                    <time class="article-recent-list__date">@article.PublishedDateText</time>
+                                                </span>
+                                            </a>
+                                        </li>
+                                    }
+                                </ul>
+                            }
+                        </section>
+
+                        <section class="article-sidebar-section" aria-labelledby="article-categories-title">
+                            <h2 id="article-categories-title" class="article-sidebar-section__title">カテゴリ</h2>
+                            <ul class="article-sidebar-categories">
+                                @foreach (var category in Model.Sidebar.Categories)
+                                {
+                                    <li>
+                                        <a class="article-sidebar-categories__item" href="@category.Url">
+                                            <span>@category.DisplayName</span>
+                                            <span>@category.Count</span>
+                                        </a>
+                                    </li>
+                                }
+                            </ul>
+                        </section>
+                    </aside>
+                }
+            </div>
+        }
+    </div>
+</section>

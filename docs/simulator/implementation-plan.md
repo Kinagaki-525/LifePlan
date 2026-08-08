@@ -166,8 +166,8 @@ Validator は UI 制御に頼らず POST 値を必ず検証する。
 ## 5. 確認方法
 
 変更時は以下を確認する：
-- ビルド成功 (`dotnet build LifePlan.sln -m:1`)
-- 単体テスト成功 (`dotnet test LifePlan.sln -m:1`)
+- ビルド成功 (`dotnet build LifePlan.slnx -m:1`)
+- 単体テスト成功 (`dotnet test LifePlan.slnx -m:1`)
 - 画面が表示される
 - 計算結果が仕様通り
 - 未入力時・不正値時・有効値時のフォーム送信を確認する

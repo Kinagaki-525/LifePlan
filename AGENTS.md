@@ -34,6 +34,6 @@
 
 ## Verification
 
-- 変更後は可能なら `dotnet build LifePlan.sln -m:1` を実行する。
-- 計算ロジックやテストに関わる変更後は可能なら `dotnet test LifePlan.sln -m:1` を実行する。
+- 変更後は可能なら `dotnet build LifePlan.slnx -m:1` を実行する。
+- 計算ロジックやテストに関わる変更後は可能なら `dotnet test LifePlan.slnx -m:1` を実行する。
 - NuGet 脆弱性データ取得警告など、ネットワーク制限由来の警告が出た場合は、ビルド・テスト結果と分けて報告する。

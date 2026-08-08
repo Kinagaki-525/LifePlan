@@ -59,6 +59,12 @@ MyApp
 - ガイドラインや仕様書へ追記する場合は、追記前に「どの文書へ、どのような内容を追記するか」を説明し、ユーザーの了承を得てから変更する
 - ガイドラインを更新する場合も、実装変更と同様に必要最小限の範囲で行い、既存ルールや既存ドキュメントとの矛盾を避ける
 
+## Line Endings
+
+- テキストファイルの改行コードは LF に統一する
+- `.gitattributes` で `* text=auto eol=lf` を正とする
+- 改行コードだけの大量差分が出る場合は、機能変更とは分けて扱う
+
 ## Testing
 
 - テストプロジェクトは `LifePlan.Tests` を使用する
@@ -69,7 +75,7 @@ MyApp
 - 初期方針では `Domain/Logic` の純粋な計算ロジックを主なテスト対象とする
 - Application Service、Validator、Normalizer は、分岐や画面フローへの影響が増える場合にテスト追加を検討する
 - UI、Controller のテストは、必要な検証観点が明確になった時点で別途方針化する
-- 通常確認は `dotnet build LifePlan.sln -m:1` と `dotnet test LifePlan.sln -m:1` を基本にする
+- 通常確認は `dotnet build LifePlan.slnx -m:1` と `dotnet test LifePlan.slnx -m:1` を基本にする
 
 ## Document Priority
 

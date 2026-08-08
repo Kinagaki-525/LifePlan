@@ -93,7 +93,7 @@ LifePlan/
 - 詳細は `GET /api/v1/articles?filters=slug[equals]{slug}&limit=1` で取得する。
 - 初期実装では取得結果をキャッシュせず、リクエストごとに microCMS API から取得する。
 - 一覧のページサイズは6件固定とする。
-- 一覧取得時の `limit` は6、`offset` は `(page - 1) * 6`、`orders` は `-publishedAt` とする。
+- 一覧取得時の `limit` は6、`offset` は `(page - 1) * 6`、`orders` は `-publishedDate,-publishedAt` とする。
 - 初期実装では下書きプレビューを扱わないため、microCMS API に `draftKey` は渡さない。
 - `filters` は microCMS のクエリ文字列としてURLエンコードする。
 - APIキーは `X-MICROCMS-API-KEY` ヘッダーに付与する。
@@ -125,9 +125,9 @@ LifePlan/
 - 許可URLスキーム: `https` と相対URL
 - 禁止: `script`, `iframe`, `style`, `form`, `input`, `button`, `svg`, イベント属性、`javascript:` URL、`data:` 画像
 
-記事詳細ページのデザインは仮仕様とし、一覧ページと同じ右サイドバー用 ViewModel を再利用する。本文表示、記事ヘッダー、戻るリンク、見つからない表示は `ArticleDetailViewModel` に必要な表示用プロパティを持たせ、View で外部API DTOを直接参照しない。
+記事詳細ページは詳細画面仕様に合わせ、一覧ページと同じ右サイドバー用 ViewModel を再利用する。本文表示、記事ヘッダー、パンくずリスト、見つからない表示は `ArticleDetailViewModel` に必要な表示用プロパティを持たせ、View で外部API DTOを直接参照しない。
 
-仮UIでは、詳細ページ上部に「記事一覧へ戻る」リンク、カテゴリラベル、公開日、タイトル、リード文、タグ、16:9のサムネイル画像を表示し、その下にサニタイズ済み本文を表示する。本文下部CTAは初期実装では追加せず、右サイドバーCTAのみ表示する。詳細ページの右サイドバー新着記事は、現在表示中の記事を除外して最大3件表示する。
+詳細UIでは、詳細ページ上部にパンくずリスト、クリック可能なカテゴリラベル、タイトル、メタディスクリプション、公開日、タグ、16:9のサムネイル画像を表示する。本文の前に「この記事のポイント」を表示し、その下にサニタイズ済み本文を表示する。本文下部CTAは初期実装では追加せず、右サイドバーCTAのみ表示する。詳細ページの右サイドバー新着記事は、現在表示中の記事を除外して最大3件表示する。
 
 詳細取得で該当 `slug` の記事が見つからない場合は、Controller が `Response.StatusCode = StatusCodes.Status404NotFound` を設定し、記事が見つからない旨と記事一覧へ戻るリンクを含む詳細ViewModelを返す。microCMS 障害、タイムアウト、認証エラーなどのAPI取得失敗は記事なしとは区別し、Controller が `Response.StatusCode = StatusCodes.Status503ServiceUnavailable` を設定できる結果として扱う。microCMS のエラー詳細や内部例外情報は View に渡さず、ログにだけ残す。
 
@@ -148,15 +148,15 @@ SEO用の `ViewData["Description"]` と最小OGP metaは、Controller または 
 11. `_Layout.cshtml` の共通ヘッダーナビゲーションに `/Articles` への「記事」リンクを追加する。
 12. 必要に応じて記事画面用 CSS を追加する。
 13. Service / Mapper / Repository / Sanitizer のテスト方針を確定し、可能な範囲で単体テストを追加する。
-14. `dotnet build LifePlan.sln -m:1` を実行する。
-15. 計算ロジックには触れないため、通常は `dotnet test LifePlan.sln -m:1` は任意。ただし Mapper や Service テストを追加した場合は実行する。
+14. `dotnet build LifePlan.slnx -m:1` を実行する。
+15. 計算ロジックには触れないため、通常は `dotnet test LifePlan.slnx -m:1` は任意。ただし Mapper や Service テストを追加した場合は実行する。
 
 ## 8. テスト観点
 
 - 一覧レスポンスを ViewModel に変換できる。
 - 詳細レスポンスを ViewModel に変換できる。
 - 詳細URL生成に microCMS の `slug` が利用される。
-- 一覧取得時に `orders=-publishedAt` が生成される。
+- 一覧取得時に `orders=-publishedDate,-publishedAt` が生成される。
 - microCMS の `filters` がURLエンコードされる。
 - 不正なカテゴリslugが microCMS API に渡らず、`/Articles` へのリダイレクト結果になる。
 - 詳細取得時に `slug` の一致条件と `limit=1` が生成される。
@@ -176,7 +176,7 @@ SEO用の `ViewData["Description"]` と最小OGP metaは、Controller または 
 - `page` から `limit=6` と `offset=(page - 1) * 6` が生成される。
 - 範囲外ページ指定時に1ページ目へ戻せる。
 - サムネイル画像を一覧・詳細・新着記事に表示できる。
-- 詳細ページでタイトル、リード文、カテゴリ、公開日、タグ、サムネイル、本文、右サイドバーを表示できる。
+- 詳細ページでパンくず、タイトル、メタディスクリプション、カテゴリ、公開日、タグ、サムネイル、「この記事のポイント」、本文、右サイドバーを表示できる。
 - 詳細ページの新着記事から現在表示中の記事を除外できる。
 - microCMS 取得失敗時に、Controller がエラー詳細を露出しない ViewModel を返す。
 - APIキー未設定時に起動時または取得時に分かりやすく失敗する。
@@ -195,3 +195,46 @@ SEO用の `ViewData["Description"]` と最小OGP metaは、Controller または 
 - キャッシュ導入
 
 キャッシュはアクセス数やレスポンス速度の課題が見えた時点で、`IMemoryCache` または CDN を含めて検討する。
+
+## 10. 詳細画面デザイン補足への対応方針
+
+2026-06-07 の詳細画面デザイン補足を反映する際は、以下を追加実装する。
+
+### 10.1 microCMS DTO / API
+
+- `MicroCmsArticleDto` に `PublishedDate` を追加し、microCMS の `publishedDate` を受け取る。
+- microCMS 側の `publishedDate` は、フィールドID `publishedDate`、表示名「公開日」、種類「日時」、必須項目として追加済みとする。
+- 表示用公開日は `publishedDate` を優先し、未入力時のみ `publishedAt` を fallback とする。
+- 一覧取得と新着記事取得の `orders` は `-publishedDate,-publishedAt` を基本とする。
+- 詳細取得は引き続き `filters=slug[equals]{slug}&limit=1` を使用する。
+
+### 10.2 ViewModel
+
+- 詳細画面用にパンくずリストの ViewModel を追加する。
+- パンくずは `記事一覧 > カテゴリ > 記事タイトル` を基本とする。
+- カテゴリ階層は `/Articles?category={slug}` へ遷移するリンクとして生成する。
+- 詳細画面のカテゴリラベルもクリック可能にし、同じカテゴリ絞り込みURLを使う。
+- `ArticleDetailViewModel` には、メタディスクリプション表示用の値と「この記事のポイント」表示用の概要文を明示的に持たせる。
+
+### 10.3 Factory / Mapper
+
+- URL生成は `ArticleUrlFactory` に集約し、パンくず、カテゴリラベル、サイドバーカテゴリの遷移先を同じ生成元にする。
+- 詳細画面の ViewModel 組み立ては `ArticlePageViewModelFactory` に寄せる。
+- Mapper は `publishedDate` / `publishedAt` の fallback、日付表示文字列、DTOから項目ViewModelへの詰め替えに集中する。
+- 「この記事のポイント」は専用フィールドを追加せず、`description` を1つの概要文として設定する。
+
+### 10.4 View
+
+- 詳細画面上部にパンくずリストを表示する。
+- パンくずとカテゴリラベルは `a` 要素で実装し、現在記事タイトルはリンクにしない。
+- 検索エンジン向け説明文の表示箇所には `metaDescription` を使う。
+- 「この記事のポイント」は `description` 由来の1つの概要文として、本文の前に表示する。
+
+### 10.5 テスト観点
+
+- `publishedDate` がある場合は表示日・並び順に `publishedDate` が使われる。
+- `publishedDate` がない場合は `publishedAt` に fallback する。
+- パンくずのカテゴリリンクが `/Articles?category={slug}` になる。
+- 詳細画面のカテゴリラベルが `/Articles?category={slug}` に遷移する。
+- 新着記事が上から3件で、詳細画面では現在記事を除外する。
+- `metaDescription` が未入力の場合は `description` が利用される。
