@@ -1,0 +1,33 @@
+name: CI
+
+on:
+  push:
+    branches: [develop, master]
+  pull_request:
+    branches: [develop, master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+      - name: Restore
+        run: dotnet restore LifePlan.slnx
+      - name: Build
+        run: dotnet build LifePlan.slnx -c Release -m:1 --no-restore
+      - name: Test
+        run: dotnet test LifePlan.slnx -c Release -m:1 --no-build
+      - name: Validate Bicep
+        uses: azure/cli@v2
+        with:
+          inlineScript: |
+            az bicep build --file infra/main.bicep --stdout > /dev/null
+            az bicep build-params --file infra/main.bicepparam --stdout > /dev/null
