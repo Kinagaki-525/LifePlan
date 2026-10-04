@@ -35,6 +35,8 @@ az deployment sub create --name main --location japaneast --parameters infra/mai
 
 `.github/workflows/ci.yml` はビルド、テスト、Bicep の構文検証を行います。`.github/workflows/cd.yml` は `master` への push（または手動実行）でビルド、テスト、発行を行い、本番 Web App へデプロイします。
 
+`develop` から `master` への PR は、Squash ではなく **Create a merge commit** でマージし、`develop` ブランチは削除せずに残します。Squash でマージすると `develop` の各コミットが `master` に取り込まれた扱いにならないため、次に `master` を `develop` へ取り込むときに、同じ変更同士でコンフリクトが起きます。
+
 SCM の基本認証を無効にしているため、発行プロファイルは使わず、GitHub Actions の OIDC で Azure にログインします。初回のみ以下を設定してください。
 
 ```powershell

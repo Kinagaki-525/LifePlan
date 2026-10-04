@@ -4,7 +4,11 @@
 }
 
 .life-plan-page__heading {
+<<<<<<< HEAD
   width: min(100%, var(--ui-page-content-width));
+=======
+  width: min(100%, var(--ui-wide-content-width));
+>>>>>>> origin/master
   margin: 0 auto;
   padding: 0 var(--ui-space-lg);
 }
