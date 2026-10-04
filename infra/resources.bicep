@@ -54,6 +54,7 @@ resource productionScmPolicy 'Microsoft.Web/sites/basicPublishingCredentialsPoli
 
 // マネージド証明書はホスト名のバインド後でないと作成できないため、
 // SSL なしでバインド → 証明書作成 → SNI SSL へ更新、の順に作成する。
+// 同じ Web App への更新が並行すると Conflict になるため、各段階は前の段階の完了を待つ。
 @batchSize(1)
 resource productionHostNameBindings 'Microsoft.Web/sites/hostNameBindings@2024-04-01' = [for hostName in customHostNames: {
   name: hostName
@@ -62,10 +63,14 @@ resource productionHostNameBindings 'Microsoft.Web/sites/hostNameBindings@2024-0
     siteName: productionApp.name
     hostNameType: 'Verified'
   }
+  dependsOn: [
+    productionFtpPolicy
+    productionScmPolicy
+  ]
 }]
 
 @batchSize(1)
-resource productionCertificates 'Microsoft.Web/certificates@2024-04-01' = [for (hostName, i) in customHostNames: {
+resource productionCertificates 'Microsoft.Web/certificates@2024-04-01' = [for hostName in customHostNames: {
   name: hostName
   location: location
   properties: {
@@ -73,7 +78,7 @@ resource productionCertificates 'Microsoft.Web/certificates@2024-04-01' = [for (
     canonicalName: hostName
   }
   dependsOn: [
-    productionHostNameBindings[i]
+    productionHostNameBindings
   ]
 }]
 
@@ -85,6 +90,9 @@ module productionHostNameSsl './hostname-ssl.bicep' = [for (hostName, i) in cust
     hostName: hostName
     thumbprint: productionCertificates[i].properties.thumbprint
   }
+  dependsOn: [
+    productionCertificates
+  ]
 }]
 
 output productionAppName string = productionApp.name
