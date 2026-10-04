@@ -10,7 +10,7 @@
 
 本番 Web App は HTTPS を必須にし、FTP と SCM の基本認証を無効にします。自動デプロイでは Azure の OIDC 認証を利用します（[自動デプロイ](#自動デプロイ) を参照）。
 
-本番の B1 App Service Plan は稼働中、アクセスがなくても課金されます。初期状態では Azure の既定 URL のみ使用し、独自ドメインや DNS は設定しません。
+本番の B1 App Service Plan は稼働中、アクセスがなくても課金されます。独自ドメインは `main.bicepparam` の `customHostNames` に指定します（[独自ドメイン](#独自ドメイン) を参照）。
 
 ## 初回作成
 
@@ -30,6 +30,29 @@ az deployment sub create --name main --location japaneast --parameters infra/mai
 テンプレートは App Service のアプリ設定を管理しません。作成後、本番 Web App の環境変数へ microCMS と SMTP の設定を入力します。本番アプリでは `ASPNETCORE_ENVIRONMENT=Production` を設定してください。API キーやパスワードをこのリポジトリへ保存しないでください。
 
 動作確認はローカルで行い、microCMS と SMTP の設定はユーザーシークレットで管理します。
+
+## 独自ドメイン
+
+`customHostNames` に指定したホスト名を本番 Web App にバインドし、App Service の無料マネージド証明書で HTTPS（SNI SSL）を有効にします。空の配列にすると独自ドメインは設定しません。
+
+マネージド証明書の発行時にドメインの所有確認が行われるため、デプロイ前に DNS を設定してください。ドメインは お名前.com の DNS で管理しています。検証 ID と IP アドレスは以下で確認できます。
+
+```powershell
+$appName = az deployment sub show --name main --query properties.outputs.productionAppName.value --output tsv
+az webapp show --resource-group rg-lifeplan-jpe --name $appName --query customDomainVerificationId --output tsv
+Resolve-DnsName "$appName.azurewebsites.net" -Type A
+```
+
+| ホスト名 | 種類 | 値 |
+| --- | --- | --- |
+| `www` | CNAME | `<Web App 名>.azurewebsites.net` |
+| `asuid.www` | TXT | 検証 ID |
+| `@` | A | Web App の受信 IP アドレス |
+| `asuid` | TXT | 検証 ID |
+
+B1 プランの受信 IP アドレスは共有のため、プランの変更などで変わることがあります。`www` は IP アドレスに依存しない CNAME で設定してください。
+
+再デプロイ時は、ホスト名のバインドをいったん SSL なしで更新してから証明書を再設定するため、短時間 HTTPS が無効になることがあります。
 
 ## 自動デプロイ
 

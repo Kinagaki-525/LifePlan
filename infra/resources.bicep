@@ -3,6 +3,7 @@ targetScope = 'resourceGroup'
 param location string
 param resourceNamePrefix string
 param appNameSuffix string
+param customHostNames string[]
 
 resource productionPlan 'Microsoft.Web/serverfarms@2024-04-01' = {
   name: 'asp-${resourceNamePrefix}-prod'
@@ -50,5 +51,40 @@ resource productionScmPolicy 'Microsoft.Web/sites/basicPublishingCredentialsPoli
     allow: false
   }
 }
+
+// マネージド証明書はホスト名のバインド後でないと作成できないため、
+// SSL なしでバインド → 証明書作成 → SNI SSL へ更新、の順に作成する。
+@batchSize(1)
+resource productionHostNameBindings 'Microsoft.Web/sites/hostNameBindings@2024-04-01' = [for hostName in customHostNames: {
+  name: hostName
+  parent: productionApp
+  properties: {
+    siteName: productionApp.name
+    hostNameType: 'Verified'
+  }
+}]
+
+@batchSize(1)
+resource productionCertificates 'Microsoft.Web/certificates@2024-04-01' = [for (hostName, i) in customHostNames: {
+  name: hostName
+  location: location
+  properties: {
+    serverFarmId: productionPlan.id
+    canonicalName: hostName
+  }
+  dependsOn: [
+    productionHostNameBindings[i]
+  ]
+}]
+
+@batchSize(1)
+module productionHostNameSsl './hostname-ssl.bicep' = [for (hostName, i) in customHostNames: {
+  name: 'hostname-ssl-${replace(hostName, '.', '-')}'
+  params: {
+    webAppName: productionApp.name
+    hostName: hostName
+    thumbprint: productionCertificates[i].properties.thumbprint
+  }
+}]
 
 output productionAppName string = productionApp.name
