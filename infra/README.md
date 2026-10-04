@@ -50,7 +50,7 @@ Resolve-DnsName "$appName.azurewebsites.net" -Type A
 | `@` | A | Web App の受信 IP アドレス |
 | `asuid` | TXT | 検証 ID |
 
-B1 プランの受信 IP アドレスは共有のため、プランの変更などで変わることがあります。`www` は IP アドレスに依存しない CNAME で設定してください。
+B1 プランの受信 IP アドレスは共有のため、プランの変更などで変わることがあります。`www` は IP アドレスに依存しない CNAME で設定してください。正規の URL は `www.futari-kakei.com` とし、ルートドメインへのアクセスはアプリ（`Program.cs`）で `www` へ恒久的にリダイレクト（308）します。
 
 再デプロイ時は、ホスト名のバインドをいったん SSL なしで更新してから証明書を再設定するため、短時間 HTTPS が無効になることがあります。
 
