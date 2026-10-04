@@ -5,6 +5,7 @@ using LifePlan.Extensions;
 using LifePlan.Infrastructure.Options;
 using LifePlan.Infrastructure.Repositories;
 using LifePlan.Infrastructure.Services;
+using Microsoft.AspNetCore.Rewrite;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,6 +32,8 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+// ルートドメインへのアクセスは www 付きの URL へ統一する。
+app.UseRewriter(new RewriteOptions().AddRedirectToWwwPermanent("futari-kakei.com"));
 app.UseHttpsRedirection();
 app.UseRouting();
 
