@@ -1,0 +1,143 @@
+@model ArticleListViewModel
+
+@{
+    ViewData["Title"] = "お役立ち記事";
+    ViewData["Description"] = "結婚・家計・子育てのお金にまつわる情報をわかりやすく解説";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/articles.css" asp-append-version="true" />
+}
+
+<section class="articles-page" aria-labelledby="articles-title">
+    <div class="articles-page__inner">
+        <header class="articles-heading">
+            <h1 id="articles-title" class="articles-heading__title">お役立ち記事</h1>
+            <p class="articles-heading__lead">結婚・家計・子育てのお金にまつわる情報をわかりやすく解説</p>
+        </header>
+
+        <div class="articles-page__layout">
+            <div class="articles-page__main">
+                <nav class="article-category-filter" aria-label="記事カテゴリ">
+                    @foreach (var category in Model.CategoryFilters)
+                    {
+                        <a class="article-category-filter__item @(category.IsSelected ? "article-category-filter__item--active" : "")"
+                           href="@category.Url"
+                           aria-current="@(category.IsSelected ? "page" : null)">
+                            @category.DisplayName
+                        </a>
+                    }
+                </nav>
+
+                @if (Model.HasError)
+                {
+                    <div class="article-alert" role="alert">
+                        @Model.ErrorMessage
+                    </div>
+                }
+                else if (Model.IsEmpty)
+                {
+                    <p class="article-empty">記事はまだありません。</p>
+                }
+                else
+                {
+                    <div class="article-card-grid">
+                        @foreach (var article in Model.Articles)
+                        {
+                            <a class="article-card" href="@article.DetailUrl">
+                                <span class="article-card__thumbnail-wrap">
+                                    <img class="article-card__thumbnail"
+                                         src="@article.ThumbnailUrl"
+                                         width="@(article.ThumbnailWidth ?? 640)"
+                                         height="@(article.ThumbnailHeight ?? 360)"
+                                         alt="" />
+                                </span>
+                                <span class="article-card__body">
+                                    <span class="article-label">@article.CategoryDisplayName</span>
+                                    <span class="article-card__title">@article.Title</span>
+                                    <span class="article-card__description">@article.Description</span>
+                                    <time class="article-card__date">@article.PublishedDateText</time>
+                                </span>
+                            </a>
+                        }
+                    </div>
+
+                    @if (Model.Pagination.ShouldShow)
+                    {
+                        <nav class="article-pagination" aria-label="記事一覧のページ移動">
+                            @if (!string.IsNullOrWhiteSpace(Model.Pagination.PreviousUrl))
+                            {
+                                <a class="article-pagination__item" href="@Model.Pagination.PreviousUrl" aria-label="前のページ">&lt;</a>
+                            }
+
+                            @foreach (var pageLink in Model.Pagination.PageLinks)
+                            {
+                                <a class="article-pagination__item @(pageLink.IsCurrent ? "article-pagination__item--active" : "")"
+                                   href="@pageLink.Url"
+                                   aria-current="@(pageLink.IsCurrent ? "page" : null)">
+                                    @pageLink.Page
+                                </a>
+                            }
+
+                            @if (!string.IsNullOrWhiteSpace(Model.Pagination.NextUrl))
+                            {
+                                <a class="article-pagination__item" href="@Model.Pagination.NextUrl" aria-label="次のページ">&gt;</a>
+                            }
+                        </nav>
+                    }
+                }
+            </div>
+
+            <aside class="article-sidebar" aria-label="記事サイドバー">
+                <section class="article-sidebar-cta">
+                    <h2 class="article-sidebar-cta__title">@Model.Sidebar.CtaHeading</h2>
+                    <a class="article-sidebar-cta__button" href="@Model.Sidebar.CtaUrl">@Model.Sidebar.CtaButtonText</a>
+                </section>
+
+                <section class="article-sidebar-section" aria-labelledby="recent-articles-title">
+                    <h2 id="recent-articles-title" class="article-sidebar-section__title">新着記事</h2>
+                    @if (Model.Sidebar.RecentArticles.Count == 0)
+                    {
+                        <p class="article-sidebar-section__empty">新着記事はまだありません。</p>
+                    }
+                    else
+                    {
+                        <ul class="article-recent-list">
+                            @foreach (var article in Model.Sidebar.RecentArticles)
+                            {
+                                <li>
+                                    <a class="article-recent-list__item" href="@article.DetailUrl">
+                                        <img class="article-recent-list__thumbnail"
+                                             src="@article.ThumbnailUrl"
+                                             width="96"
+                                             height="72"
+                                             alt="" />
+                                        <span class="article-recent-list__body">
+                                            <span class="article-recent-list__title">@article.Title</span>
+                                            <time class="article-recent-list__date">@article.PublishedDateText</time>
+                                        </span>
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                    }
+                </section>
+
+                <section class="article-sidebar-section" aria-labelledby="article-categories-title">
+                    <h2 id="article-categories-title" class="article-sidebar-section__title">カテゴリ</h2>
+                    <ul class="article-sidebar-categories">
+                        @foreach (var category in Model.Sidebar.Categories)
+                        {
+                            <li>
+                                <a class="article-sidebar-categories__item" href="@category.Url">
+                                    <span>@category.DisplayName</span>
+                                    <span>@category.Count</span>
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                </section>
+            </aside>
+        </div>
+    </div>
+</section>

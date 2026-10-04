@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ja">
 <head>
     <meta charset="utf-8" />
@@ -7,6 +7,26 @@
     @if (ViewData["Description"] is string description && !string.IsNullOrWhiteSpace(description))
     {
         <meta name="description" content="@description" />
+    }
+    @if (ViewData["OgTitle"] is string ogTitle && !string.IsNullOrWhiteSpace(ogTitle))
+    {
+        <meta property="og:title" content="@ogTitle" />
+    }
+    @if (ViewData["OgDescription"] is string ogDescription && !string.IsNullOrWhiteSpace(ogDescription))
+    {
+        <meta property="og:description" content="@ogDescription" />
+    }
+    @if (ViewData["OgImage"] is string ogImage && !string.IsNullOrWhiteSpace(ogImage))
+    {
+        <meta property="og:image" content="@ogImage" />
+    }
+    @if (ViewData["OgType"] is string ogType && !string.IsNullOrWhiteSpace(ogType))
+    {
+        <meta property="og:type" content="@ogType" />
+    }
+    @if (ViewData["OgUrl"] is string ogUrl && !string.IsNullOrWhiteSpace(ogUrl))
+    {
+        <meta property="og:url" content="@ogUrl" />
     }
     <script type="importmap"></script>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
@@ -48,6 +68,7 @@
         var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
         var isTopPage = string.Equals(currentController, "Home", StringComparison.OrdinalIgnoreCase)
             && string.Equals(currentAction, "Index", StringComparison.OrdinalIgnoreCase);
+        var isArticlesPage = string.Equals(currentController, "Articles", StringComparison.OrdinalIgnoreCase);
     }
     <header class="app-header">
         <nav class="navbar navbar-expand-sm navbar-light app-header__nav">
@@ -65,6 +86,13 @@
                 *@
                 <div class="navbar-collapse collapse app-header__menu">
                     <ul class="navbar-nav app-header__links">
+                        <li class="nav-item">
+                            <a class="nav-link @(isArticlesPage ? "active" : "")"
+                               asp-area=""
+                               asp-controller="Articles"
+                               asp-action="Index"
+                               aria-current="@(isArticlesPage ? "page" : null)">記事</a>
+                        </li>
                         @* TODO: 公開時にコメントアウトを削除 *@
                         @*
                         <li class="nav-item">

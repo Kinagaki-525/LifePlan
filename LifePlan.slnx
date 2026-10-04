@@ -1,3 +1,11 @@
 <Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="LifePlan.Tests/LifePlan.Tests.csproj">
+    <BuildDependency Project="LifePlan/LifePlan.csproj" />
+  </Project>
   <Project Path="LifePlan/LifePlan.csproj" />
 </Solution>

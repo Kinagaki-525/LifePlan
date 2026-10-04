@@ -49,8 +49,10 @@
   --ui-focus-shadow: 0 0 0 0.1rem var(--ui-color-surface), 0 0 0 0.25rem var(--ui-color-focus);
   --ui-control-focus-shadow: 0 0 0 0.2rem rgba(76, 175, 125, 0.25);
   --ui-content-width: 1072px;
+  --ui-page-content-width: 1200px;
   --ui-wide-content-width: 1512px;
   --ui-footer-content-width: 1352px;
+  --ui-article-sidebar-width: 320px;
   --ui-top-content-width: 1200px;
   --ui-header-height: 72px;
   --ui-button-min-height: 48px;
@@ -202,7 +204,8 @@ body {
 }
 
 .app-header__links .nav-link:hover,
-.app-header__links .nav-link:focus {
+.app-header__links .nav-link:focus,
+.app-header__links .nav-link.active {
   color: var(--ui-color-primary);
 }
 
