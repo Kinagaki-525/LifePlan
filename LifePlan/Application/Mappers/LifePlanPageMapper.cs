@@ -123,10 +123,60 @@ namespace LifePlan.Application.Mappers
 
             return new LifePlanResultViewModel
             {
+                FirstYearSummary = CreateFirstYearSummary(rows[0]),
+                AutoCosts =
+                [
+                    CreateAutoCostSummary("子どもの生活費", rows, row => row.Expenses.ChildLivingCostYen),
+                    CreateHousingMaintenanceSummary(result.HousingMaintenanceStatus, rows)
+                ],
                 YearHeaders = rows.Select(row => row.Year.ToString()).ToList(),
                 CashFlowRows = cashFlowRows,
                 ChartPoints = rows.Select(ToChartPointViewModel).ToList(),
                 Assumptions = LifePlanAssumptionMapper.CreateAssumptions()
+            };
+        }
+
+        private static LifePlanFirstYearSummaryViewModel CreateFirstYearSummary(AnnualCashFlowRow firstRow)
+        {
+            return new LifePlanFirstYearSummaryViewModel
+            {
+                TotalIncomeText = ToManYenText(firstRow.TotalIncomeYen),
+                TotalExpenseText = ToManYenText(firstRow.TotalExpenseYen),
+                AnnualBalanceText = ToManYenText(firstRow.AnnualBalanceYen)
+            };
+        }
+
+        private static AutoCostSummaryViewModel CreateHousingMaintenanceSummary(
+            HousingMaintenanceStatus status,
+            IReadOnlyList<AnnualCashFlowRow> rows)
+        {
+            var summary = CreateAutoCostSummary("住宅維持費", rows, row => row.Expenses.HousingMaintenanceYen);
+
+            if (status == HousingMaintenanceStatus.PriceMissing)
+            {
+                summary.Note = "住宅価格が未設定のため維持費を含めていません";
+            }
+
+            return summary;
+        }
+
+        private static AutoCostSummaryViewModel CreateAutoCostSummary(
+            string label,
+            IReadOnlyList<AnnualCashFlowRow> rows,
+            Func<AnnualCashFlowRow, long> selectAmountYen)
+        {
+            var firstAddedRow = rows.FirstOrDefault(row => selectAmountYen(row) > 0);
+            var amountText = firstAddedRow switch
+            {
+                null => "計上なし",
+                _ when firstAddedRow == rows[0] => $"初年度 {ToManYenText(selectAmountYen(firstAddedRow))}万円",
+                _ => $"{firstAddedRow.Year}年から {ToManYenText(selectAmountYen(firstAddedRow))}万円"
+            };
+
+            return new AutoCostSummaryViewModel
+            {
+                Label = label,
+                AmountText = amountText
             };
         }
 
@@ -189,11 +239,13 @@ namespace LifePlan.Application.Mappers
             IReadOnlyList<AnnualCashFlowRow> rows)
         {
             cashFlowRows.Add(CreateMoneyRow("支出", "expense", "基本生活費", rows.Select(row => row.Expenses.BasicLivingCostYen)));
+            cashFlowRows.Add(CreateMoneyRow("支出", "expense", "子どもの生活費", rows.Select(row => row.Expenses.ChildLivingCostYen)));
             cashFlowRows.Add(CreateMoneyRow("支出", "expense", "家賃", rows.Select(row => row.Expenses.RentYen)));
             cashFlowRows.Add(CreateMoneyRow("支出", "expense", "その他支出", rows.Select(row => row.Expenses.OtherAnnualCostYen)));
             cashFlowRows.Add(CreateMoneyRow("支出", "expense", "結婚", rows.Select(row => row.Expenses.MarriageYen)));
             cashFlowRows.Add(CreateMoneyRow("支出", "expense", "住宅頭金", rows.Select(row => row.Expenses.HousingDownPaymentYen)));
             cashFlowRows.Add(CreateMoneyRow("支出", "expense", "住宅ローン返済", rows.Select(row => row.Expenses.HousingLoanRepaymentYen)));
+            cashFlowRows.Add(CreateMoneyRow("支出", "expense", "住宅維持費", rows.Select(row => row.Expenses.HousingMaintenanceYen)));
             cashFlowRows.Add(CreateMoneyRow("支出", "expense", "自動車", rows.Select(row => row.Expenses.CarYen)));
             cashFlowRows.Add(CreateMoneyRow("支出", "expense", "教育費", rows.Select(row => row.Expenses.EducationYen)));
             cashFlowRows.Add(CreateMoneyRow("支出", "expense", "旅行・その他", rows.Select(row => row.Expenses.TravelOtherYen)));
@@ -336,7 +388,6 @@ namespace LifePlan.Application.Mappers
             return new ExpenseData
             {
                 MonthlyBasicLivingCostYen = ToYen(input.MonthlyBasicLivingCostManYen),
-                InflationRatePercent = input.InflationRatePercent,
                 MonthlyRentYen = ToYen(input.MonthlyRentManYen),
                 OtherAnnualCostYen = ToYen(input.OtherAnnualCostManYen)
             };

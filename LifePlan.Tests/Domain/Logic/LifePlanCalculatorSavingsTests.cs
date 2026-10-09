@@ -1,5 +1,6 @@
 using LifePlan.Domain.Entities;
 using LifePlan.Domain.Logic;
+using LifePlan.Domain.ReferenceData;
 
 namespace LifePlan.Tests.Domain.Logic;
 
@@ -55,7 +56,7 @@ public class LifePlanCalculatorSavingsTests
         Assert.Equal(400_000, result.AnnualRows[0].AnnualBalanceYen);
         Assert.Equal(1_400_000, result.AnnualRows[0].SavingsBalanceWithoutReturnYen);
         Assert.Equal(1_400_000, result.AnnualRows[1].StartingAssetsYen);
-        Assert.Equal(1_800_000, result.AnnualRows[1].SavingsBalanceWithoutReturnYen);
+        Assert.Equal(1_788_000, result.AnnualRows[1].SavingsBalanceWithoutReturnYen);
     }
 
     [Fact]
@@ -87,6 +88,42 @@ public class LifePlanCalculatorSavingsTests
         var result = Calculate(input);
 
         Assert.Equal(2, result.AnnualRows[0].SavingsBalanceWithReturnYen);
+    }
+
+    [Fact]
+    public void Calculate_BalanceDifferenceEqualsCumulativeAutomaticExpenses()
+    {
+        var input = CreateInput();
+        input.Assets.CurrentFinancialAssetsYen = 10_000_000;
+        input.Assets.ExpectedAnnualReturnRatePercent = 0m;
+        input.IncomeExpense.Expenses.MonthlyBasicLivingCostYen = 200_000;
+        input.Family.Children = [new ChildData { Age = -1 }, new ChildData { Age = 10 }];
+        input.LifeEvents.Housing = new HousingEventData
+        {
+            PurchaseHusbandAge = 33,
+            DownPaymentYen = 5_000_000,
+            BorrowingAmountYen = 20_000_000,
+            LoanYears = 20,
+            InterestRatePercent = 1m
+        };
+        var withoutAutomaticExpenses = SimulationAssumptions.Current with
+        {
+            HousingMaintenanceRatePercent = 0m,
+            ChildLivingCosts = []
+        };
+
+        var baseline = new LifePlanCalculator(withoutAutomaticExpenses).Calculate(input, CurrentYear);
+        var result = Calculate(input);
+        var automaticExpensesYen = result.AnnualRows.Sum(row =>
+            row.Expenses.ChildLivingCostYen + row.Expenses.HousingMaintenanceYen);
+
+        Assert.True(automaticExpensesYen > 0);
+        Assert.Equal(
+            automaticExpensesYen,
+            baseline.AnnualRows[^1].SavingsBalanceWithoutReturnYen - result.AnnualRows[^1].SavingsBalanceWithoutReturnYen);
+        Assert.Equal(
+            automaticExpensesYen,
+            baseline.AnnualRows[^1].SavingsBalanceWithReturnYen - result.AnnualRows[^1].SavingsBalanceWithReturnYen);
     }
 
     private static LifePlanCalculationResult Calculate(LifePlanData input)

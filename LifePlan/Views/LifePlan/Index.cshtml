@@ -14,7 +14,6 @@
     var universityEducationOptions = new SelectList(Model.UniversityEducationOptions, "Value", "Text");
     var graduateSchoolEducationOptions = new SelectList(Model.GraduateSchoolEducationOptions, "Value", "Text");
     var annualIncomeChangeRateOptions = new SelectList(Model.AnnualIncomeChangeRateOptions, "Value", "Text");
-    var inflationRateOptions = new SelectList(Model.InflationRateOptions, "Value", "Text");
     var hasResult = Model.Result is not null;
     var chartJsonOptions = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
 }
@@ -29,7 +28,14 @@
     </div>
 
     <form asp-action="Index" method="post" class="life-plan-form" novalidate>
+        <input type="hidden" name="@nameof(Model.CalculationSpecVersion)" value="@Model.CalculationSpecVersion" />
         <div asp-validation-summary="All" class="life-plan-alert life-plan-alert--danger" role="alert"></div>
+        @if (Model.SpecVersionNotice)
+        {
+            <div class="life-plan-alert life-plan-alert--success" role="status">
+                計算の前提（子どもの生活費・住宅維持費・物価上昇の自動計上）が変わりました。入力内容はそのまま残しています。各欄の説明を確認して、もう一度シミュレーションを実行してください。
+            </div>
+        }
 
         @if (hasResult)
         {
@@ -101,6 +107,7 @@
                     </div>
 
                     <p class="life-plan-note">※予定は、「-（マイナス）」で表現してください。</p>
+                    <p class="life-plan-note">@Model.ExpenseGuidance.ChildNote</p>
                 </section>
 
                 @await Html.PartialAsync("_LifePlanActions", new LifePlanActionsViewModel("life-event", "ライフイベントへ"))
@@ -153,6 +160,7 @@
                             </span>
                             <span class="life-plan-help">※夫の年齢を入力してください</span>
                             <span asp-validation-for="LifeEvents.Housing.PurchaseHusbandAge" class="life-plan-validation"></span>
+                            <span class="life-plan-help life-plan-help--block">@Model.ExpenseGuidance.HousingNote</span>
                         </div>
                         <div class="life-plan-field-row">
                             <label asp-for="LifeEvents.Housing.LoanYears" class="life-plan-field-row__label">ローン年数</label>
@@ -463,12 +471,16 @@
                             <input asp-for="IncomeExpense.Expenses.MonthlyBasicLivingCostManYen" class="form-control life-plan-control" type="text" min="0" data-life-plan-half-width-integer="true" />
                             <span class="life-plan-unit">万円</span>
                             <span asp-validation-for="IncomeExpense.Expenses.MonthlyBasicLivingCostManYen" class="life-plan-validation"></span>
-                        </div>
-                        <div class="life-plan-field-row">
-                            <label asp-for="IncomeExpense.Expenses.InflationRatePercent" class="life-plan-field-row__label">想定インフレ率</label>
-                            <select asp-for="IncomeExpense.Expenses.InflationRatePercent" asp-items="inflationRateOptions" class="form-select life-plan-control"></select>
-                            <span class="life-plan-help">※毎月の基本支出のインフレ率を加味する場合は選択してください</span>
-                            <span asp-validation-for="IncomeExpense.Expenses.InflationRatePercent" class="life-plan-validation"></span>
+                            <span class="life-plan-help life-plan-help--block">@Model.ExpenseGuidance.BasicLivingCostNote</span>
+                            @if (Model.ExpenseGuidance.ChildMonthlyReference is not null)
+                            {
+                                <span class="life-plan-help life-plan-help--block">子どもの生活費の目安（入力した年齢の月額合計）：@Model.ExpenseGuidance.ChildMonthlyReference</span>
+                            }
+                            else
+                            {
+                                <span class="life-plan-help life-plan-help--block">子どもの生活費の目安（1人あたり月額）：@string.Join("、", Model.ExpenseGuidance.ChildMonthlyReferenceByAgeBand)</span>
+                            }
+                            <span class="life-plan-help life-plan-help--block">@Model.ExpenseGuidance.ChildMonthlyReferenceCaveat</span>
                         </div>
                         <div class="life-plan-field-row">
                             <label asp-for="IncomeExpense.Expenses.MonthlyRentManYen" class="life-plan-field-row__label">家賃（月額）</label>
@@ -481,8 +493,10 @@
                             <input asp-for="IncomeExpense.Expenses.OtherAnnualCostManYen" class="form-control life-plan-control" type="text" min="0" data-life-plan-half-width-integer="true" />
                             <span class="life-plan-unit">万円</span>
                             <span asp-validation-for="IncomeExpense.Expenses.OtherAnnualCostManYen" class="life-plan-validation"></span>
+                            <span class="life-plan-help life-plan-help--block">@Model.ExpenseGuidance.OtherCostNote</span>
                         </div>
                     </div>
+                    <p class="life-plan-note">@Model.ExpenseGuidance.InflationNote</p>
                 </section>
 
                 @await Html.PartialAsync("_LifePlanActions", new LifePlanActionsViewModel())
@@ -491,6 +505,46 @@
             @if (Model.Result is not null)
             {
                 <section class="life-plan-result" data-life-plan-result aria-labelledby="cash-flow-table-title">
+                    <section class="life-plan-assumptions" aria-labelledby="life-plan-summary-title">
+                        <h2 id="life-plan-summary-title" class="life-plan-assumptions__label">初年度の収支</h2>
+
+                        <div class="life-plan-assumptions__frame">
+                            <div class="life-plan-assumptions__column">
+                                <dl class="life-plan-summary__list">
+                                    <div>
+                                        <dt>収入合計</dt>
+                                        <dd>@(Model.Result.FirstYearSummary.TotalIncomeText)万円</dd>
+                                    </div>
+                                    <div>
+                                        <dt>支出合計</dt>
+                                        <dd>@(Model.Result.FirstYearSummary.TotalExpenseText)万円</dd>
+                                    </div>
+                                    <div>
+                                        <dt>年間収支</dt>
+                                        <dd>@(Model.Result.FirstYearSummary.AnnualBalanceText)万円</dd>
+                                    </div>
+                                </dl>
+                            </div>
+
+                            <div class="life-plan-assumptions__column">
+                                <p>自動で計上した費用</p>
+                                <dl class="life-plan-summary__list">
+                                    @foreach (var autoCost in Model.Result.AutoCosts)
+                                    {
+                                        <div>
+                                            <dt>@autoCost.Label</dt>
+                                            <dd>@autoCost.AmountText</dd>
+                                            @if (autoCost.Note is not null)
+                                            {
+                                                <dd>@autoCost.Note</dd>
+                                            }
+                                        </div>
+                                    }
+                                </dl>
+                            </div>
+                        </div>
+                    </section>
+
                     <div class="life-plan-result-frame">
                         <h2 id="cash-flow-table-title" class="life-plan-result-frame__label">キャッシュフロー表</h2>
 
@@ -560,6 +614,12 @@
                                 <p>※本ツールはあくまでシミュレーションです。</p>
                                 <ul class="life-plan-assumptions__list">
                                     @foreach (var note in Model.Result.Assumptions.GeneralNotes)
+                                    {
+                                        <li>@note</li>
+                                    }
+                                </ul>
+                                <ul class="life-plan-assumptions__list">
+                                    @foreach (var note in Model.Result.Assumptions.AutoCostNotes)
                                     {
                                         <li>@note</li>
                                     }

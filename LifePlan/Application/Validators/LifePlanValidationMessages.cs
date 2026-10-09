@@ -54,6 +54,11 @@ namespace LifePlan.Application.Validators
             return $"{label}は定義済みの選択肢から選んでください。";
         }
 
+        public static string UndefinedCalculationSpecVersion()
+        {
+            return "計算仕様のバージョンが不正です。画面を再読み込みしてから、もう一度実行してください。";
+        }
+
         public static string EducationDefinedOption(string stage)
         {
             return $"{stage}の教育費は定義済みの選択肢から選んでください。";

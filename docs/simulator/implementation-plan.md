@@ -43,7 +43,8 @@ LifePlan/
 │  ├─ Services/
 │  │   └─ LifePlanPageService.cs # シミュレーター画面ロジック
 │  ├─ Factories/
-│  │   └─ LifePlanRateSelectOptionFactory.cs # 利率系選択肢の画面用生成
+│  │   ├─ LifePlanRateSelectOptionFactory.cs # 利率系選択肢の画面用生成
+│  │   └─ LifePlanExpenseGuidanceFactory.cs # 入力欄の説明と子どもの生活費の参考月額の組み立て
 │  ├─ Validators/
 │  │   └─ LifePlanInputValidator.cs # 画面入力のサーバー側検証
 │  └─ Results/
@@ -52,11 +53,15 @@ LifePlan/
 │  ├─ Entities/
 │  │  └─ LifePlanData.cs         # 業務データ
 │  ├─ Logic/
-│  │  └─ LifePlanCalculator.cs   # 計算ロジック（計算仕様はdocs/simulator/index.md 4.計算仕様を参照）
+│  │  ├─ LifePlanCalculator.cs   # 計算ロジック（計算仕様はdocs/simulator/index.md 4.計算仕様を参照）
+│  │  └─ ChildLivingCostCalculator.cs # 子どもの生活費の年額計算
 │  ├─ ReferenceData/
 │  │  ├─ EducationCostMaster.cs  # 教育費マスタ
 │  │  ├─ PensionReferenceData.cs # 年金参考データ
-│  │  └─ RateOptionCatalog.cs    # 年収変化・想定インフレ率の選択肢
+│  │  ├─ RateOptionCatalog.cs    # 年収変化の選択肢
+│  │  ├─ ChildLivingCostMaster.cs # 子どもの生活費マスタ（年齢帯・2024年価格）
+│  │  ├─ ChildLivingCostEntry.cs  # 子どもの生活費マスタの1行（年齢帯・年額・根拠）
+│  │  └─ SimulationAssumptions.cs # 物価上昇率・住宅維持費率・負担終了年齢・前提バージョン
 │  └─ Rules/
 │       ├─ AgeRules.cs           # 年齢範囲ルール
 │       └─ RateRules.cs          # 利率範囲ルール
@@ -117,7 +122,8 @@ LifePlan/
 - 年齢、期間、金額は、仕様に定義された範囲内かつ半角整数として解釈できることを検証する
 - 金額、年収、退職金、年金、家賃、生活費などは0以上かつ整数を基本とし、負数と小数は許可しない
 - 利率はパーセント入力として扱い、住宅ローンの想定金利は0%以上かつ小数第1位まで、想定運用年利は0〜20%を許可する
-- 年収変化と想定インフレ率は定義済みの選択肢のみ許可し、POST 値が定義済みかを `Domain/ReferenceData` で検証する
+- 年収変化は定義済みの選択肢のみ許可し、POST 値が定義済みかを `Domain/ReferenceData` で検証する
+- 計算仕様バージョンを検証する。欠落時は計算せず入力を保持して画面へ戻し、費用範囲の説明を表示する。未定義バージョンは検証エラーとする
 - 開始/終了の組み合わせは、終了が開始以上であることを検証する
 - 就労終了年齢は就労開始年齢以上、年金受取開始年齢は就労終了年齢より後とする
 - 住宅購入時期が未入力の場合、頭金・借入額・ローン年数・想定金利は無効扱いとし、計算に含めない
@@ -146,8 +152,9 @@ LifePlan/
 
 選択肢や固定マスタは `Domain/ReferenceData` に置き、Mapper や View に直接定義しない。Mapper や Factory は `Domain/ReferenceData` の値を ViewModel 用の選択肢へ変換する責務に限定する。
 - 職業、年金参考値、教育費マスタなど、POST 値として検証対象になる選択肢は `Domain/ReferenceData` に集約する
-- 住宅ローン年数、旅行期間、インフレ率候補などの固定候補も同じ方針で扱う
-- 年収変化率や想定インフレ率のように定義済み候補から選ぶ項目は `Domain/ReferenceData` に候補を置き、Factory は ViewModel 用の選択肢へ変換する
+- 住宅ローン年数、旅行期間などの固定候補も同じ方針で扱う
+- 物価上昇率・住宅維持費率・子どもの生活費マスタ・負担終了年齢は `Domain/ReferenceData` に集約し、前提バージョンと価格基準年を持たせる。View や JavaScript に値を複製しない
+- 年収変化率のように定義済み候補から選ぶ項目は `Domain/ReferenceData` に候補を置き、Factory は ViewModel 用の選択肢へ変換する
 - Validator は `Domain/ReferenceData` を参照し、POST された選択肢の値が定義済みかを必ず検証する
 
 #### Validator 方針
@@ -159,7 +166,7 @@ Validator は UI 制御に頼らず POST 値を必ず検証する。
 
 #### 利率選択肢入力方針
 
-年収変化と想定インフレ率は自由入力ではなくプルダウン方式とする。選択肢は `-（なし）`、`控えめ（年1%増）`、`標準（年2%増）` の3つとし、未選択は変化なしとして扱う。
+年収変化は自由入力ではなくプルダウン方式とする。物価上昇率は入力項目とせず、固定の前提値を使う。選択肢は `-（なし）`、`控えめ（年1%増）`、`標準（年2%増）` の3つとし、未選択は変化なしとして扱う。
 
 候補値は `Domain/ReferenceData` に定義し、Factory は表示用の選択肢へ変換する。Validator は UI 制御に頼らず POST 値が定義済み候補かを検証する。
 
@@ -182,7 +189,12 @@ Validator は UI 制御に頼らず POST 値を必ず検証する。
 - 給与が就労開始〜終了年齢の期間だけ計上される
 - 退職金が就労終了年齢年に単発計上される
 - 年金が受取開始年齢以降だけ計上される
-- 基本生活費が月額×12で年額化され、インフレ率が年次適用される
+- 基本生活費が月額×12で年額化される
+- 基本生活費・その他支出・教育費・旅行その他・住宅維持費に物価係数 `1.02^t` が適用され、初年度は増額されない
+- 家賃・頭金・ローン返済・自動車・結婚に物価係数が適用されない
+- 子どもの生活費が年齢帯の境界、出生前、負担終了（22歳、大学院選択時24歳）で切り替わり、2024年基準からの補正が二重に掛からない
+- 住宅維持費が購入年から計上され、ローン完済後も継続する。住宅価格0の場合は0で未算定扱いになる
+- 計算仕様バージョンの欠落・未定義・インフレ率の改ざん送信が仕様どおりに扱われる
 - 家賃が住宅購入前まで計上され、住宅購入年から0になる
 - 住宅ローンの年額返済額が、金利0%と金利ありの両方で仕様通り算出される
 - 住宅購入年に頭金と年額ローン返済額が計上され、借入額そのものは支出合計に直接計上されない

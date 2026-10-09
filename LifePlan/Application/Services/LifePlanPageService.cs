@@ -14,7 +14,7 @@ namespace LifePlan.Application.Services
     {
         public LifePlanViewModel CreateInitialPage()
         {
-            return PopulatePageDefaults(new LifePlanViewModel
+            var page = PopulatePageDefaults(new LifePlanViewModel
             {
                 Family = new FamilyInputViewModel
                 {
@@ -24,19 +24,25 @@ namespace LifePlan.Application.Services
                 {
                     EducationPlans = LifePlanPageMapper.CreateEducationPlans()
                 }
-            });
+            }, isSubmittedInput: false);
+            page.CalculationSpecVersion = SimulationAssumptions.Current.CurrentCalculationSpecVersion;
+
+            return page;
         }
 
         public LifePlanSubmitResult Submit(LifePlanViewModel input, bool hasBindingErrors)
         {
-            var page = PopulatePageDefaults(input);
+            var isSpecVersionMissing = string.IsNullOrWhiteSpace(input.CalculationSpecVersion);
+            var page = PopulatePageDefaults(input, isSubmittedInput: true);
             var errors = LifePlanInputValidator.Validate(page);
-            var isValid = !hasBindingErrors && errors.Count == 0;
+            var isValid = !hasBindingErrors && !isSpecVersionMissing && errors.Count == 0;
             var normalizedInput = isValid ? LifePlanInputNormalizer.Normalize(page) : null;
             var data = normalizedInput is null ? null : LifePlanPageMapper.ToLifePlanData(normalizedInput);
             var calculationResult = data is null ? null : new LifePlanCalculator().Calculate(data, DateTime.Today.Year);
             page.IsSubmitted = isValid;
             page.Result = calculationResult is null ? null : LifePlanPageMapper.ToResultViewModel(calculationResult);
+            page.SpecVersionNotice = isSpecVersionMissing;
+            page.CalculationSpecVersion = SimulationAssumptions.Current.CurrentCalculationSpecVersion;
 
             return new LifePlanSubmitResult
             {
@@ -47,13 +53,14 @@ namespace LifePlan.Application.Services
             };
         }
 
-        private static LifePlanViewModel PopulatePageDefaults(LifePlanViewModel page)
+        private static LifePlanViewModel PopulatePageDefaults(LifePlanViewModel page, bool isSubmittedInput)
         {
             EnsureInputModels(page);
 
             page.Family.Children = MergeChildInputs(page.Family.Children);
             page.LifeEvents.EducationPlans = MergeEducationPlans(page.LifeEvents.EducationPlans);
             page.ClientValidation = LifePlanClientValidationRuleFactory.Create();
+            page.ExpenseGuidance = LifePlanExpenseGuidanceFactory.Create(page, DateTime.Today.Year, isSubmittedInput);
 
             PopulateSelectOptions(page);
 
@@ -88,7 +95,6 @@ namespace LifePlan.Application.Services
             page.GraduateSchoolEducationOptions = LifePlanPageMapper.ToEducationOptionsByStage(EducationCostMaster.Entries, "大学院");
             page.OccupationOptions = LifePlanPageMapper.ToOccupationOptions(OccupationReferenceData.All);
             page.AnnualIncomeChangeRateOptions = LifePlanRateSelectOptionFactory.CreateAnnualIncomeChangeRateOptions();
-            page.InflationRateOptions = LifePlanRateSelectOptionFactory.CreateInflationRateOptions();
         }
 
         private static List<ChildInputViewModel> MergeChildInputs(List<ChildInputViewModel>? postedChildren)

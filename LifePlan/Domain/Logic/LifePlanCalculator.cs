@@ -8,6 +8,20 @@ namespace LifePlan.Domain.Logic
         private const int SimulationEndAge = 100;
         private const long ManYenUnit = 10000;
 
+        private readonly SimulationAssumptions assumptions;
+
+        public LifePlanCalculator()
+            : this(SimulationAssumptions.Current)
+        {
+        }
+
+        public LifePlanCalculator(SimulationAssumptions assumptions)
+        {
+            ArgumentNullException.ThrowIfNull(assumptions);
+
+            this.assumptions = assumptions;
+        }
+
         public LifePlanCalculationResult Calculate(LifePlanData input, int currentYear)
         {
             ArgumentNullException.ThrowIfNull(input);
@@ -17,10 +31,15 @@ namespace LifePlan.Domain.Logic
             var simulationYears = Math.Max(yearsUntilHusbandTurns100, yearsUntilWifeTurns100);
             var annualRows = CreateAnnualRows(input, currentYear, simulationYears);
 
-            return new LifePlanCalculationResult(currentYear, currentYear + simulationYears, annualRows);
+            return new LifePlanCalculationResult(
+                currentYear,
+                currentYear + simulationYears,
+                annualRows,
+                GetHousingMaintenanceStatus(input.LifeEvents.Housing),
+                assumptions.Version);
         }
 
-        private static List<AnnualCashFlowRow> CreateAnnualRows(
+        private List<AnnualCashFlowRow> CreateAnnualRows(
             LifePlanData input,
             int currentYear,
             int simulationYears)
@@ -46,7 +65,7 @@ namespace LifePlan.Domain.Logic
             return annualRows;
         }
 
-        private static AnnualCashFlowRow CreateAnnualRow(
+        private AnnualCashFlowRow CreateAnnualRow(
             LifePlanData input,
             int currentYear,
             int yearOffset,
@@ -66,7 +85,7 @@ namespace LifePlan.Domain.Logic
                 input.IncomeExpense.WifeIncome,
                 wifeAge,
                 yearOffset);
-            var expenses = CalculateExpenses(input, yearOffset);
+            var expenses = CalculateExpenses(input, currentYear, yearOffset);
 
             return new AnnualCashFlowRow(
                 currentYear + yearOffset,
@@ -187,32 +206,82 @@ namespace LifePlan.Domain.Logic
             return income.AnnualPensionYen.GetValueOrDefault();
         }
 
-        private static AnnualExpense CalculateExpenses(LifePlanData input, int yearOffset)
+        private AnnualExpense CalculateExpenses(LifePlanData input, int currentYear, int yearOffset)
         {
             var rawHusbandAge = input.Family.HusbandAge + yearOffset;
             var expenses = input.IncomeExpense.Expenses;
 
             return new AnnualExpense(
-                CalculateBasicLivingCost(expenses, yearOffset),
+                ApplyInflation(expenses.MonthlyBasicLivingCostYen.GetValueOrDefault() * 12, yearOffset),
                 CalculateRent(input, rawHusbandAge),
-                expenses.OtherAnnualCostYen.GetValueOrDefault(),
+                ApplyInflation(expenses.OtherAnnualCostYen.GetValueOrDefault(), yearOffset),
                 CalculateMarriageCost(input.LifeEvents.Marriage, rawHusbandAge),
                 CalculateHousingDownPayment(input.LifeEvents.Housing, rawHusbandAge),
                 CalculateHousingLoanRepayment(input.LifeEvents.Housing, rawHusbandAge),
                 CalculateCarCost(input.LifeEvents.Car, rawHusbandAge),
-                CalculateEducationCost(input, yearOffset),
-                CalculateTravelOtherCost(input.LifeEvents.TravelOther, rawHusbandAge));
+                ApplyInflation(CalculateEducationCost(input, yearOffset), yearOffset),
+                ApplyInflation(CalculateTravelOtherCost(input.LifeEvents.TravelOther, rawHusbandAge), yearOffset),
+                CalculateChildLivingCost(input, currentYear + yearOffset, yearOffset),
+                CalculateHousingMaintenance(input.LifeEvents.Housing, rawHusbandAge, yearOffset));
         }
 
-        private static long CalculateBasicLivingCost(ExpenseData expenses, int yearOffset)
+        private long CalculateHousingMaintenance(HousingEventData housing, int rawHusbandAge, int yearOffset)
         {
-            var annualLivingCostYen = expenses.MonthlyBasicLivingCostYen.GetValueOrDefault() * 12;
-            var adjustedLivingCostYen = ApplyAnnualChange(
-                annualLivingCostYen,
-                expenses.InflationRatePercent.GetValueOrDefault(),
+            if (GetHousingMaintenanceStatus(housing) != HousingMaintenanceStatus.Calculated ||
+                rawHusbandAge < housing.PurchaseHusbandAge!.Value)
+            {
+                return 0;
+            }
+
+            var inflatedPurchaseCostYen = ApplyAnnualChange(
+                GetHousingPurchaseCostYen(housing),
+                assumptions.InflationRatePercent,
                 yearOffset);
 
-            return RoundToYen(adjustedLivingCostYen);
+            return RoundToYen(inflatedPurchaseCostYen * assumptions.HousingMaintenanceRatePercent / 100m);
+        }
+
+        private static HousingMaintenanceStatus GetHousingMaintenanceStatus(HousingEventData housing)
+        {
+            if (!housing.PurchaseHusbandAge.HasValue)
+            {
+                return HousingMaintenanceStatus.NotPlanned;
+            }
+
+            return GetHousingPurchaseCostYen(housing) > 0
+                ? HousingMaintenanceStatus.Calculated
+                : HousingMaintenanceStatus.PriceMissing;
+        }
+
+        private static long GetHousingPurchaseCostYen(HousingEventData housing)
+        {
+            return housing.DownPaymentYen.GetValueOrDefault() + housing.BorrowingAmountYen.GetValueOrDefault();
+        }
+
+        private long CalculateChildLivingCost(LifePlanData input, int year, int yearOffset)
+        {
+            var totalCostYen = 0L;
+
+            for (var childIndex = 0; childIndex < input.Family.Children.Count; childIndex++)
+            {
+                var childInitialAge = input.Family.Children[childIndex].Age;
+                var childAge = childInitialAge.HasValue ? childInitialAge.Value + yearOffset : (int?)null;
+                var hasGraduateSchool = childIndex < input.LifeEvents.EducationPlans.Count &&
+                    !string.IsNullOrWhiteSpace(input.LifeEvents.EducationPlans[childIndex].GraduateSchoolOptionValue);
+
+                totalCostYen += ChildLivingCostCalculator.CalculateAnnualCost(
+                    childAge,
+                    hasGraduateSchool,
+                    year,
+                    assumptions);
+            }
+
+            return totalCostYen;
+        }
+
+        private long ApplyInflation(long baseAmountYen, int yearOffset)
+        {
+            return RoundToYen(ApplyAnnualChange(baseAmountYen, assumptions.InflationRatePercent, yearOffset));
         }
 
         private static long CalculateRent(LifePlanData input, int rawHusbandAge)

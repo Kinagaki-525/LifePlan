@@ -11,6 +11,7 @@ namespace LifePlan.Application.Validators
         {
             var errors = new List<LifePlanValidationError>();
 
+            ValidateCalculationSpecVersion(errors, page.CalculationSpecVersion);
             ValidateRequiredAdultAge(errors, "Family.HusbandAge", page.Family.HusbandAge, "夫の年齢");
             ValidateRequiredAdultAge(errors, "Family.WifeAge", page.Family.WifeAge, "妻の年齢");
             ValidateChildren(errors, page.Family.Children);
@@ -21,6 +22,17 @@ namespace LifePlan.Application.Validators
             ValidateExpenses(errors, page.IncomeExpense.Expenses);
 
             return errors;
+        }
+
+        private static void ValidateCalculationSpecVersion(List<LifePlanValidationError> errors, string? version)
+        {
+            if (!string.IsNullOrWhiteSpace(version) &&
+                !SimulationAssumptions.Current.SupportedCalculationSpecVersions.Contains(version))
+            {
+                errors.Add(new LifePlanValidationError(
+                    "CalculationSpecVersion",
+                    LifePlanValidationMessages.UndefinedCalculationSpecVersion()));
+            }
         }
 
         private static void ValidateChildren(List<LifePlanValidationError> errors, IReadOnlyList<ChildInputViewModel> children)
@@ -168,14 +180,6 @@ namespace LifePlan.Application.Validators
             ValidateNonNegative(errors, "IncomeExpense.Expenses.MonthlyBasicLivingCostManYen", expenses.MonthlyBasicLivingCostManYen, "毎月の基本生活費");
             ValidateNonNegative(errors, "IncomeExpense.Expenses.MonthlyRentManYen", expenses.MonthlyRentManYen, "毎月の家賃");
             ValidateNonNegative(errors, "IncomeExpense.Expenses.OtherAnnualCostManYen", expenses.OtherAnnualCostManYen, "その他支出");
-
-            if (expenses.InflationRatePercent.HasValue &&
-                !ContainsRate(RateOptionCatalog.InflationRates, expenses.InflationRatePercent.Value))
-            {
-                errors.Add(new LifePlanValidationError(
-                    "IncomeExpense.Expenses.InflationRatePercent",
-                    LifePlanValidationMessages.DefinedOption("想定インフレ率")));
-            }
         }
 
         private static void ValidateRequiredAdultAge(
