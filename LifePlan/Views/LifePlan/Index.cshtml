@@ -495,8 +495,10 @@
                             <span asp-validation-for="IncomeExpense.Expenses.OtherAnnualCostManYen" class="life-plan-validation"></span>
                             <span class="life-plan-help life-plan-help--block">@Model.ExpenseGuidance.OtherCostNote</span>
                         </div>
+                        <div class="life-plan-field-row">
+                            <span class="life-plan-help life-plan-help--block">@Model.ExpenseGuidance.InflationNote</span>
+                        </div>
                     </div>
-                    <p class="life-plan-note">@Model.ExpenseGuidance.InflationNote</p>
                 </section>
 
                 @await Html.PartialAsync("_LifePlanActions", new LifePlanActionsViewModel())
