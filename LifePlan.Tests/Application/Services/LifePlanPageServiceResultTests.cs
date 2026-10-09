@@ -105,6 +105,28 @@ public class LifePlanPageServiceResultTests
         Assert.Equal("2", result.Page.CalculationSpecVersion);
     }
 
+    [Fact]
+    public void Submit_TreatsHousingWithoutPurchaseCostAsNoPurchase()
+    {
+        var service = new LifePlanPageService();
+        var input = CreateValidInput();
+        input.IncomeExpense.Expenses.MonthlyRentManYen = 10m;
+        input.LifeEvents.Housing.PurchaseHusbandAge = 30;
+        input.LifeEvents.Housing.DownPaymentManYen = 0m;
+        input.LifeEvents.Housing.BorrowingAmountManYen = 0m;
+        input.LifeEvents.Housing.LoanYears = 35;
+
+        var result = service.Submit(input, hasBindingErrors: false);
+
+        Assert.True(result.IsValid);
+        Assert.NotNull(result.CalculationResult);
+        Assert.All(result.CalculationResult.AnnualRows, row =>
+        {
+            Assert.Equal(1_200_000, row.Expenses.RentYen);
+            Assert.Equal(0, row.Expenses.HousingMaintenanceYen);
+        });
+    }
+
     [Theory]
     [InlineData("")]
     [InlineData(" ")]

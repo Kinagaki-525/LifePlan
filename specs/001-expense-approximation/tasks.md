@@ -254,3 +254,11 @@ Task: "T026 結果用 ViewModel の作成"
 - 率・年齢・金額を View・JavaScript に直書きしない（`SimulationAssumptions` から ViewModel 経由で渡す）
 - 検証エラーの文言は `LifePlanValidationMessages` に置く
 - コミットはタスクまたは論理的なまとまりごとに行う
+
+---
+
+## 実装後の変更（2026-10-10、ユーザー判断）
+
+- [X] T046 結果上部の「初年度の収支」の枠（T024、T026、T027、T029 の初年度サマリ・自動計上費用）を削除し、関連する ViewModel・CSS・テストを削除する
+- [X] T047 住宅価格が0なら住宅購入なしとして扱う。LifePlan/Application/Normalizers/LifePlanInputNormalizer.cs で住宅購入の入力を無効化し、`HousingMaintenanceStatus` と未算定の案内を削除する。LifePlan.Tests/Application/Services/LifePlanPageServiceResultTests.cs に家賃継続のテストを追加
+- [X] T048 正本 docs/simulator/index.md（3.2、4.3、6.1、6.4）と implementation-plan.md、specs（spec.md、contracts、data-model.md、research.md、quickstart.md）を更新する

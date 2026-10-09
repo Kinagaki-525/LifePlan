@@ -580,8 +580,7 @@
 
 .life-plan-assumptions__column p,
 .life-plan-assumptions__list,
-.life-plan-assumptions__education,
-.life-plan-summary__list {
+.life-plan-assumptions__education {
   margin: 0;
 }
 
@@ -591,36 +590,30 @@
 }
 
 .life-plan-assumptions__column p + .life-plan-assumptions__list,
-.life-plan-assumptions__list + .life-plan-assumptions__list,
-.life-plan-assumptions__column p + .life-plan-summary__list {
+.life-plan-assumptions__list + .life-plan-assumptions__list {
   margin-top: var(--ui-space-md);
 }
 
-.life-plan-assumptions__education,
-.life-plan-summary__list {
+.life-plan-assumptions__education {
   display: grid;
   gap: 0;
 }
 
-.life-plan-assumptions__education div,
-.life-plan-summary__list div {
+.life-plan-assumptions__education div {
   display: grid;
   grid-template-columns: 8.5rem minmax(0, 1fr);
   column-gap: var(--ui-space-xs);
 }
 
-.life-plan-assumptions__education dt,
-.life-plan-summary__list dt {
+.life-plan-assumptions__education dt {
   font-weight: 400;
 }
 
-.life-plan-assumptions__education dd,
-.life-plan-summary__list dd {
+.life-plan-assumptions__education dd {
   margin: 0;
 }
 
-.life-plan-assumptions__education div dd + dd,
-.life-plan-summary__list div dd + dd {
+.life-plan-assumptions__education div dd + dd {
   grid-column: 2;
 }
 
@@ -764,13 +757,11 @@
   }
 
   .life-plan-assumptions__frame,
-  .life-plan-assumptions__education div,
-  .life-plan-summary__list div {
+  .life-plan-assumptions__education div {
     grid-template-columns: 1fr;
   }
 
-  .life-plan-assumptions__education div dd + dd,
-  .life-plan-summary__list div dd + dd {
+  .life-plan-assumptions__education div dd + dd {
     grid-column: auto;
   }
 }

@@ -157,3 +157,10 @@ LifePlan.Tests/
 ## Complexity Tracking
 
 憲章違反なし。記載事項なし。
+
+## 実装後の変更（2026-10-10）
+
+ユーザー判断により次を変更した。正本 `docs/simulator/index.md`（3.2、4.3、6.1、6.4）も更新済み。
+
+- 結果上部の「初年度の収支」の枠（初年度サマリ・自動計上費用）を削除。`LifePlanFirstYearSummaryViewModel`、`AutoCostSummaryViewModel` は作らない
+- 住宅価格（頭金＋借入額）が0なら住宅購入なしとして扱う。`LifePlanInputNormalizer` が住宅購入の入力を無効化し、家賃は購入時期以降も計上する。未算定の状態（`HousingMaintenanceStatus`）と案内は削除

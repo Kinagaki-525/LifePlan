@@ -62,17 +62,11 @@
 
 追加フィールド：`ChildLivingCostYen`、`HousingMaintenanceYen`。`TotalExpenseYen` に両方を加える。
 
-### HousingMaintenanceStatus（新規 enum）
-
-| 値 | 条件 |
-| --- | --- |
-| NotPlanned | 購入時期なし |
-| Calculated | 購入時期あり、頭金＋借入額 > 0 |
-| PriceMissing | 購入時期あり、頭金＋借入額 = 0 |
-
 ### LifePlanCalculationResult（変更 record）
 
-追加：`HousingMaintenanceStatus HousingMaintenanceStatus`、`string AssumptionsVersion`
+追加：`string AssumptionsVersion`
+
+> 2026-10-10 ユーザー判断：住宅価格が0の場合は「住宅購入なし」として扱うことになり、未算定の状態（`HousingMaintenanceStatus`）は削除した。購入時期があっても頭金＋借入額が0なら、`LifePlanInputNormalizer` が住宅購入の入力を無効化する（家賃は購入時期以降も計上）。
 
 ### LifePlanCalculator（変更）
 
@@ -110,22 +104,7 @@
 | ChildMonthlyReferenceByAgeBand | 年齢帯ごとの月換算参考額（初期表示用） |
 | ChildMonthlyReferenceCaveat | 「実際の内訳とは一致しない」旨 |
 
-### LifePlanResultViewModel（変更）
-
-追加：
-
-| フィールド | 説明 |
-| --- | --- |
-| FirstYearSummary : LifePlanFirstYearSummaryViewModel | 初年度の収入合計・支出合計・年間収支（万円表示） |
-| AutoCosts : IReadOnlyList\<AutoCostSummaryViewModel\> | 子どもの生活費・住宅維持費 |
-
-### AutoCostSummaryViewModel（新規）
-
-| フィールド | 説明 |
-| --- | --- |
-| Label | 「子どもの生活費」「住宅維持費」 |
-| AmountText | 初年度額、または開始年と開始年額、または「計上なし」 |
-| Note | 未算定の案内など（任意） |
+> 2026-10-10 ユーザー判断：結果上部の「初年度の収支」の枠は不要となり、`LifePlanResultViewModel` の `FirstYearSummary`・`AutoCosts` と、`LifePlanFirstYearSummaryViewModel`・`AutoCostSummaryViewModel` は削除した。
 
 ### LifePlanAssumptionsViewModel（変更）
 

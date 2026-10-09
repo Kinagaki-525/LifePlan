@@ -35,7 +35,6 @@ namespace LifePlan.Domain.Logic
                 currentYear,
                 currentYear + simulationYears,
                 annualRows,
-                GetHousingMaintenanceStatus(input.LifeEvents.Housing),
                 assumptions.Version);
         }
 
@@ -227,35 +226,21 @@ namespace LifePlan.Domain.Logic
 
         private long CalculateHousingMaintenance(HousingEventData housing, int rawHusbandAge, int yearOffset)
         {
-            if (GetHousingMaintenanceStatus(housing) != HousingMaintenanceStatus.Calculated ||
-                rawHusbandAge < housing.PurchaseHusbandAge!.Value)
+            var purchaseCostYen = housing.DownPaymentYen.GetValueOrDefault() + housing.BorrowingAmountYen.GetValueOrDefault();
+
+            if (!housing.PurchaseHusbandAge.HasValue ||
+                purchaseCostYen <= 0 ||
+                rawHusbandAge < housing.PurchaseHusbandAge.Value)
             {
                 return 0;
             }
 
             var inflatedPurchaseCostYen = ApplyAnnualChange(
-                GetHousingPurchaseCostYen(housing),
+                purchaseCostYen,
                 assumptions.InflationRatePercent,
                 yearOffset);
 
             return RoundToYen(inflatedPurchaseCostYen * assumptions.HousingMaintenanceRatePercent / 100m);
-        }
-
-        private static HousingMaintenanceStatus GetHousingMaintenanceStatus(HousingEventData housing)
-        {
-            if (!housing.PurchaseHusbandAge.HasValue)
-            {
-                return HousingMaintenanceStatus.NotPlanned;
-            }
-
-            return GetHousingPurchaseCostYen(housing) > 0
-                ? HousingMaintenanceStatus.Calculated
-                : HousingMaintenanceStatus.PriceMissing;
-        }
-
-        private static long GetHousingPurchaseCostYen(HousingEventData housing)
-        {
-            return housing.DownPaymentYen.GetValueOrDefault() + housing.BorrowingAmountYen.GetValueOrDefault();
         }
 
         private long CalculateChildLivingCost(LifePlanData input, int year, int yearOffset)

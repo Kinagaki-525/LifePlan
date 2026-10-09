@@ -17,7 +17,6 @@ public class LifePlanCalculatorHousingMaintenanceTests
 
         Assert.Equal(500_000, result.AnnualRows[0].Expenses.HousingMaintenanceYen);
         Assert.Equal(510_000, result.AnnualRows[1].Expenses.HousingMaintenanceYen);
-        Assert.Equal(HousingMaintenanceStatus.Calculated, result.HousingMaintenanceStatus);
     }
 
     [Fact]
@@ -46,7 +45,7 @@ public class LifePlanCalculatorHousingMaintenanceTests
     }
 
     [Fact]
-    public void Calculate_MarksHousingPriceMissingWhenPurchaseCostIsZero()
+    public void Calculate_DoesNotAddHousingMaintenanceWhenPurchaseCostIsZero()
     {
         var input = CreateInput();
         input.LifeEvents.Housing = CreateHousing(purchaseHusbandAge: 30, downPaymentYen: 0, borrowingAmountYen: 0);
@@ -54,7 +53,6 @@ public class LifePlanCalculatorHousingMaintenanceTests
         var result = Calculate(input);
 
         Assert.All(result.AnnualRows, row => Assert.Equal(0, row.Expenses.HousingMaintenanceYen));
-        Assert.Equal(HousingMaintenanceStatus.PriceMissing, result.HousingMaintenanceStatus);
     }
 
     [Fact]
@@ -63,7 +61,6 @@ public class LifePlanCalculatorHousingMaintenanceTests
         var result = Calculate(CreateInput());
 
         Assert.All(result.AnnualRows, row => Assert.Equal(0, row.Expenses.HousingMaintenanceYen));
-        Assert.Equal(HousingMaintenanceStatus.NotPlanned, result.HousingMaintenanceStatus);
     }
 
     [Fact]

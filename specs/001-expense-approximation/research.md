@@ -34,12 +34,12 @@ Technical Context に NEEDS CLARIFICATION はない。既存コードとの接�
 - **Rationale**: 憲章 V と正本（View・JavaScript に計算の正本を複製しない）。試算・検証エラー・旧版案内のいずれの再表示でも、送信済みの年齢による合計が出る。
 - **Alternatives**: マスタを JSON で埋め込み JS で合計 → 計算の複製になるため不採用。
 
-## R6. 住宅維持費の未算定状態
+## R6. 住宅維持費の未算定状態（2026-10-10 廃止：価格0は住宅購入なしとして Normalizer で無効化）
 
 - **Decision**: `LifePlanCalculationResult` に `HousingMaintenanceStatus`（`NotPlanned` / `Calculated` / `PriceMissing`）を追加する。判定は Calculator が行い、Mapper が案内文に変換する。
 - **Rationale**: 業務判断を Domain に置く（憲章 II）。年次行の0円だけでは「購入なし」と「価格未設定」を区別できない。
 
-## R7. 自動費用サマリ（初年度または開始年）
+## R7. 自動費用サマリ（初年度または開始年）（2026-10-10 廃止：結果上部の枠を削除）
 
 - **Decision**: Mapper が年次行から「子どもの生活費」「住宅維持費」それぞれ最初に正の値となる年と額を求める。初年度が正なら初年度額、0で将来発生するなら開始年と開始年額、発生しないなら「計上なし」を表示する。
 - **Rationale**: 年次行から一意に求まる表示用の加工であり、計算の正本を増やさない。

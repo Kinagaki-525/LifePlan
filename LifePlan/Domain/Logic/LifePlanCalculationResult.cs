@@ -4,15 +4,7 @@ namespace LifePlan.Domain.Logic
         int StartYear,
         int EndYear,
         IReadOnlyList<AnnualCashFlowRow> AnnualRows,
-        HousingMaintenanceStatus HousingMaintenanceStatus,
         string AssumptionsVersion);
-
-    public enum HousingMaintenanceStatus
-    {
-        NotPlanned,
-        Calculated,
-        PriceMissing
-    }
 
     public record AnnualCashFlowRow(
         int Year,

@@ -507,46 +507,6 @@
             @if (Model.Result is not null)
             {
                 <section class="life-plan-result" data-life-plan-result aria-labelledby="cash-flow-table-title">
-                    <section class="life-plan-assumptions" aria-labelledby="life-plan-summary-title">
-                        <h2 id="life-plan-summary-title" class="life-plan-assumptions__label">初年度の収支</h2>
-
-                        <div class="life-plan-assumptions__frame">
-                            <div class="life-plan-assumptions__column">
-                                <dl class="life-plan-summary__list">
-                                    <div>
-                                        <dt>収入合計</dt>
-                                        <dd>@(Model.Result.FirstYearSummary.TotalIncomeText)万円</dd>
-                                    </div>
-                                    <div>
-                                        <dt>支出合計</dt>
-                                        <dd>@(Model.Result.FirstYearSummary.TotalExpenseText)万円</dd>
-                                    </div>
-                                    <div>
-                                        <dt>年間収支</dt>
-                                        <dd>@(Model.Result.FirstYearSummary.AnnualBalanceText)万円</dd>
-                                    </div>
-                                </dl>
-                            </div>
-
-                            <div class="life-plan-assumptions__column">
-                                <p>自動で計上した費用</p>
-                                <dl class="life-plan-summary__list">
-                                    @foreach (var autoCost in Model.Result.AutoCosts)
-                                    {
-                                        <div>
-                                            <dt>@autoCost.Label</dt>
-                                            <dd>@autoCost.AmountText</dd>
-                                            @if (autoCost.Note is not null)
-                                            {
-                                                <dd>@autoCost.Note</dd>
-                                            }
-                                        </div>
-                                    }
-                                </dl>
-                            </div>
-                        </div>
-                    </section>
-
                     <div class="life-plan-result-frame">
                         <h2 id="cash-flow-table-title" class="life-plan-result-frame__label">キャッシュフロー表</h2>
 
