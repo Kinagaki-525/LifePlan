@@ -1,3 +1,4 @@
+using System.Globalization;
 using LifePlan.Domain.ReferenceData;
 using LifePlan.Domain.Rules;
 using LifePlan.Domain.Entities;
@@ -126,7 +127,7 @@ namespace LifePlan.Application.Mappers
                 YearHeaders = rows.Select(row => row.Year.ToString()).ToList(),
                 CashFlowRows = cashFlowRows,
                 ChartPoints = rows.Select(ToChartPointViewModel).ToList(),
-                Assumptions = LifePlanAssumptionMapper.CreateAssumptions()
+                Assumptions = LifePlanAssumptionMapper.CreateAssumptions(result.AssumptionsVersion)
             };
         }
 
@@ -243,7 +244,7 @@ namespace LifePlan.Application.Mappers
 
         private static string ToManYenText(long yen)
         {
-            return ToManYen(yen).ToString("0.0");
+            return ToManYen(yen).ToString("0.0", CultureInfo.InvariantCulture);
         }
 
         private static decimal ToManYen(long yen)

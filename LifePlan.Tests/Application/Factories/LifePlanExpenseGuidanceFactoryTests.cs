@@ -1,5 +1,7 @@
+using System.Globalization;
 using LifePlan.Application.Factories;
 using LifePlan.Application.Mappers;
+using LifePlan.Domain.ReferenceData;
 using LifePlan.ViewModels.LifePlan;
 
 namespace LifePlan.Tests.Application.Factories;
@@ -67,6 +69,31 @@ public class LifePlanExpenseGuidanceFactoryTests
         Assert.Contains("含めないでください", guidance.OtherCostNote);
         Assert.Contains("教育費", guidance.ChildNote);
         Assert.Contains("一致しません", guidance.ChildMonthlyReferenceCaveat);
+    }
+
+    [Fact]
+    public void Create_FormatsRatesIndependentOfCurrentCulture()
+    {
+        var assumptions = SimulationAssumptions.Current with
+        {
+            InflationRatePercent = 1.5m,
+            HousingMaintenanceRatePercent = 0.5m
+        };
+        var originalCulture = CultureInfo.CurrentCulture;
+
+        try
+        {
+            CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("de-DE");
+
+            var guidance = LifePlanExpenseGuidanceFactory.Create(CreatePage(), StartYear, isSubmittedInput: false, assumptions);
+
+            Assert.Contains("年1.5%", guidance.InflationNote);
+            Assert.Contains("年0.5%", guidance.HousingNote);
+        }
+        finally
+        {
+            CultureInfo.CurrentCulture = originalCulture;
+        }
     }
 
     private static LifePlanViewModel CreatePage(params int[] childAges)

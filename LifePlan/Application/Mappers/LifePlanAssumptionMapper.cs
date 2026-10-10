@@ -1,3 +1,4 @@
+using System.Globalization;
 using LifePlan.Domain.ReferenceData;
 using LifePlan.ViewModels.LifePlan;
 
@@ -5,8 +6,17 @@ namespace LifePlan.Application.Mappers
 {
     public static class LifePlanAssumptionMapper
     {
-        public static LifePlanAssumptionsViewModel CreateAssumptions()
+        public static LifePlanAssumptionsViewModel CreateAssumptions(string assumptionsVersion)
         {
+            return CreateAssumptions(assumptionsVersion, SimulationAssumptions.Current);
+        }
+
+        public static LifePlanAssumptionsViewModel CreateAssumptions(
+            string assumptionsVersion,
+            SimulationAssumptions assumptions)
+        {
+            ArgumentNullException.ThrowIfNull(assumptions);
+
             return new LifePlanAssumptionsViewModel
             {
                 GeneralNotes =
@@ -16,11 +26,13 @@ namespace LifePlan.Application.Mappers
                     "自動車ローン：組まない"
                 ],
                 EducationCosts = CreateEducationCostAssumptions(),
-                AutoCostNotes = CreateAutoCostNotes(SimulationAssumptions.Current)
+                AutoCostNotes = CreateAutoCostNotes(assumptions, assumptionsVersion)
             };
         }
 
-        private static IReadOnlyList<string> CreateAutoCostNotes(SimulationAssumptions assumptions)
+        private static IReadOnlyList<string> CreateAutoCostNotes(
+            SimulationAssumptions assumptions,
+            string assumptionsVersion)
         {
             var inflationRate = FormatRate(assumptions.InflationRatePercent);
             var housingMaintenanceRate = FormatRate(assumptions.HousingMaintenanceRatePercent);
@@ -34,13 +46,13 @@ namespace LifePlan.Application.Mappers
                 $"物価上昇：生活費・子どもの生活費・その他支出・教育費・旅行その他・住宅維持費に年{inflationRate}%を適用。家賃・住宅ローン・頭金・自動車・結婚は対象外",
                 "自動計上しない費用：子どもの携帯料金・小遣い・医療費、大学の下宿費など（必要に応じてその他支出に入力）",
                 "生活費と教育費の一部費目には重複が残る概算です",
-                $"前提バージョン：{assumptions.Version}"
+                $"前提バージョン：{assumptionsVersion}"
             ];
         }
 
         private static string FormatRate(decimal ratePercent)
         {
-            return ratePercent.ToString("0.#");
+            return ratePercent.ToString("0.#", CultureInfo.InvariantCulture);
         }
 
         private static IReadOnlyList<EducationCostAssumptionViewModel> CreateEducationCostAssumptions()
@@ -82,7 +94,7 @@ namespace LifePlan.Application.Mappers
 
         private static string FormatManYen(decimal manYen)
         {
-            return manYen.ToString("0.#");
+            return manYen.ToString("0.#", CultureInfo.InvariantCulture);
         }
     }
 }
