@@ -228,6 +228,20 @@ public class LifePlanPageServiceResultTests
     }
 
     [Fact]
+    public void Submit_ShowsCalculationResultAssumptionsVersionInResultAssumptions()
+    {
+        var service = new LifePlanPageService();
+
+        var result = service.Submit(CreateValidInput(), hasBindingErrors: false);
+
+        Assert.NotNull(result.CalculationResult);
+        Assert.NotNull(result.Page.Result);
+        Assert.Contains(
+            $"前提バージョン：{result.CalculationResult.AssumptionsVersion}",
+            result.Page.Result.Assumptions.AutoCostNotes);
+    }
+
+    [Fact]
     public void CreateInitialPage_SetsCurrentCalculationSpecVersion()
     {
         var page = new LifePlanPageService().CreateInitialPage();

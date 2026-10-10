@@ -126,7 +126,7 @@ namespace LifePlan.Application.Mappers
                 YearHeaders = rows.Select(row => row.Year.ToString()).ToList(),
                 CashFlowRows = cashFlowRows,
                 ChartPoints = rows.Select(ToChartPointViewModel).ToList(),
-                Assumptions = LifePlanAssumptionMapper.CreateAssumptions()
+                Assumptions = LifePlanAssumptionMapper.CreateAssumptions(result.AssumptionsVersion)
             };
         }
 

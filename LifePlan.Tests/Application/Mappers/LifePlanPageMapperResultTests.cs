@@ -18,6 +18,16 @@ public class LifePlanPageMapperResultTests
     }
 
     [Fact]
+    public void ToResultViewModel_ShowsAssumptionsVersionFromCalculationResult()
+    {
+        var result = CreateCalculationResult(CreateAnnualRow(2026));
+
+        var viewModel = LifePlanPageMapper.ToResultViewModel(result);
+
+        Assert.Contains("前提バージョン：test", viewModel.Assumptions.AutoCostNotes);
+    }
+
+    [Fact]
     public void ToResultViewModel_ConvertsYenAmountsToManYenText()
     {
         var result = CreateCalculationResult(

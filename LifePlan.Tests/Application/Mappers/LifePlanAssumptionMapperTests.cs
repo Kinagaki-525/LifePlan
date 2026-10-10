@@ -1,3 +1,4 @@
+using System.Globalization;
 using LifePlan.Application.Mappers;
 using LifePlan.Domain.ReferenceData;
 
@@ -8,7 +9,7 @@ public class LifePlanAssumptionMapperTests
     [Fact]
     public void CreateAssumptions_CreatesGeneralNotes()
     {
-        var assumptions = LifePlanAssumptionMapper.CreateAssumptions();
+        var assumptions = LifePlanAssumptionMapper.CreateAssumptions(SimulationAssumptions.Current.Version);
 
         Assert.Contains("給与・退職金・年金：手取りとして計算", assumptions.GeneralNotes);
         Assert.Contains("家賃：値上げを考慮しない", assumptions.GeneralNotes);
@@ -18,7 +19,7 @@ public class LifePlanAssumptionMapperTests
     [Fact]
     public void CreateAssumptions_CreatesEducationCostsFromReferenceData()
     {
-        var assumptions = LifePlanAssumptionMapper.CreateAssumptions();
+        var assumptions = LifePlanAssumptionMapper.CreateAssumptions(SimulationAssumptions.Current.Version);
 
         var nursery = Assert.Single(assumptions.EducationCosts, cost => cost.Stage == "保育園（0〜2歳）");
         Assert.Equal(["公立45万円/年、私立55万円/年"], nursery.CostLines);
@@ -34,7 +35,7 @@ public class LifePlanAssumptionMapperTests
     {
         var current = SimulationAssumptions.Current;
 
-        var notes = LifePlanAssumptionMapper.CreateAssumptions().AutoCostNotes;
+        var notes = LifePlanAssumptionMapper.CreateAssumptions(SimulationAssumptions.Current.Version).AutoCostNotes;
 
         Assert.Contains(notes, note => note.Contains("衣類・食費・生活用品") &&
             note.Contains($"{current.ChildSupportEndAge}歳") &&
@@ -45,5 +46,39 @@ public class LifePlanAssumptionMapperTests
         Assert.Contains(notes, note => note.Contains("携帯料金・小遣い・医療費") && note.Contains("下宿費"));
         Assert.Contains("生活費と教育費の一部費目には重複が残る概算です", notes);
         Assert.Contains(notes, note => note.Contains(current.Version));
+    }
+
+    [Fact]
+    public void CreateAssumptions_ShowsGivenAssumptionsVersion()
+    {
+        var notes = LifePlanAssumptionMapper.CreateAssumptions("2025.04").AutoCostNotes;
+
+        Assert.Contains("前提バージョン：2025.04", notes);
+        Assert.DoesNotContain($"前提バージョン：{SimulationAssumptions.Current.Version}", notes);
+    }
+
+    [Fact]
+    public void CreateAssumptions_FormatsRatesIndependentOfCurrentCulture()
+    {
+        var assumptions = SimulationAssumptions.Current with
+        {
+            InflationRatePercent = 1.5m,
+            HousingMaintenanceRatePercent = 0.5m
+        };
+        var originalCulture = CultureInfo.CurrentCulture;
+
+        try
+        {
+            CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("de-DE");
+
+            var notes = LifePlanAssumptionMapper.CreateAssumptions(assumptions.Version, assumptions).AutoCostNotes;
+
+            Assert.Contains(notes, note => note.StartsWith("物価上昇：") && note.Contains("年1.5%"));
+            Assert.Contains(notes, note => note.StartsWith("住宅維持費：") && note.Contains("年0.5%"));
+        }
+        finally
+        {
+            CultureInfo.CurrentCulture = originalCulture;
+        }
     }
 }

@@ -11,9 +11,18 @@ namespace LifePlan.Application.Factories
 
         public static LifePlanExpenseGuidanceViewModel Create(LifePlanViewModel page, int startYear, bool isSubmittedInput)
         {
-            ArgumentNullException.ThrowIfNull(page);
+            return Create(page, startYear, isSubmittedInput, SimulationAssumptions.Current);
+        }
 
-            var assumptions = SimulationAssumptions.Current;
+        public static LifePlanExpenseGuidanceViewModel Create(
+            LifePlanViewModel page,
+            int startYear,
+            bool isSubmittedInput,
+            SimulationAssumptions assumptions)
+        {
+            ArgumentNullException.ThrowIfNull(page);
+            ArgumentNullException.ThrowIfNull(assumptions);
+
             var inflationRate = FormatRate(assumptions.InflationRatePercent);
             var housingMaintenanceRate = FormatRate(assumptions.HousingMaintenanceRatePercent);
 
@@ -80,7 +89,7 @@ namespace LifePlan.Application.Factories
 
         private static string FormatRate(decimal ratePercent)
         {
-            return ratePercent.ToString("0.#");
+            return ratePercent.ToString("0.#", CultureInfo.InvariantCulture);
         }
     }
 }
