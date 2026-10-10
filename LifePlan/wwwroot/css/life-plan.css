@@ -775,16 +775,17 @@
 
   .app-header__menu {
     align-items: flex-start;
-    padding: var(--ui-space-md) 0;
   }
 
   .app-header__links {
     align-items: flex-start;
     gap: var(--ui-space-xs);
+    padding: var(--ui-space-md) 0;
   }
 
   .app-header__cta {
     width: 100%;
+    margin-bottom: var(--ui-space-md);
   }
 
   .life-plan-page__title {
