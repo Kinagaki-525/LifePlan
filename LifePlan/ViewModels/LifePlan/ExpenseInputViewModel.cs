@@ -4,8 +4,6 @@ namespace LifePlan.ViewModels.LifePlan
     {
         public decimal? MonthlyBasicLivingCostManYen { get; set; }
 
-        public decimal? InflationRatePercent { get; set; }
-
         public decimal? MonthlyRentManYen { get; set; }
 
         public decimal? OtherAnnualCostManYen { get; set; }

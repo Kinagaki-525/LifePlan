@@ -321,6 +321,10 @@
   grid-column: 2 / -1;
 }
 
+.life-plan-field-row .life-plan-help--block {
+  grid-column: 2 / -1;
+}
+
 .life-plan-period-row .life-plan-validation {
   grid-column: 2 / -1;
 }
@@ -585,7 +589,8 @@
   list-style: none;
 }
 
-.life-plan-assumptions__column p + .life-plan-assumptions__list {
+.life-plan-assumptions__column p + .life-plan-assumptions__list,
+.life-plan-assumptions__list + .life-plan-assumptions__list {
   margin-top: var(--ui-space-md);
 }
 
@@ -807,6 +812,7 @@
 
   .life-plan-child-field .life-plan-validation,
   .life-plan-field-row .life-plan-validation,
+  .life-plan-field-row .life-plan-help--block,
   .life-plan-education-field .life-plan-validation,
   .life-plan-period-row .life-plan-help,
   .life-plan-period-row .life-plan-validation {

@@ -15,8 +15,32 @@ namespace LifePlan.Application.Mappers
                     "家賃：値上げを考慮しない",
                     "自動車ローン：組まない"
                 ],
-                EducationCosts = CreateEducationCostAssumptions()
+                EducationCosts = CreateEducationCostAssumptions(),
+                AutoCostNotes = CreateAutoCostNotes(SimulationAssumptions.Current)
             };
+        }
+
+        private static IReadOnlyList<string> CreateAutoCostNotes(SimulationAssumptions assumptions)
+        {
+            var inflationRate = FormatRate(assumptions.InflationRatePercent);
+            var housingMaintenanceRate = FormatRate(assumptions.HousingMaintenanceRatePercent);
+            var extendedCostStartAge = assumptions.ChildLivingCosts[^1].StartAge;
+
+            return
+            [
+                $"子どもの生活費：衣類・食費・生活用品（玩具・書籍・文房具等を含む）の概算。{assumptions.ChildSupportEndAge}歳になる年から計上しない（大学院を選択した子は{assumptions.ChildSupportEndAgeWithGraduateSchool}歳）",
+                $"子どもの生活費：{extendedCostStartAge}歳以降は高校生の額を継続する仮定。{assumptions.ChildLivingCostPriceBaseYear}年の調査額を年{inflationRate}%で補正",
+                $"住宅維持費：購入費用（頭金＋借入額）の年{housingMaintenanceRate}%を、税金・保険・修繕などの維持費として購入年から計上",
+                $"物価上昇：生活費・子どもの生活費・その他支出・教育費・旅行その他・住宅維持費に年{inflationRate}%を適用。家賃・住宅ローン・頭金・自動車・結婚は対象外",
+                "自動計上しない費用：子どもの携帯料金・小遣い・医療費、大学の下宿費など（必要に応じてその他支出に入力）",
+                "生活費と教育費の一部費目には重複が残る概算です",
+                $"前提バージョン：{assumptions.Version}"
+            ];
+        }
+
+        private static string FormatRate(decimal ratePercent)
+        {
+            return ratePercent.ToString("0.#");
         }
 
         private static IReadOnlyList<EducationCostAssumptionViewModel> CreateEducationCostAssumptions()

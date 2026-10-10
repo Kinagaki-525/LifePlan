@@ -10,11 +10,6 @@ namespace LifePlan.Application.Factories
             return CreateRateOptions(RateOptionCatalog.AnnualIncomeChangeRates);
         }
 
-        public static IReadOnlyList<SelectOptionViewModel> CreateInflationRateOptions()
-        {
-            return CreateRateOptions(RateOptionCatalog.InflationRates);
-        }
-
         private static IReadOnlyList<SelectOptionViewModel> CreateRateOptions(IReadOnlyList<RateOptionEntry> options)
         {
             return
