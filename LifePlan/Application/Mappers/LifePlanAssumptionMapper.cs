@@ -94,7 +94,7 @@ namespace LifePlan.Application.Mappers
 
         private static string FormatManYen(decimal manYen)
         {
-            return manYen.ToString("0.#");
+            return manYen.ToString("0.#", CultureInfo.InvariantCulture);
         }
     }
 }

@@ -1,3 +1,4 @@
+using System.Globalization;
 using LifePlan.Application.Mappers;
 using LifePlan.Domain.Logic;
 
@@ -37,6 +38,28 @@ public class LifePlanPageMapperResultTests
         var salaryRow = Assert.Single(viewModel.CashFlowRows, row => row.Label == "夫 給与");
 
         Assert.Equal("123.5", salaryRow.Values[0]);
+    }
+
+    [Fact]
+    public void ToResultViewModel_FormatsManYenTextIndependentOfCurrentCulture()
+    {
+        var result = CreateCalculationResult(
+            CreateAnnualRow(2026, husbandIncome: new PersonAnnualIncome(1_234_500, 0, 0)));
+        var originalCulture = CultureInfo.CurrentCulture;
+
+        try
+        {
+            CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("de-DE");
+
+            var viewModel = LifePlanPageMapper.ToResultViewModel(result);
+            var salaryRow = Assert.Single(viewModel.CashFlowRows, row => row.Label == "夫 給与");
+
+            Assert.Equal("123.5", salaryRow.Values[0]);
+        }
+        finally
+        {
+            CultureInfo.CurrentCulture = originalCulture;
+        }
     }
 
     [Fact]
