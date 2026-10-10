@@ -179,8 +179,9 @@ description: "Task list for 支出近似改善"
 - [X] T040 [P] AT16 のテストを LifePlan.Tests/Domain/Logic/LifePlanCalculatorSavingsTests.cs に追加する。運用0%で、子ども・住宅購入あり／なしの2条件を同じ前提で計算し、最終年の残高差が子どもの生活費＋住宅維持費の累計と1円単位で一致する
 - [X] T041 `rg -n -i "inflation|インフレ" LifePlan LifePlan.Tests` で残存参照がないことを確認する（`wwwroot/lib` を除く）
 - [X] T042 `dotnet build LifePlan.slnx -m:1` と `dotnet test LifePlan.slnx -m:1` を実行し、T001 との差（追加・削除・更新したテスト）を整理する。ネットワーク由来の警告は成否と分けて記録する
-- [ ] T043 specs/001-expense-approximation/quickstart.md の「画面での確認」1〜6 を実施する（スマートフォン幅 390px 程度を含む）
+- [X] T043 specs/001-expense-approximation/quickstart.md の「画面での確認」1〜6 を実施する（スマートフォン幅 390px 程度を含む）
   - 2026-10-10 実施：HTTP で 1〜5 を確認済み（インフレ率欄なし・説明表示・試算結果・将来開始・未算定案内・版欠落・未定義版・改ざん値無視）。6（スマートフォン幅の見た目）はブラウザ未使用のため未確認
+  - 2026-10-10 実施：ユーザーがブラウザで 6 を確認（develop 836247d、幅390px）。入力欄の説明文と前提条件の注記が折り返して読めることを確認。前提条件の読みやすさ（注記の区切り、教育費の区分名と金額の見分け）は改善の余地あり、別対応とする
 - [X] T044 docs/simulator/implementation-plan.md 4.1 の構成図に `ChildLivingCostEntry.cs`、`ChildLivingCostCalculator.cs`、`LifePlanExpenseGuidanceFactory.cs` を追記する案を示し、了承を得て反映する（憲章 原則 I）
 - [X] T045 `/review-changes` で変更をレビューする（比較元 develop、未追跡ファイル一覧とビルド・テスト結果を渡す）
   - 2026-10-10 実施：change-reviewer で3回レビュー。1回目 中1・低2、2回目 低1、3回目 指摘なし。すべて修正済み（正本の文言2件はユーザー確認待ち）
