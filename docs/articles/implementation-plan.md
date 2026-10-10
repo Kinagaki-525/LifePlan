@@ -131,7 +131,7 @@ LifePlan/
 
 詳細取得で該当 `slug` の記事が見つからない場合は、Controller が `Response.StatusCode = StatusCodes.Status404NotFound` を設定し、記事が見つからない旨と記事一覧へ戻るリンクを含む詳細ViewModelを返す。microCMS 障害、タイムアウト、認証エラーなどのAPI取得失敗は記事なしとは区別し、Controller が `Response.StatusCode = StatusCodes.Status503ServiceUnavailable` を設定できる結果として扱う。microCMS のエラー詳細や内部例外情報は View に渡さず、ログにだけ残す。
 
-SEO用の `ViewData["Description"]` と最小OGP metaは、Controller または ViewModel で表示用値を組み立てて View に渡す。記事詳細ページでは `title`、`metaDescription` / `description`、`thumbnail.url`、現在URLを使って記事ごとの OGP を出力する。記事一覧ページでは固定の一覧ページ用 OGP を出力する。canonical と構造化データは初期実装では扱わない。
+SEO用の `ViewData["Description"]` と最小OGP metaは、Controller または ViewModel で表示用値を組み立てて View に渡す。記事詳細ページでは `title`、`metaDescription` / `description`、`thumbnail.url`、現在URLを使って記事ごとの OGP を出力する。記事一覧ページでは固定の一覧ページ用 OGP を出力する。canonical は Controller が `ViewData["CanonicalUrl"]` に設定し、共通レイアウトが値のある場合のみ出力する。URLの組み立ては内部リンクと同じ `ArticleUrlFactory` を使い、ホストは正規URLの `https://www.futari-kakei.com` に固定する。記事詳細は表示できた場合のみ、記事一覧はカテゴリ未指定の1ページ目のみ設定する。構造化データは扱わない。
 
 ## 7. 実装ステップ
 

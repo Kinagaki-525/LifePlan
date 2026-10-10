@@ -319,7 +319,10 @@ microCMS のレスポンスで `category` が配列になる場合でも、初�
 - 記事詳細ページの `og:type` は `article` とする。
 - 記事詳細ページの `og:url` は現在リクエストの scheme / host から組み立てた絶対URLを利用する。
 - 記事一覧ページでは一覧ページ用の固定OGP metaを出力する。
-- canonical、構造化データは初期実装では対象外とし、必要になった時点で追加する。
+- 記事詳細ページは、記事を表示できた場合のみ `https://www.futari-kakei.com/Articles/{slug}` を canonical として出力する。記事なし（404）・取得失敗（503）では出力しない。
+- 記事一覧ページは、カテゴリ未指定の1ページ目を表示した場合のみ `https://www.futari-kakei.com/Articles` を canonical として出力する。カテゴリ別・2ページ目以降の canonical は対象外とする。
+- 構造化データは対象外とし、必要になった時点で追加する。
+- 公開記事の詳細URLは `wwwroot/sitemap.xml` に登録する。サイトマップは静的ファイルとして管理し、自動生成は対象外とする。
 
 ### 6.7 エラー時
 
