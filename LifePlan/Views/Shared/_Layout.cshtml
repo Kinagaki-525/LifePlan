@@ -71,17 +71,13 @@
         var isArticlesPage = string.Equals(currentController, "Articles", StringComparison.OrdinalIgnoreCase);
     }
     <header class="app-header">
-        <nav class="navbar navbar-expand-sm navbar-light app-header__nav">
+        <nav class="navbar navbar-expand navbar-light app-header__nav">
             <div class="container-fluid app-header__container">
                 <a class="app-brand" asp-area="" asp-controller="Home" asp-action="Index">
                     <span class="app-brand__name">ふたりの家計</span>
                     <span class="app-brand__tagline">おかねのことを、ふたりで。</span>
                 </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#app-header-menu" aria-controls="app-header-menu"
-                        aria-expanded="false" aria-label="メニューを開閉">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div id="app-header-menu" class="navbar-collapse collapse app-header__menu">
+                <div class="navbar-collapse app-header__menu">
                     <ul class="navbar-nav app-header__links">
                         <li class="nav-item">
                             <a class="nav-link @(isArticlesPage ? "active" : "")"
