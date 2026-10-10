@@ -71,20 +71,13 @@
         var isArticlesPage = string.Equals(currentController, "Articles", StringComparison.OrdinalIgnoreCase);
     }
     <header class="app-header">
-        <nav class="navbar navbar-expand-sm navbar-light app-header__nav">
+        <nav class="navbar navbar-expand navbar-light app-header__nav">
             <div class="container-fluid app-header__container">
                 <a class="app-brand" asp-area="" asp-controller="Home" asp-action="Index">
                     <span class="app-brand__name">ふたりの家計</span>
                     <span class="app-brand__tagline">おかねのことを、ふたりで。</span>
                 </a>
-                @* TODO: 公開時にコメントアウトを削除 *@
-                @*
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                *@
-                <div class="navbar-collapse collapse app-header__menu">
+                <div class="navbar-collapse app-header__menu">
                     <ul class="navbar-nav app-header__links">
                         <li class="nav-item">
                             <a class="nav-link @(isArticlesPage ? "active" : "")"
@@ -138,7 +131,6 @@
             </div>
             <div class="app-footer__bottom">
                 <span>&copy;2026ふたりの家計</span>
-                @* TODO: 公開時にコメントアウトを削除 *@
                 <a asp-area="" asp-controller="Home" asp-action="Privacy">プライバシーポリシー</a>
                 <a asp-area="" asp-controller="Contact" asp-action="Index">お問い合わせ</a>
             </div>
