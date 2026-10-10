@@ -8,6 +8,14 @@
     {
         <meta name="description" content="@description" />
     }
+    @if (ViewData["Robots"] is string robots && !string.IsNullOrWhiteSpace(robots))
+    {
+        <meta name="robots" content="@robots" />
+    }
+    @if (ViewData["CanonicalUrl"] is string canonicalUrl && !string.IsNullOrWhiteSpace(canonicalUrl))
+    {
+        <link rel="canonical" href="@canonicalUrl" />
+    }
     @if (ViewData["OgTitle"] is string ogTitle && !string.IsNullOrWhiteSpace(ogTitle))
     {
         <meta property="og:title" content="@ogTitle" />

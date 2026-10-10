@@ -4,6 +4,8 @@
 
 @{
     ViewData["Title"] = "ライフプランシミュレーター";
+    ViewData["Description"] = "家族構成・収入・貯蓄・支出を入力して、ふたりの将来のキャッシュフローと貯蓄の推移を無料でシミュレーションできます。";
+    ViewData["CanonicalUrl"] = "https://www.futari-kakei.com/LifePlan";
     var childAgeOptions = new SelectList(Model.ChildAgeOptions, "Value", "Text");
     var occupationOptions = new SelectList(Model.OccupationOptions, "Value", "Text");
     var nurseryEducationOptions = new SelectList(Model.NurseryEducationOptions, "Value", "Text");
