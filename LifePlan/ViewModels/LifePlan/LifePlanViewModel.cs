@@ -14,7 +14,13 @@ namespace LifePlan.ViewModels.LifePlan
 
         public bool IsSubmitted { get; set; }
 
+        public string? CalculationSpecVersion { get; set; }
+
+        public bool SpecVersionNotice { get; set; }
+
         public LifePlanClientValidationViewModel ClientValidation { get; set; } = new();
+
+        public LifePlanExpenseGuidanceViewModel ExpenseGuidance { get; set; } = new();
 
         public IReadOnlyList<SelectOptionViewModel> ChildAgeOptions { get; set; } = [];
 
@@ -37,7 +43,5 @@ namespace LifePlan.ViewModels.LifePlan
         public IReadOnlyList<SelectOptionViewModel> OccupationOptions { get; set; } = [];
 
         public IReadOnlyList<SelectOptionViewModel> AnnualIncomeChangeRateOptions { get; set; } = [];
-
-        public IReadOnlyList<SelectOptionViewModel> InflationRateOptions { get; set; } = [];
     }
 }

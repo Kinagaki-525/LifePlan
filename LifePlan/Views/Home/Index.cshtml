@@ -1,7 +1,7 @@
 @model HomeIndexViewModel
 
 @{
-    ViewData["Title"] = "ふたりの家計 | カップル・夫婦向けライフプラン＆家計管理アプリ";
+    ViewData["Title"] = "カップル・夫婦向けライフプラン＆家計管理アプリ";
     ViewData["Description"] = "婚約から子育てまで、カップル・夫婦のお金の悩みをサポート。ライフプランシミュレーションやFP相談など、ふたりの未来設計をまるごとサポートする無料アプリです。";
     ViewData["Keywords"] = "夫婦 家計,カップル 家計管理,ライフプラン シミュレーション,結婚 お金,子育て 費用,FP相談 無料";
     ViewData["OgTitle"] = "ふたりの家計 | カップル・夫婦向けライフプラン＆家計管理アプリ";
@@ -101,7 +101,9 @@
                     <article class="feature-card">
                         <h3 class="feature-card__title">お役立ち記事</h3>
                         <p class="feature-card__text">お金の知識をわかりやすく解説</p>
-                        <span class="feature-card__coming" aria-label="準備中">Coming Soon...</span>
+                        <a class="app-button app-button--primary feature-card__button"
+                           asp-controller="Articles" asp-action="Index"
+                           aria-label="お役立ち記事を使ってみる">使ってみる</a>
                     </article>
                 </li>
                 <li>

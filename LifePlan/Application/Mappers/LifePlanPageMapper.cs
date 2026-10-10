@@ -1,3 +1,4 @@
+using System.Globalization;
 using LifePlan.Domain.ReferenceData;
 using LifePlan.Domain.Rules;
 using LifePlan.Domain.Entities;
@@ -126,7 +127,7 @@ namespace LifePlan.Application.Mappers
                 YearHeaders = rows.Select(row => row.Year.ToString()).ToList(),
                 CashFlowRows = cashFlowRows,
                 ChartPoints = rows.Select(ToChartPointViewModel).ToList(),
-                Assumptions = LifePlanAssumptionMapper.CreateAssumptions()
+                Assumptions = LifePlanAssumptionMapper.CreateAssumptions(result.AssumptionsVersion)
             };
         }
 
@@ -189,11 +190,13 @@ namespace LifePlan.Application.Mappers
             IReadOnlyList<AnnualCashFlowRow> rows)
         {
             cashFlowRows.Add(CreateMoneyRow("支出", "expense", "基本生活費", rows.Select(row => row.Expenses.BasicLivingCostYen)));
+            cashFlowRows.Add(CreateMoneyRow("支出", "expense", "子どもの生活費", rows.Select(row => row.Expenses.ChildLivingCostYen)));
             cashFlowRows.Add(CreateMoneyRow("支出", "expense", "家賃", rows.Select(row => row.Expenses.RentYen)));
             cashFlowRows.Add(CreateMoneyRow("支出", "expense", "その他支出", rows.Select(row => row.Expenses.OtherAnnualCostYen)));
             cashFlowRows.Add(CreateMoneyRow("支出", "expense", "結婚", rows.Select(row => row.Expenses.MarriageYen)));
             cashFlowRows.Add(CreateMoneyRow("支出", "expense", "住宅頭金", rows.Select(row => row.Expenses.HousingDownPaymentYen)));
             cashFlowRows.Add(CreateMoneyRow("支出", "expense", "住宅ローン返済", rows.Select(row => row.Expenses.HousingLoanRepaymentYen)));
+            cashFlowRows.Add(CreateMoneyRow("支出", "expense", "住宅維持費", rows.Select(row => row.Expenses.HousingMaintenanceYen)));
             cashFlowRows.Add(CreateMoneyRow("支出", "expense", "自動車", rows.Select(row => row.Expenses.CarYen)));
             cashFlowRows.Add(CreateMoneyRow("支出", "expense", "教育費", rows.Select(row => row.Expenses.EducationYen)));
             cashFlowRows.Add(CreateMoneyRow("支出", "expense", "旅行・その他", rows.Select(row => row.Expenses.TravelOtherYen)));
@@ -241,7 +244,7 @@ namespace LifePlan.Application.Mappers
 
         private static string ToManYenText(long yen)
         {
-            return ToManYen(yen).ToString("0.0");
+            return ToManYen(yen).ToString("0.0", CultureInfo.InvariantCulture);
         }
 
         private static decimal ToManYen(long yen)
@@ -336,7 +339,6 @@ namespace LifePlan.Application.Mappers
             return new ExpenseData
             {
                 MonthlyBasicLivingCostYen = ToYen(input.MonthlyBasicLivingCostManYen),
-                InflationRatePercent = input.InflationRatePercent,
                 MonthlyRentYen = ToYen(input.MonthlyRentManYen),
                 OtherAnnualCostYen = ToYen(input.OtherAnnualCostManYen)
             };

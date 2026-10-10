@@ -12,6 +12,7 @@
 - ライフプランシミュレーターの要件仕様は `docs/simulator/index.md` を正とする。
 - ライフプランシミュレーターの実装方針・PR分割は `docs/simulator/implementation-plan.md` を参照する。
 - 記事表示機能の要件仕様・実装方針は `docs/articles/` 配下を参照する。
+- `specs/` は Spec Kit の機能単位の作業成果物であり、`docs/` の正本に従う。要件の変更は了承を得て `docs/` に反映する（`.specify/memory/constitution.md`、`docs/ai-development/spec-kit.md`）。
 
 ## Conflict Resolution
 

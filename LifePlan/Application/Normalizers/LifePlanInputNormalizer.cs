@@ -29,7 +29,8 @@ namespace LifePlan.Application.Normalizers
 
         private static HousingEventInputViewModel NormalizeHousing(HousingEventInputViewModel input)
         {
-            if (!input.PurchaseHusbandAge.HasValue)
+            if (!input.PurchaseHusbandAge.HasValue ||
+                input.DownPaymentManYen.GetValueOrDefault() + input.BorrowingAmountManYen.GetValueOrDefault() <= 0)
             {
                 return new HousingEventInputViewModel();
             }

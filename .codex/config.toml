@@ -1,0 +1,3 @@
+[agents.change-reviewer]
+description = "Review code changes and related tests for concrete bugs, regressions, and missing verification. Return findings without changing source files."
+config_file = "agents/change-reviewer.toml"

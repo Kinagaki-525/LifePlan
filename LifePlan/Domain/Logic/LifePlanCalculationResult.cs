@@ -3,7 +3,8 @@ namespace LifePlan.Domain.Logic
     public record LifePlanCalculationResult(
         int StartYear,
         int EndYear,
-        IReadOnlyList<AnnualCashFlowRow> AnnualRows);
+        IReadOnlyList<AnnualCashFlowRow> AnnualRows,
+        string AssumptionsVersion);
 
     public record AnnualCashFlowRow(
         int Year,
@@ -41,10 +42,14 @@ namespace LifePlan.Domain.Logic
         long HousingLoanRepaymentYen,
         long CarYen,
         long EducationYen,
-        long TravelOtherYen)
+        long TravelOtherYen,
+        long ChildLivingCostYen,
+        long HousingMaintenanceYen)
     {
         public long TotalExpenseYen =>
             BasicLivingCostYen +
+            ChildLivingCostYen +
+            HousingMaintenanceYen +
             RentYen +
             OtherAnnualCostYen +
             MarriageYen +

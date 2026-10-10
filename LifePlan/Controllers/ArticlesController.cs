@@ -1,3 +1,4 @@
+using LifePlan.Application.Factories;
 using LifePlan.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -5,6 +6,8 @@ namespace LifePlan.Controllers
 {
     public class ArticlesController : Controller
     {
+        private const string CanonicalBaseUrl = "https://www.futari-kakei.com";
+
         private readonly IArticlePageService articlePageService;
 
         public ArticlesController(IArticlePageService articlePageService)
@@ -33,6 +36,12 @@ namespace LifePlan.Controllers
             ViewData["OgType"] = "website";
             ViewData["OgUrl"] = CreateCurrentUrl();
 
+            // カテゴリ別・2ページ目以降の canonical は扱わず、カテゴリ未指定の1ページ目のみ設定する。
+            if (!result.StatusCode.HasValue && string.IsNullOrWhiteSpace(category) && page.GetValueOrDefault(1) <= 1)
+            {
+                ViewData["CanonicalUrl"] = CanonicalBaseUrl + ArticleUrlFactory.CreateListUrl();
+            }
+
             return View(result.Page);
         }
 
@@ -56,6 +65,7 @@ namespace LifePlan.Controllers
                 ViewData["OgImage"] = result.Page.ThumbnailUrl;
                 ViewData["OgType"] = "article";
                 ViewData["OgUrl"] = CreateCurrentUrl();
+                ViewData["CanonicalUrl"] = CanonicalBaseUrl + ArticleUrlFactory.CreateDetailUrl(slug);
             }
 
             return View(result.Page);

@@ -8,16 +8,98 @@ public class LifePlanCalculatorExpenseTests
     private const int CurrentYear = 2026;
 
     [Fact]
-    public void Calculate_AppliesInflationToBasicLivingCost()
+    public void Calculate_AppliesFixedInflationToBasicLivingCost()
     {
         var input = CreateInput();
         input.IncomeExpense.Expenses.MonthlyBasicLivingCostYen = 100_000;
-        input.IncomeExpense.Expenses.InflationRatePercent = 2m;
 
         var result = Calculate(input);
 
         Assert.Equal(1_200_000, result.AnnualRows[0].Expenses.BasicLivingCostYen);
         Assert.Equal(1_224_000, result.AnnualRows[1].Expenses.BasicLivingCostYen);
+    }
+
+    [Fact]
+    public void Calculate_AppliesFixedInflationToOtherAnnualCost()
+    {
+        var input = CreateInput();
+        input.IncomeExpense.Expenses.OtherAnnualCostYen = 2_400_000;
+
+        var result = Calculate(input);
+
+        Assert.Equal(2_400_000, result.AnnualRows[0].Expenses.OtherAnnualCostYen);
+        Assert.Equal(2_448_000, result.AnnualRows[1].Expenses.OtherAnnualCostYen);
+    }
+
+    [Fact]
+    public void Calculate_AppliesFixedInflationToEducationCostFromSecondYear()
+    {
+        var input = CreateInput();
+        input.Family.Children =
+        [
+            new ChildData { Age = 5 }
+        ];
+        input.LifeEvents.EducationPlans =
+        [
+            new ChildEducationData { ElementarySchoolOptionValue = "elementary_public" }
+        ];
+
+        var result = Calculate(input);
+
+        Assert.Equal(0, result.AnnualRows[0].Expenses.EducationYen);
+        Assert.Equal(408_000, result.AnnualRows[1].Expenses.EducationYen);
+    }
+
+    [Fact]
+    public void Calculate_DoesNotLinkSalaryToInflation()
+    {
+        var input = CreateInput();
+        input.IncomeExpense.HusbandIncome = new PersonIncomeData
+        {
+            AnnualIncomeYen = 5_000_000,
+            WorkStartAge = 30,
+            WorkEndAge = 31
+        };
+
+        var result = Calculate(input);
+
+        Assert.Equal(5_000_000, result.AnnualRows[0].HusbandIncome.SalaryYen);
+        Assert.Equal(5_000_000, result.AnnualRows[1].HusbandIncome.SalaryYen);
+    }
+
+    [Fact]
+    public void Calculate_DoesNotApplyInflationToRentHousingCarAndMarriage()
+    {
+        var input = CreateInput();
+        input.IncomeExpense.Expenses.MonthlyRentYen = 80_000;
+        input.LifeEvents.Marriage = new MarriageEventData
+        {
+            HusbandAge = 31,
+            CostYen = 2_000_000
+        };
+        input.LifeEvents.Car = new CarEventData
+        {
+            FirstPurchaseHusbandAge = 31,
+            ReplacementIntervalYears = 5,
+            PurchaseAmountYen = 1_500_000
+        };
+        input.LifeEvents.Housing = new HousingEventData
+        {
+            PurchaseHusbandAge = 32,
+            DownPaymentYen = 1_000_000,
+            BorrowingAmountYen = 3_000_000,
+            LoanYears = 3,
+            InterestRatePercent = 0m
+        };
+
+        var result = Calculate(input);
+
+        Assert.Equal(960_000, result.AnnualRows[1].Expenses.RentYen);
+        Assert.Equal(2_000_000, result.AnnualRows[1].Expenses.MarriageYen);
+        Assert.Equal(1_500_000, result.AnnualRows[1].Expenses.CarYen);
+        Assert.Equal(1_000_000, result.AnnualRows[2].Expenses.HousingDownPaymentYen);
+        Assert.Equal(1_000_000, result.AnnualRows[2].Expenses.HousingLoanRepaymentYen);
+        Assert.Equal(1_000_000, result.AnnualRows[3].Expenses.HousingLoanRepaymentYen);
     }
 
     [Fact]
@@ -93,7 +175,8 @@ public class LifePlanCalculatorExpenseTests
 
         var result = Calculate(input);
 
-        Assert.Equal(7_000_000, result.AnnualRows[0].TotalExpenseYen);
+        Assert.Equal(150_000, result.AnnualRows[0].Expenses.HousingMaintenanceYen);
+        Assert.Equal(7_150_000, result.AnnualRows[0].TotalExpenseYen);
     }
 
     [Fact]
@@ -140,7 +223,7 @@ public class LifePlanCalculatorExpenseTests
         Assert.Equal(2_000_000, result.AnnualRows[0].Expenses.MarriageYen);
         Assert.Equal(300_000, result.AnnualRows[0].Expenses.TravelOtherYen);
         Assert.Equal(1_500_000, result.AnnualRows[1].Expenses.CarYen);
-        Assert.Equal(300_000, result.AnnualRows[1].Expenses.TravelOtherYen);
+        Assert.Equal(306_000, result.AnnualRows[1].Expenses.TravelOtherYen);
         Assert.Equal(0, result.AnnualRows[2].Expenses.CarYen);
         Assert.Equal(1_500_000, result.AnnualRows[3].Expenses.CarYen);
     }
@@ -159,8 +242,8 @@ public class LifePlanCalculatorExpenseTests
         var result = Calculate(input);
 
         Assert.Equal(0, result.AnnualRows[0].Expenses.TravelOtherYen);
-        Assert.Equal(300_000, result.AnnualRows[1].Expenses.TravelOtherYen);
-        Assert.Equal(300_000, result.AnnualRows[2].Expenses.TravelOtherYen);
+        Assert.Equal(306_000, result.AnnualRows[1].Expenses.TravelOtherYen);
+        Assert.Equal(312_120, result.AnnualRows[2].Expenses.TravelOtherYen);
         Assert.Equal(0, result.AnnualRows[3].Expenses.TravelOtherYen);
     }
 
@@ -200,7 +283,7 @@ public class LifePlanCalculatorExpenseTests
         var result = Calculate(input);
 
         Assert.Equal(850_000, result.AnnualRows[0].Expenses.EducationYen);
-        Assert.Equal(550_000, result.AnnualRows[1].Expenses.EducationYen);
+        Assert.Equal(561_000, result.AnnualRows[1].Expenses.EducationYen);
     }
 
     [Fact]
@@ -219,7 +302,7 @@ public class LifePlanCalculatorExpenseTests
         var result = Calculate(input);
 
         Assert.Equal(0, result.AnnualRows[0].Expenses.EducationYen);
-        Assert.Equal(450_000, result.AnnualRows[1].Expenses.EducationYen);
+        Assert.Equal(459_000, result.AnnualRows[1].Expenses.EducationYen);
     }
 
     [Fact]
