@@ -113,8 +113,8 @@ namespace LifePlan.Application.Mappers
             var rows = result.AnnualRows;
             var cashFlowRows = new List<CashFlowTableRowViewModel>
             {
-                CreateRow("家族構成", "family", "夫", rows.Select(row => ToAgeText(row.HusbandAge))),
-                CreateRow("家族構成", "family", "妻", rows.Select(row => ToAgeText(row.WifeAge)))
+                CreateRow("家族構成", "family", ToAgeLabel("夫"), rows.Select(row => ToAgeText(row.HusbandAge))),
+                CreateRow("家族構成", "family", ToAgeLabel("妻"), rows.Select(row => ToAgeText(row.WifeAge)))
             };
 
             AddChildRows(cashFlowRows, rows);
@@ -165,7 +165,7 @@ namespace LifePlan.Application.Mappers
                 cashFlowRows.Add(new CashFlowTableRowViewModel
                 {
                     Category = "家族構成",
-                    Label = $"第{index + 1}子",
+                    Label = ToAgeLabel($"第{index + 1}子"),
                     CategoryKey = "family",
                     Values = values
                 });
@@ -235,6 +235,11 @@ namespace LifePlan.Application.Mappers
                 CategoryKey = categoryKey,
                 Values = values.ToList()
             };
+        }
+
+        private static string ToAgeLabel(string personLabel)
+        {
+            return $"{personLabel}（年齢）";
         }
 
         private static string ToAgeText(int? age)
