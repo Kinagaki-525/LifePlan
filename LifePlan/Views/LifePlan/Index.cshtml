@@ -555,15 +555,25 @@
                                 <div class="life-plan-chart__series-options" data-life-plan-chart-series-options></div>
                             </fieldset>
 
-                            <div class="life-plan-chart__canvas-wrap">
-                                <canvas class="life-plan-chart__canvas" data-life-plan-chart-canvas aria-label="収入、支出、貯蓄合計の年次推移グラフ。左右の矢印キーで年度を選択できます" role="img" tabindex="0">
+                            <p class="life-plan-chart__guide" data-life-plan-chart-guide hidden>
+                                <span class="life-plan-chart__guide-pointer">カーソルを合わせて金額を確認・クリックで年度を固定（←/→キーでも年度を選択できます）</span>
+                                <span class="life-plan-chart__guide-touch">グラフをタップして年度を選択</span>
+                            </p>
+
+                            <div class="life-plan-chart__canvas-wrap" data-life-plan-chart-canvas-wrap>
+                                <canvas class="life-plan-chart__canvas" data-life-plan-chart-canvas aria-label="収入、支出、貯蓄合計の年次推移グラフ。年度別の金額はグラフ下の表示する年度で選択して確認できます" role="img">
                                     グラフを表示できない環境です。キャッシュフロー表をご確認ください。
                                 </canvas>
+                                <div class="life-plan-chart__tooltip" data-life-plan-chart-tooltip role="tooltip" hidden></div>
+                            </div>
+
+                            <div class="life-plan-chart__year-select" data-life-plan-chart-year-select-wrap hidden>
+                                <label class="life-plan-chart__year-select-label" for="life-plan-chart-year">表示する年度</label>
+                                <select id="life-plan-chart-year" class="form-select life-plan-chart__year-select-control" data-life-plan-chart-year-select></select>
                             </div>
 
                             <div class="life-plan-chart__detail" data-life-plan-chart-detail aria-live="polite" hidden></div>
 
-                            <div class="life-plan-chart__legend" data-life-plan-chart-legend aria-label="グラフ凡例"></div>
                             <p class="life-plan-result-frame__note">金額の単位は万円です。</p>
                             <p class="life-plan-chart__fallback" data-life-plan-chart-fallback hidden>グラフを表示できない環境です。キャッシュフロー表をご確認ください。</p>
                             <script id="life-plan-chart-data" type="application/json">@Html.Raw(JsonSerializer.Serialize(Model.Result.ChartPoints, chartJsonOptions))</script>
