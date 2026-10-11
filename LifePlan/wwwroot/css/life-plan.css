@@ -503,6 +503,69 @@
   width: 100%;
   max-width: 100%;
   height: 22.5rem;
+  cursor: crosshair;
+  touch-action: pan-y pinch-zoom;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.life-plan-chart__canvas:focus-visible {
+  outline: 0;
+  box-shadow: var(--ui-focus-shadow);
+}
+
+.life-plan-chart__detail {
+  min-width: 0;
+  padding: var(--ui-space-sm) var(--ui-space-md);
+  border: var(--ui-border-width-sm) solid var(--ui-color-border);
+  border-radius: var(--ui-radius-sm);
+  background: var(--ui-color-surface);
+  color: var(--ui-color-text);
+  font-size: var(--ui-font-size-small);
+}
+
+.life-plan-chart__detail-year {
+  margin: 0 0 var(--ui-space-xs);
+  font-weight: 700;
+}
+
+.life-plan-chart__detail-hint {
+  margin: 0;
+  color: var(--ui-color-muted);
+}
+
+.life-plan-chart__detail-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+  gap: var(--ui-space-2xs) var(--ui-space-lg);
+  margin: 0;
+}
+
+.life-plan-chart__detail-item {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0 var(--ui-space-sm);
+  min-width: 0;
+}
+
+.life-plan-chart__detail-item dt {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ui-space-xs);
+  font-weight: 400;
+  white-space: nowrap;
+}
+
+.life-plan-chart__detail-item dt .life-plan-chart__legend-marker {
+  flex-shrink: 0;
+}
+
+.life-plan-chart__detail-item dd {
+  margin: 0 0 0 auto;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
 
 .life-plan-chart__legend {
@@ -818,6 +881,18 @@
     min-height: 28rem;
     padding-right: var(--ui-space-md);
     padding-left: var(--ui-space-md);
+  }
+
+  .life-plan-chart__canvas-wrap {
+    padding: var(--ui-space-xs);
+  }
+
+  .life-plan-chart__canvas {
+    height: clamp(15rem, 68vw, 18rem);
+  }
+
+  .life-plan-chart__detail {
+    padding: var(--ui-space-xs) var(--ui-space-sm);
   }
 
   .life-plan-field-row,

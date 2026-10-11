@@ -12,6 +12,7 @@
     const fallback = root?.querySelector('[data-life-plan-chart-fallback]');
     const legend = root?.querySelector('[data-life-plan-chart-legend]');
     const seriesOptions = root?.querySelector('[data-life-plan-chart-series-options]');
+    const detail = root?.querySelector('[data-life-plan-chart-detail]');
     const data = readChartData();
 
     if (!root || !canvas || data.length === 0) {
@@ -38,15 +39,39 @@
         .map((control) => control.series);
     };
 
+    let selectedIndex = null;
+    let plotArea = null;
+    let renderedDetailKey = null;
+
     const redraw = () => {
       const visibleSeries = getVisibleSeries();
+      const detailKey = `${selectedIndex}|${visibleSeries.map((series) => series.key).join(',')}`;
+
       renderLegend(legend, visibleSeries);
-      drawChart(canvas, context, data, visibleSeries);
+
+      // 内容が変わらない再描画（リサイズなど）で読み上げが繰り返されないよう、詳細表示は変化時のみ更新する
+      if (detailKey !== renderedDetailKey) {
+        renderDetail(detail, data, visibleSeries, selectedIndex);
+        renderedDetailKey = detailKey;
+      }
+
+      plotArea = drawChart(canvas, context, data, visibleSeries, selectedIndex) ?? plotArea;
+    };
+
+    const selectIndex = (index) => {
+      if (index === selectedIndex) {
+        return;
+      }
+
+      selectedIndex = index;
+      redraw();
     };
 
     seriesControls.forEach((control) => {
       control.input.addEventListener('change', redraw);
     });
+
+    bindYearSelection(canvas, data, () => plotArea, () => selectedIndex, selectIndex);
 
     redraw();
 
@@ -73,6 +98,144 @@
     } catch {
       return [];
     }
+  };
+
+  const bindYearSelection = (canvas, data, getPlotArea, getSelectedIndex, selectIndex) => {
+    let activePointerId = null;
+    let indexBeforeTouch = null;
+
+    const selectFromEvent = (event) => {
+      const plotArea = getPlotArea();
+
+      if (!plotArea) {
+        return;
+      }
+
+      const rect = canvas.getBoundingClientRect();
+
+      selectIndex(toNearestIndex(event.clientX - rect.left, data.length, plotArea));
+    };
+
+    canvas.addEventListener('pointerdown', (event) => {
+      // ピンチ操作などの2本目以降の指は、1本目の操作中の状態を上書きしないよう無視する
+      if (!event.isPrimary || (event.pointerType === 'mouse' && event.button !== 0)) {
+        return;
+      }
+
+      activePointerId = event.pointerId;
+      indexBeforeTouch = getSelectedIndex();
+
+      // タッチは縦スクロールの開始と区別するため、指を離すか横に動かすまで確定しない
+      if (event.pointerType !== 'touch') {
+        canvas.setPointerCapture?.(event.pointerId);
+        selectFromEvent(event);
+      }
+    });
+
+    canvas.addEventListener('pointermove', (event) => {
+      if (event.pointerId === activePointerId) {
+        selectFromEvent(event);
+      }
+    });
+
+    canvas.addEventListener('pointerup', (event) => {
+      if (event.pointerId === activePointerId) {
+        selectFromEvent(event);
+        activePointerId = null;
+      }
+    });
+
+    // 縦スクロールやピンチ操作が始まった場合は、操作前の選択状態（未選択を含む）に戻す
+    canvas.addEventListener('pointercancel', (event) => {
+      if (event.pointerId === activePointerId) {
+        activePointerId = null;
+        selectIndex(indexBeforeTouch);
+      }
+    });
+
+    canvas.addEventListener('keydown', (event) => {
+      const currentIndex = getSelectedIndex();
+      const lastIndex = data.length - 1;
+      const nextIndex = {
+        ArrowLeft: currentIndex === null ? 0 : Math.max(0, currentIndex - 1),
+        ArrowRight: currentIndex === null ? 0 : Math.min(lastIndex, currentIndex + 1),
+        Home: 0,
+        End: lastIndex
+      }[event.key];
+
+      if (nextIndex === undefined) {
+        return;
+      }
+
+      event.preventDefault();
+      selectIndex(nextIndex);
+    });
+  };
+
+  const toNearestIndex = (x, count, plotArea) => {
+    const plotWidth = plotArea.width - plotArea.left - plotArea.right;
+
+    if (count <= 1 || plotWidth <= 0) {
+      return 0;
+    }
+
+    const index = Math.round(((x - plotArea.left) / plotWidth) * (count - 1));
+
+    return Math.min(count - 1, Math.max(0, index));
+  };
+
+  const renderDetail = (detail, data, visibleSeries, selectedIndex) => {
+    if (!detail) {
+      return;
+    }
+
+    detail.removeAttribute('hidden');
+
+    if (selectedIndex === null) {
+      const hint = document.createElement('p');
+      hint.className = 'life-plan-chart__detail-hint';
+      hint.textContent = 'グラフをタップ（クリック）すると、その年度の金額を表示します。';
+      detail.replaceChildren(hint);
+      return;
+    }
+
+    const point = data[selectedIndex];
+
+    const year = document.createElement('p');
+    year.className = 'life-plan-chart__detail-year';
+    year.textContent = `${point.year}年`;
+
+    if (visibleSeries.length === 0) {
+      const empty = document.createElement('p');
+      empty.className = 'life-plan-chart__detail-hint';
+      empty.textContent = '表示項目が選択されていません。';
+      detail.replaceChildren(year, empty);
+      return;
+    }
+
+    const list = document.createElement('dl');
+    list.className = 'life-plan-chart__detail-list';
+
+    list.append(...visibleSeries.map((series) => {
+      const item = document.createElement('div');
+      item.className = 'life-plan-chart__detail-item';
+
+      const marker = document.createElement('span');
+      marker.className = 'life-plan-chart__legend-marker';
+      marker.style.backgroundColor = getSeriesColor(series);
+
+      const term = document.createElement('dt');
+      term.append(marker, series.label);
+
+      const value = document.createElement('dd');
+      value.textContent = `${formatDetailAmount(point[series.key])}万円`;
+
+      item.append(term, value);
+
+      return item;
+    }));
+
+    detail.replaceChildren(year, list);
   };
 
   const showFallback = (fallback) => {
@@ -129,13 +292,12 @@
     }));
   };
 
-  const drawChart = (canvas, context, data, visibleSeries) => {
-    const parent = canvas.parentElement;
-    const width = Math.floor(parent.clientWidth);
+  const drawChart = (canvas, context, data, visibleSeries, selectedIndex) => {
+    const width = Math.floor(canvas.clientWidth);
     const height = Math.floor(canvas.clientHeight || 360);
 
     if (width <= 0 || height <= 0) {
-      return;
+      return null;
     }
 
     const pixelRatio = window.devicePixelRatio || 1;
@@ -150,6 +312,9 @@
     drawGrid(context, plotArea, scale);
     drawAxes(context, plotArea, scale);
     drawSeries(context, data, plotArea, scale, visibleSeries);
+    drawSelection(context, data, plotArea, scale, visibleSeries, selectedIndex);
+
+    return plotArea;
   };
 
   const createPlotArea = (width, height) => ({
@@ -264,6 +429,36 @@
     });
   };
 
+  const drawSelection = (context, data, plotArea, scale, visibleSeries, selectedIndex) => {
+    if (selectedIndex === null) {
+      return;
+    }
+
+    const x = toX(selectedIndex, data.length, plotArea);
+    const point = data[selectedIndex];
+
+    context.save();
+    context.strokeStyle = getCssColor('--ui-color-muted', '#888888');
+    context.lineWidth = 1;
+    context.setLineDash([4, 4]);
+    drawLine(context, x, plotArea.top, x, plotArea.height - plotArea.bottom);
+    context.setLineDash([]);
+
+    visibleSeries.forEach((series) => {
+      const y = toY(toNumber(point[series.key]), plotArea, scale);
+
+      context.beginPath();
+      context.arc(x, y, 4.5, 0, Math.PI * 2);
+      context.fillStyle = getCssColor('--ui-color-surface', '#ffffff');
+      context.fill();
+      context.lineWidth = 2.5;
+      context.strokeStyle = getSeriesColor(series);
+      context.stroke();
+    });
+
+    context.restore();
+  };
+
   const drawYearLabels = (context, data, plotArea) => {
     const plotWidth = plotArea.width - plotArea.left - plotArea.right;
     const interval = Math.max(1, Math.ceil(data.length / Math.max(2, Math.floor(plotWidth / 72))));
@@ -339,6 +534,17 @@
   const formatAmount = (value) => new Intl.NumberFormat('ja-JP', {
     maximumFractionDigits: 0
   }).format(value);
+
+  // キャッシュフロー表と同じく、万円の小数第1位へ0から遠い方向に四捨五入して表示する
+  const formatDetailAmount = (value) => {
+    const yen = Math.round(toNumber(value) * 10000);
+    const tenthsOfManYen = Math.sign(yen) * Math.floor((Math.abs(yen) + 500) / 1000);
+
+    return new Intl.NumberFormat('ja-JP', {
+      minimumFractionDigits: 1,
+      maximumFractionDigits: 1
+    }).format(tenthsOfManYen === 0 ? 0 : tenthsOfManYen / 10);
+  };
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initialize);
