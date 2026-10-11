@@ -660,11 +660,11 @@
 
 .life-plan-cash-flow__category {
   left: 0;
-  min-width: 6rem;
+  min-width: 6.5rem;
 }
 
 .life-plan-cash-flow__label {
-  left: 6rem;
+  left: 6.5rem;
   min-width: 10rem;
 }
 
@@ -690,8 +690,33 @@
 
 .life-plan-cash-flow__table thead th:first-child,
 .life-plan-cash-flow__table thead th:nth-child(2) {
+  position: sticky;
   z-index: 2;
-  background: var(--ui-color-reference-header);
+  background:
+    linear-gradient(var(--ui-color-reference-header), var(--ui-color-reference-header)),
+    var(--ui-color-surface);
+}
+
+.life-plan-cash-flow__table thead th:first-child {
+  left: 0;
+}
+
+.life-plan-cash-flow__table thead th:nth-child(2) {
+  left: 6.5rem;
+}
+
+/* 固定列の罫線は横スクロールで流れるため、右端の区切り線を影で描き、隣接する罫線は消す */
+.life-plan-cash-flow__table thead th:first-child,
+.life-plan-cash-flow__table thead th:nth-child(2),
+.life-plan-cash-flow__category,
+.life-plan-cash-flow__label {
+  box-shadow: inset calc(var(--ui-border-width-sm) * -1) 0 0 var(--ui-color-border);
+}
+
+.life-plan-cash-flow__table thead th:nth-child(2),
+.life-plan-cash-flow__table .life-plan-cash-flow__label,
+.life-plan-cash-flow__table tr > :nth-child(3) {
+  border-left-style: hidden;
 }
 
 .life-plan-cash-flow__scroll-hint {
@@ -862,13 +887,6 @@
     min-width: 8rem;
     max-width: 8rem;
     border-left: 0;
-    box-shadow: inset calc(var(--ui-border-width-sm) * -1) 0 0 var(--ui-color-border);
     white-space: normal;
-  }
-
-  .life-plan-cash-flow__table thead th:nth-child(2) {
-    background:
-      linear-gradient(var(--ui-color-reference-header), var(--ui-color-reference-header)),
-      var(--ui-color-surface);
   }
 }

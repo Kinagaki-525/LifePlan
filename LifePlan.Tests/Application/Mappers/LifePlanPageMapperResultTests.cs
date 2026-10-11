@@ -83,8 +83,9 @@ public class LifePlanPageMapperResultTests
 
         var viewModel = LifePlanPageMapper.ToResultViewModel(result);
 
-        Assert.DoesNotContain(viewModel.CashFlowRows, row => row.Label == "第1子（年齢）");
-        Assert.DoesNotContain(viewModel.CashFlowRows, row => row.Label == "第2子（年齢）");
+        Assert.Equal(
+            ["夫（年齢）", "妻（年齢）"],
+            viewModel.CashFlowRows.Where(row => row.CategoryKey == "family").Select(row => row.Label));
     }
 
     [Fact]
