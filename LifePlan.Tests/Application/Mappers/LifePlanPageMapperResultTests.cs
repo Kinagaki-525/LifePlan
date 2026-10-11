@@ -69,7 +69,7 @@ public class LifePlanPageMapperResultTests
             CreateAnnualRow(2026, wifeAge: null));
 
         var viewModel = LifePlanPageMapper.ToResultViewModel(result);
-        var wifeRow = Assert.Single(viewModel.CashFlowRows, row => row.Label == "妻");
+        var wifeRow = Assert.Single(viewModel.CashFlowRows, row => row.Label == "妻（年齢）");
 
         Assert.Equal("-", wifeRow.Values[0]);
     }
@@ -83,8 +83,26 @@ public class LifePlanPageMapperResultTests
 
         var viewModel = LifePlanPageMapper.ToResultViewModel(result);
 
-        Assert.DoesNotContain(viewModel.CashFlowRows, row => row.Label == "第1子");
-        Assert.DoesNotContain(viewModel.CashFlowRows, row => row.Label == "第2子");
+        Assert.DoesNotContain(viewModel.CashFlowRows, row => row.Label == "第1子（年齢）");
+        Assert.DoesNotContain(viewModel.CashFlowRows, row => row.Label == "第2子（年齢）");
+    }
+
+    [Fact]
+    public void ToResultViewModel_AddsAgeSuffixToFamilyRowLabelsOnly()
+    {
+        var result = CreateCalculationResult(
+            CreateAnnualRow(2026, husbandAge: 35, wifeAge: 33, childAges: [3, null, 5]));
+
+        var viewModel = LifePlanPageMapper.ToResultViewModel(result);
+        var familyRows = viewModel.CashFlowRows.Where(row => row.CategoryKey == "family").ToList();
+        var otherRows = viewModel.CashFlowRows.Where(row => row.CategoryKey != "family").ToList();
+
+        Assert.Equal(
+            ["夫（年齢）", "妻（年齢）", "第1子（年齢）", "第3子（年齢）"],
+            familyRows.Select(row => row.Label));
+        Assert.Equal(["35", "33", "3", "5"], familyRows.Select(row => row.Values[0]));
+        Assert.Equal(["家族構成"], familyRows.Select(row => row.Category).Distinct());
+        Assert.DoesNotContain(otherRows, row => row.Label.Contains("（年齢）"));
     }
 
     [Fact]
@@ -94,7 +112,7 @@ public class LifePlanPageMapperResultTests
 
         var viewModel = LifePlanPageMapper.ToResultViewModel(result);
 
-        Assert.Equal("family", Assert.Single(viewModel.CashFlowRows, row => row.Label == "夫").CategoryKey);
+        Assert.Equal("family", Assert.Single(viewModel.CashFlowRows, row => row.Label == "夫（年齢）").CategoryKey);
         Assert.Equal("income", Assert.Single(viewModel.CashFlowRows, row => row.Label == "収入合計").CategoryKey);
         Assert.Equal("expense", Assert.Single(viewModel.CashFlowRows, row => row.Label == "支出合計").CategoryKey);
         Assert.Equal("savings", Assert.Single(viewModel.CashFlowRows, row => row.Label == "開始時点金融資産").CategoryKey);

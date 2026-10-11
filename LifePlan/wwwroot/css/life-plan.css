@@ -694,6 +694,10 @@
   background: var(--ui-color-reference-header);
 }
 
+.life-plan-cash-flow__scroll-hint {
+  display: none;
+}
+
 .validation-summary-valid {
   display: none;
 }
@@ -835,5 +839,51 @@
 
   .life-plan-reference__table > :first-child {
     display: none;
+  }
+
+  .life-plan-cash-flow__scroll-hint {
+    display: block;
+    margin: 0 0 var(--ui-space-xs);
+    color: var(--ui-color-muted);
+    font-size: var(--ui-font-size-small);
+    text-align: right;
+  }
+
+  .life-plan-cash-flow__table th,
+  .life-plan-cash-flow__table td {
+    min-width: 5.5rem;
+  }
+
+  .life-plan-cash-flow__table thead th:first-child,
+  .life-plan-cash-flow__category {
+    display: none;
+  }
+
+  .life-plan-cash-flow__table thead th:nth-child(2),
+  .life-plan-cash-flow__table .life-plan-cash-flow__label {
+    position: sticky;
+    left: 0;
+    width: 8rem;
+    min-width: 8rem;
+    max-width: 8rem;
+    border-left: 0;
+    box-shadow: inset calc(var(--ui-border-width-sm) * -1) 0 0 var(--ui-color-border), var(--ui-shadow-sm);
+    white-space: normal;
+  }
+
+  .life-plan-cash-flow__table thead th:nth-child(2) {
+    background:
+      linear-gradient(var(--ui-color-reference-header), var(--ui-color-reference-header)),
+      var(--ui-color-surface);
+  }
+
+  .life-plan-cash-flow__table .life-plan-cash-flow__label {
+    text-align: left;
+  }
+
+  .life-plan-cash-flow__row--family + .life-plan-cash-flow__row--income > *,
+  .life-plan-cash-flow__row--income + .life-plan-cash-flow__row--expense > *,
+  .life-plan-cash-flow__row--expense + .life-plan-cash-flow__row--savings > * {
+    border-top: var(--ui-border-width-md) solid var(--ui-color-border);
   }
 }
