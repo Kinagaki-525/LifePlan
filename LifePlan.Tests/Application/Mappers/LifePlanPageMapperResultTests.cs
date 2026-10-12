@@ -70,8 +70,11 @@ public class LifePlanPageMapperResultTests
         var wifeRow = Assert.Single(viewModel.CashFlowRows, row => row.Label == "妻（年齢）");
 
         Assert.All(viewModel.CashFlowRows, row => Assert.Equal(viewModel.YearHeaders.Count, row.Values.Count));
-        Assert.Equal(husbandRow.Values.Select(value => $"夫{(value == "-" ? " -" : value + "歳")}"), viewModel.YearHeaders.Select(header => header.HusbandAgeText));
-        Assert.Equal(wifeRow.Values.Select(value => $"妻{(value == "-" ? " -" : value + "歳")}"), viewModel.YearHeaders.Select(header => header.WifeAgeText));
+        Assert.Equal(["2026", "2027", "2028"], viewModel.YearHeaders.Select(header => header.Year));
+        Assert.Equal(["99", "100", "-"], husbandRow.Values);
+        Assert.Equal(["夫99歳", "夫100歳", "夫 -"], viewModel.YearHeaders.Select(header => header.HusbandAgeText));
+        Assert.Equal(["95", "96", "97"], wifeRow.Values);
+        Assert.Equal(["妻95歳", "妻96歳", "妻97歳"], viewModel.YearHeaders.Select(header => header.WifeAgeText));
     }
 
     [Fact]

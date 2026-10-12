@@ -100,6 +100,11 @@
         }
     };
 
-    compactQuery.addEventListener('change', update);
+    // iOS Safari 14 未満の MediaQueryList は addEventListener を持たないため、addListener で代替する
+    if (typeof compactQuery.addEventListener === 'function') {
+        compactQuery.addEventListener('change', update);
+    } else {
+        compactQuery.addListener(update);
+    }
     update();
 })();

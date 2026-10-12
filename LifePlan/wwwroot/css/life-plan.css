@@ -905,6 +905,16 @@
   margin-top: calc((var(--life-plan-cash-flow-head-height) + var(--ui-border-width-sm)) * -1);
 }
 
+/* 表の枠のフォーカス表示は上部が複製の見出しに隠れるため、見出しを含む囲みの外側に表示する */
+.life-plan-cash-flow-area--sticky:has(> .life-plan-cash-flow:focus-visible) {
+  border-radius: var(--ui-radius-sm);
+  box-shadow: var(--ui-focus-shadow);
+}
+
+.life-plan-cash-flow-area--sticky:has(> .life-plan-cash-flow:focus-visible) > .life-plan-cash-flow {
+  outline: none;
+}
+
 .validation-summary-valid {
   display: none;
 }
