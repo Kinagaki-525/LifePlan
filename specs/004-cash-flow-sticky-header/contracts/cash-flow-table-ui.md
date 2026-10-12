@@ -56,6 +56,7 @@
 | `.life-plan-cash-flow__age` | — | `display: block`（年度の下に 1 段ずつ） |
 | 年度列の見出しの表示 | 「2026」 | 「2026年」「夫27歳」「妻26歳」の 3 段 |
 | 年度列の見出しの読み上げ | 「2026」 | 「2026年 夫27歳 妻26歳」 |
+| `.life-plan-cash-flow-area--sticky`（囲みに付く） | 付かない | JS が複製を挿入したときだけ付く。このクラスがあるときだけ、表の枠を見出しの高さ（CSS 変数）だけ上へ重ねる（負の `margin-top`） |
 | `.life-plan-cash-flow__sticky-head` | 存在しない（JS が作らない） | `position: sticky; top: 0`、`overflow: hidden`、`pointer-events: none`、表の行より手前（`z-index`）、背景は不透明 |
 
 - 既存のルール（`.life-plan-cash-flow`、`.life-plan-cash-flow__table` の `th`・`td`、固定列、`@media (max-width: 575.98px)` 内の既存ルール）は変更しない。追加のルールだけで実現する。
@@ -67,11 +68,11 @@
 | # | 契機 | 振る舞い |
 | --- | --- | --- |
 | J1 | 読み込み時 | `[data-life-plan-cash-flow]` がなければ何もしない。あれば `matchMedia('(max-width: 575.98px)')` を評価する |
-| J2 | スマートフォン幅になったとき（読み込み時を含む） | 元の `thead` を複製し、`id` 属性を取り除いて、`.life-plan-cash-flow__sticky-head` に入れ、表の枠の直前に挿入する。J3・J4 を実行する |
+| J2 | スマートフォン幅になったとき（読み込み時を含む） | 元の `thead` を複製し、`id` 属性を取り除いて、`.life-plan-cash-flow__sticky-head` に入れ、表の枠の直前に挿入し、囲みに `life-plan-cash-flow-area--sticky` を付ける。J3・J4 を実行する |
 | J3 | 列幅の同期（J2、元の表の大きさの変化） | 元の見出しの各セルの実測幅を、複製の対応するセルの `width`・`min-width`・`max-width` に設定し、複製の表の幅を元の表の実測幅にする。元の `thead` の高さを CSS 変数で渡し、表の枠を同じ高さだけ複製の下に重ねる |
 | J4 | 横位置の同期（J2、表の枠の `scroll`） | 複製の入れ物の `scrollLeft` に、表の枠の `scrollLeft` を代入する。`scroll` イベント内で直接行う（`requestAnimationFrame` で遅らせない）。イベントは `passive` |
 | J5 | 元の表の大きさの変化 | `ResizeObserver` で検知し、J3・J4 を実行する（回転、文字の拡大、結果エリアの表示・非表示、フォントの読み込み） |
-| J6 | PC 幅になったとき | 複製を取り除き、J3 で設定した CSS 変数・余白を元に戻し、イベントと監視を解除する |
+| J6 | PC 幅になったとき | 複製を取り除き、囲みの `life-plan-cash-flow-area--sticky` と J3 で設定した CSS 変数を取り除き、イベントと監視を解除する |
 
 - 同期は表の枠 → 複製の一方向だけ。複製の `scrollLeft` を表の枠に書き戻さない。
 - 業務ルール、計算、表示文言を持たない。見出しの内容は元の `thead`（サーバーが出力）の複製だけ。
@@ -91,7 +92,7 @@
 | 約束 | 確認 |
 | --- | --- |
 | 2 の表示 | quickstart A1、A6、M1 |
-| 3 の J2〜J4 | quickstart A2〜A4 |
+| 3 の J2〜J4 | quickstart A2〜A4、A13 |
 | 3 の J5・J6 | quickstart A7、M4 |
 | 既存の CSS を変えない | quickstart A5（修正前後の比較）、レビュー |
 | 4 | quickstart A8、A9 |

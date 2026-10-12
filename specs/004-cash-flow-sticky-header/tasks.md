@@ -26,7 +26,7 @@ description: "Task list for 004-cash-flow-sticky-header"
 
 - [ ] T001 `dotnet build LifePlan.slnx -m:1` と `dotnet test LifePlan.slnx -m:1` を実行し、修正前の結果（合格件数）を記録する。.NET SDK がない環境では導入してから実行する
 - [ ] T002 スクラッチに Playwright（Node.js）＋ Chromium の検証用スクリプトを作る：アプリ（`http://localhost:5250`）の `/LifePlan` で夫・妻の年齢を入力してフォームを送信し、結果画面を表示する関数、幅 320 / 375 / 390 / 430px（`isMobile`・`hasTouch`、高さ 700px）と 1280px（高さ 800px）の設定、`scrollTo({ top, behavior: 'instant' })` によるページのスクロール、表の枠（`.life-plan-cash-flow`）の `scrollLeft` の設定と計測を含める（quickstart 3 の共通の設定。リポジトリに含めない）
-- [ ] T003 `develop`（`cfb8f53`）の状態でアプリを起動し、T002 のスクリプトで修正前の基準値を記録する：5 幅それぞれの表の枠の `scrollWidth − clientWidth`、`tbody` 1 行目の各セルの幅、固定列（スマートフォン幅は「項目」、PC 幅は「区分」「項目」）の左端、スワイプ（CDP `Input.dispatchTouchEvent`）・ホイール（`page.mouse.wheel`）・矢印キーそれぞれの後の `scrollLeft`、1280px の表の枠のスクリーンショット 3 状態（縦スクロール前・縦スクロール後・横スクロール後）、JavaScript 無効時の 390px の表のセル文字（quickstart A5、A6、A9 の修正前の値）
+- [ ] T003 `develop`（`cfb8f53`）の状態でアプリを起動し、T002 のスクリプトで修正前の基準値を記録する：5 幅それぞれの表の枠の `scrollWidth − clientWidth`、`tbody` 1 行目の各セルの幅、固定列（スマートフォン幅は「項目」、PC 幅は「区分」「項目」）の左端、スワイプ（CDP `Input.dispatchTouchEvent`）・ホイール（`page.mouse.wheel`）・矢印キーそれぞれの後の `scrollLeft`、1280px の表の枠のスクリーンショット 3 状態（縦スクロール前・縦スクロール後・横スクロール後）、JavaScript 無効時の 390px の表のセル文字、5 幅それぞれの表の全セルの文字（`thead`・`tbody`、夫 30・妻 26 と夫 26・妻 30）とグラフ用データ（`#life-plan-chart-data` の JSON）（quickstart A5、A6、A9、A13 の修正前の値）
 
 **Checkpoint**: 修正前の基準値が記録され、以降の比較に使える
 
@@ -76,8 +76,8 @@ description: "Task list for 004-cash-flow-sticky-header"
 
 - [ ] T013 [US2] `LifePlan/Views/LifePlan/Index.cshtml` で、表の枠（`.life-plan-cash-flow`）を `<div class="life-plan-cash-flow-area" data-life-plan-cash-flow>` で囲む（スクロールの案内と単位の注記は囲みの外のまま）。結果があるときだけ `<script src="~/js/life-plan-cash-flow.js" asp-append-version="true"></script>` を `life-plan-chart.js` の隣で読み込む（contracts 1）
 - [ ] T014 [US2] `LifePlan/wwwroot/js/life-plan-cash-flow.js` を新規作成する（既存の JS と同じく即時関数で囲む）。contracts 3 の J1〜J4・J6 を実装する：`[data-life-plan-cash-flow]` がなければ終了／`matchMedia('(max-width: 575.98px)')` が一致したら元の `thead` を `cloneNode(true)` で複製し、`id` 属性を取り除き、`class="life-plan-cash-flow__table"` の `table` に入れて、`aria-hidden="true"` と `inert` を付けた `.life-plan-cash-flow__sticky-head` に入れ、表の枠の直前に挿入する／元の見出しの各セルの実測幅（`getBoundingClientRect().width`）を複製のセルの `width`・`min-width`・`max-width` に、元の表の実測幅を複製の表の幅に設定し、元の `thead` の高さを CSS 変数（例：`--life-plan-cash-flow-head-height`）で渡す／表の枠の `scroll`（`passive`）で複製の入れ物の `scrollLeft` に表の枠の `scrollLeft` を直接代入する（`requestAnimationFrame` を使わない。複製から表の枠へは書き戻さない）／一致しなくなったら複製・CSS 変数・イベントを取り除く。業務ルール・計算・表示文言は持たない
-- [ ] T015 [US2] `LifePlan/wwwroot/css/life-plan.css` に固定用の見出しのルールを追加する（既存ルールは変更しない）：`.life-plan-cash-flow__sticky-head` は `position: sticky; top: 0`、`overflow: hidden`、`pointer-events: none`、表の固定列より手前の `z-index`、不透明な背景。表の枠の上側の枠線・角丸と合わせ、表の枠は CSS 変数の高さだけ上へ重ねる（負の `margin-top`。複製があるときだけ効くよう、JS が付けるクラスまたは変数の有無で切り替える）。`.life-plan-cash-flow-area` とその祖先に `overflow`・`contain`・`transform` を指定しない旨のコメントを残す（research.md R3、R7）
-- [ ] T016 [US2] 検証用スクリプトで quickstart A3 をスマートフォン幅 4 つで実行し、固定・解除・表の後で画面外になることを確認する。表の前・先頭付近で、複製の上端が元の `thead` の上端と一致すること（R3 の試作で出た 2〜3px のずれが解消していること）を確認する
+- [ ] T015 [US2] `LifePlan/wwwroot/css/life-plan.css` に固定用の見出しのルールを追加する（既存ルールは変更しない）：`.life-plan-cash-flow__sticky-head` は `position: sticky; top: 0`、`overflow: hidden`、`pointer-events: none`、表の固定列より手前の `z-index`、不透明な背景。表の枠の上側の枠線・角丸と合わせ、表の枠は CSS 変数の高さだけ上へ重ねる（負の `margin-top`）。重ねる指定は、JS が複製を挿入したときに囲みへ付ける `life-plan-cash-flow-area--sticky` クラスがあるときだけ効かせる（contracts 2）。`.life-plan-cash-flow-area` とその祖先に `overflow`・`contain`・`transform` を指定しない旨のコメントを残す（research.md R3、R7）
+- [ ] T016 [US2] 検証用スクリプトで quickstart A3 をスマートフォン幅 4 つで実行し、固定・解除・表の後（単位の注記、グラフ、前提条件の各位置）で画面外になることを確認する。表の前・先頭付近で、複製の上端が元の `thead` の上端と一致すること（R3 の試作で出た 2〜3px のずれが解消していること）を確認する。固定中の見出しの高さが画面の高さ（700px）の 25% 以下であること、表の最終行（残高推移）が見出しの直下に完全に表示される縦位置があることを確認する（FR-012）。計測は `document.fonts.ready` の後に行う（T017 の幅の監視の前でも結果が安定するように）
 
 **Checkpoint**: スマートフォン幅で見出しが固定・解除される。横位置の同期は動くが、組み合わせの確認は US3 で行う
 
@@ -93,7 +93,7 @@ description: "Task list for 004-cash-flow-sticky-header"
 
 - [ ] T017 [US3] `LifePlan/wwwroot/js/life-plan-cash-flow.js` に contracts 3 の J5 を追加する：`ResizeObserver` で元の表の大きさの変化を検知し、列幅・表の幅・見出しの高さの設定と横位置の同期をやり直す（回転、文字の拡大、結果エリアの表示・非表示、フォントの読み込み）。J6 で監視を解除する
 - [ ] T018 [US3] 検証用スクリプトで quickstart A2・A4 をスマートフォン幅 4 つで実行する（横 3 位置 × 縦 5 位置）。列の左端・幅の差が 1px 以内、縦スクロールの前後で `scrollLeft` が不変、「項目」列と「項目」見出しの左端が表の枠の内側の左端、ページの幅が画面幅以下であることを確認する
-- [ ] T019 [US3] 検証用スクリプトで quickstart A5 を 5 幅で実行し、T003 の基準値と比べる：横スクロールできる量・各列の幅・固定列の左端が一致し、スワイプ・ホイール・矢印キーのいずれでも横にスクロールする。スマートフォン幅では、見出しの位置（固定前・固定中）でのスワイプでも表の枠がスクロールすることを確認する（FR-020、SC-013）
+- [ ] T019 [US3] 検証用スクリプトで quickstart A5 を 5 幅で実行し、T003 の基準値と比べる：横スクロールできる量・各列の幅・固定列の左端が一致し、スワイプ・ホイール・矢印キーのいずれでも横にスクロールする。スマートフォン幅では、見出しの位置（固定前・固定中）でのスワイプでも表の枠がスクロールすることを確認する（FR-020、SC-013）。あわせて quickstart A13 を実行し、表の全セルの文字とグラフ用データが T003 と一致することを確認する（年度見出しは、修正後の 1280px で修正前と同じ「2026」、スマートフォン幅で年齢の段が増えたことだけが差になる。SC-008）
 - [ ] T020 [US3] 検証用スクリプトで quickstart A7（390px → 1280px → 390px）、A11（夫婦とも 16 歳、夫婦とも 95 歳、子ども 2 人）、A12（再試算）を実行し、A2〜A4 が成り立つことを確認する
 
 **Checkpoint**: 横スクロールが修正前と同じで、組み合わせ操作でも列がずれない
@@ -122,7 +122,7 @@ description: "Task list for 004-cash-flow-sticky-header"
 - [ ] T023 [P] 検証用スクリプトで quickstart A9（`javaScriptEnabled: false`、390px）を実行し、T003 の基準値と比べて表の文字・横スクロール・「項目」列の固定が同じで、年齢が表示されることを確認する（SC-015）
 - [ ] T024 `dotnet build LifePlan.slnx -m:1` と `dotnet test LifePlan.slnx -m:1` を実行し、結果を記録する。ネットワーク制限による警告は、ビルド・テストの結果と分けて記録する
 - [ ] T025 `/review-changes`（または `change-reviewer`）で変更をレビューする。対象・比較元（`cfb8f53`）・差分・未追跡ファイル一覧・T012〜T024 の検証結果を渡す。指摘を直したら、影響する確認（T012、T016、T018〜T023）をやり直す
-- [ ] T026 quickstart 4 の手動確認（M1〜M6、ブラウザの開発者ツールのデバイスモード）を行い、結果を記録する。この環境で操作できない項目は、未確認として報告に含める
+- [ ] T026 quickstart 4 の手動確認（M1〜M6、ブラウザの開発者ツールのデバイスモード。M5 ではブラウザの拡大 200% も確認する）を行い、結果を記録する。この環境で操作できない項目は、未確認として報告に含める
 - [ ] T027 完了報告を作成する：変更したファイル、採用した方式と理由（research.md R1）、PC 版・スマートフォン版の変更結果、横スクロール・縦スクロールの確認結果（T012〜T023 の数値）、ビルド・自動テストの結果、実機で未検証の事項（quickstart 5 の D1〜D7。特に iPhone での慣性スクロール中の横の追従、アドレスバーの伸縮）、既存機能への影響、追加で判断が必要な事項。あわせて、実機確認（quickstart 5）をユーザーに依頼する
 
 ---
