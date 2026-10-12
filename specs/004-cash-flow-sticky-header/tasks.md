@@ -24,9 +24,9 @@ description: "Task list for 004-cash-flow-sticky-header"
 
 **Purpose**: 横スクロールを壊していないことを比べるための、修正前の基準値を記録する（plan「実装の順序」2、quickstart 1）
 
-- [ ] T001 `dotnet build LifePlan.slnx -m:1` と `dotnet test LifePlan.slnx -m:1` を実行し、修正前の結果（合格件数）を記録する。.NET SDK がない環境では導入してから実行する
-- [ ] T002 スクラッチに Playwright（Node.js）＋ Chromium の検証用スクリプトを作る：アプリ（`http://localhost:5250`）の `/LifePlan` で夫・妻の年齢を入力してフォームを送信し、結果画面を表示する関数、幅 320 / 375 / 390 / 430px（`isMobile`・`hasTouch`、高さ 700px）と 1280px（高さ 800px）の設定、`scrollTo({ top, behavior: 'instant' })` によるページのスクロール、表の枠（`.life-plan-cash-flow`）の `scrollLeft` の設定と計測を含める（quickstart 3 の共通の設定。リポジトリに含めない）
-- [ ] T003 `develop`（`cfb8f53`）の状態でアプリを起動し、T002 のスクリプトで修正前の基準値を記録する：5 幅それぞれの表の枠の `scrollWidth − clientWidth`、`tbody` 1 行目の各セルの幅、固定列（スマートフォン幅は「項目」、PC 幅は「区分」「項目」）の左端、スワイプ（CDP `Input.dispatchTouchEvent`）・ホイール（`page.mouse.wheel`）・矢印キーそれぞれの後の `scrollLeft`、1280px の表の枠のスクリーンショット 3 状態（縦スクロール前・縦スクロール後・横スクロール後）、JavaScript 無効時の 390px の表のセル文字、5 幅それぞれの表の全セルの文字（`thead`・`tbody`、夫 30・妻 26 と夫 26・妻 30）とグラフ用データ（`#life-plan-chart-data` の JSON）（quickstart A5、A6、A9、A13 の修正前の値）
+- [X] T001 `dotnet build LifePlan.slnx -m:1` と `dotnet test LifePlan.slnx -m:1` を実行し、修正前の結果（合格件数）を記録する。.NET SDK がない環境では導入してから実行する
+- [X] T002 スクラッチに Playwright（Node.js）＋ Chromium の検証用スクリプトを作る：アプリ（`http://localhost:5250`）の `/LifePlan` で夫・妻の年齢を入力してフォームを送信し、結果画面を表示する関数、幅 320 / 375 / 390 / 430px（`isMobile`・`hasTouch`、高さ 700px）と 1280px（高さ 800px）の設定、`scrollTo({ top, behavior: 'instant' })` によるページのスクロール、表の枠（`.life-plan-cash-flow`）の `scrollLeft` の設定と計測を含める（quickstart 3 の共通の設定。リポジトリに含めない）
+- [X] T003 `develop`（`cfb8f53`）の状態でアプリを起動し、T002 のスクリプトで修正前の基準値を記録する：5 幅それぞれの表の枠の `scrollWidth − clientWidth`、`tbody` 1 行目の各セルの幅、固定列（スマートフォン幅は「項目」、PC 幅は「区分」「項目」）の左端、スワイプ（CDP `Input.dispatchTouchEvent`）・ホイール（`page.mouse.wheel`）・矢印キーそれぞれの後の `scrollLeft`、1280px の表の枠のスクリーンショット 3 状態（縦スクロール前・縦スクロール後・横スクロール後）、JavaScript 無効時の 390px の表のセル文字、5 幅それぞれの表の全セルの文字（`thead`・`tbody`、夫 30・妻 26 と夫 26・妻 30）とグラフ用データ（`#life-plan-chart-data` の JSON）（quickstart A5、A6、A9、A13 の修正前の値）
 
 **Checkpoint**: 修正前の基準値が記録され、以降の比較に使える
 
@@ -36,10 +36,10 @@ description: "Task list for 004-cash-flow-sticky-header"
 
 **Purpose**: 年度ヘッダーの表示用データの型を変える。US1〜US4 のすべてが、変更後の `YearHeaders` を前提にする
 
-- [ ] T004 [P] `LifePlan/ViewModels/LifePlan/CashFlowYearHeaderViewModel.cs` を新規作成する：`Year`（`string`、例 `"2026"`、「年」は付けない）、`HusbandAgeText`（`string`、例 `"夫27歳"`、空なら `"夫 -"`）、`WifeAgeText`（`string`、例 `"妻26歳"`、空なら `"妻 -"`）。既存の `CashFlowTableRowViewModel` と同じ書き方（`namespace` ブロック、`= string.Empty` の初期値）にする（data-model.md 2）
-- [ ] T005 `LifePlan/ViewModels/LifePlan/LifePlanResultViewModel.cs` の `YearHeaders` の型を `IReadOnlyList<string>` から `IReadOnlyList<CashFlowYearHeaderViewModel>` に変える（data-model.md 3）
-- [ ] T006 `LifePlan/Application/Mappers/LifePlanPageMapper.cs` の `ToResultViewModel` で、`YearHeaders` を年次データ（`AnnualCashFlowRow`）の並びから 1 対 1 に作る：`Year = row.Year.ToString()`、`HusbandAgeText` は `HusbandAge` が値を持てば `"夫{年齢}歳"`、`null` なら `"夫 -"`（半角空白＋半角ハイフン）、妻も同じ規則。年齢は整数をそのまま文字列にし、計算しない（research.md R4、FR-002〜FR-004）
-- [ ] T007 `LifePlan/Views/LifePlan/Index.cshtml` の年度の `th` を、新しい型の `Year` を出力するように直す（この時点では年齢を出さず、表示は修正前と同じ「2026」）。`dotnet build LifePlan.slnx -m:1` が通ることを確認する
+- [X] T004 [P] `LifePlan/ViewModels/LifePlan/CashFlowYearHeaderViewModel.cs` を新規作成する：`Year`（`string`、例 `"2026"`、「年」は付けない）、`HusbandAgeText`（`string`、例 `"夫27歳"`、空なら `"夫 -"`）、`WifeAgeText`（`string`、例 `"妻26歳"`、空なら `"妻 -"`）。既存の `CashFlowTableRowViewModel` と同じ書き方（`namespace` ブロック、`= string.Empty` の初期値）にする（data-model.md 2）
+- [X] T005 `LifePlan/ViewModels/LifePlan/LifePlanResultViewModel.cs` の `YearHeaders` の型を `IReadOnlyList<string>` から `IReadOnlyList<CashFlowYearHeaderViewModel>` に変える（data-model.md 3）
+- [X] T006 `LifePlan/Application/Mappers/LifePlanPageMapper.cs` の `ToResultViewModel` で、`YearHeaders` を年次データ（`AnnualCashFlowRow`）の並びから 1 対 1 に作る：`Year = row.Year.ToString()`、`HusbandAgeText` は `HusbandAge` が値を持てば `"夫{年齢}歳"`、`null` なら `"夫 -"`（半角空白＋半角ハイフン）、妻も同じ規則。年齢は整数をそのまま文字列にし、計算しない（research.md R4、FR-002〜FR-004）
+- [X] T007 `LifePlan/Views/LifePlan/Index.cshtml` の年度の `th` を、新しい型の `Year` を出力するように直す（この時点では年齢を出さず、表示は修正前と同じ「2026」）。`dotnet build LifePlan.slnx -m:1` が通ることを確認する
 
 **Checkpoint**: ビルドが通り、画面の表示は修正前と同じ
 
@@ -53,14 +53,14 @@ description: "Task list for 004-cash-flow-sticky-header"
 
 ### Tests for User Story 1
 
-- [ ] T008 [P] [US1] `LifePlan.Tests/Application/Mappers/LifePlanPageMapperResultTests.cs` の `ToResultViewModel_CreatesYearHeadersFromAnnualRows` を新しい型に合わせて更新し（`Year` が `["2026", "2027"]`）、テストを追加する：年齢あり（quickstart U1）、夫の年齢が `null` で `"夫 -"`（U2）、妻の年齢が `null` で `"妻 -"`（U3）、`YearHeaders.Count` と各行の `Values.Count` が等しく、見出しの年齢と「夫（年齢）」「妻（年齢）」行の値が全列で対応する（U4）。既存の `CreateAnnualRow` ヘルパーを使い、必要なら年齢の引数を足す
-- [ ] T009 [US1] `dotnet test LifePlan.slnx -m:1` を実行し、追加・更新したテストと既存テストがすべて合格することを確認する（SC-011、SC-008）
+- [X] T008 [P] [US1] `LifePlan.Tests/Application/Mappers/LifePlanPageMapperResultTests.cs` の `ToResultViewModel_CreatesYearHeadersFromAnnualRows` を新しい型に合わせて更新し（`Year` が `["2026", "2027"]`）、テストを追加する：年齢あり（quickstart U1）、夫の年齢が `null` で `"夫 -"`（U2）、妻の年齢が `null` で `"妻 -"`（U3）、`YearHeaders.Count` と各行の `Values.Count` が等しく、見出しの年齢と「夫（年齢）」「妻（年齢）」行の値が全列で対応する（U4）。既存の `CreateAnnualRow` ヘルパーを使い、必要なら年齢の引数を足す
+- [X] T009 [US1] `dotnet test LifePlan.slnx -m:1` を実行し、追加・更新したテストと既存テストがすべて合格することを確認する（SC-011、SC-008）
 
 ### Implementation for User Story 1
 
-- [ ] T010 [US1] `LifePlan/Views/LifePlan/Index.cshtml` の年度の `th` を contracts/cash-flow-table-ui.md 1 の構造にする：`<span class="life-plan-cash-flow__year">@header.Year<span class="life-plan-cash-flow__compact">年</span></span>`、続けて `life-plan-cash-flow__age life-plan-cash-flow__compact` の `span` を夫・妻の順に 2 つ。`span` の間はテンプレート上で改行して空白を入れる。`th scope="col"`、「区分」「項目」の見出し、`tbody`、`caption` は変更しない
-- [ ] T011 [US1] `LifePlan/wwwroot/css/life-plan.css` にルールを追加する（既存ルールは変更しない）：`.life-plan-cash-flow__compact { display: none; }`、`@media (max-width: 575.98px)` 内で `.life-plan-cash-flow__compact` を表示し、`.life-plan-cash-flow__age { display: block; }`。年度の段と年齢の段の文字の太さ・大きさ・行間は既存のトークンで整え、`white-space: nowrap` のまま列の最小幅（6.5rem）に収める（research.md R5、FR-006）
-- [ ] T012 [US1] 検証用スクリプトで quickstart A1（5 幅のうちスマートフォン幅 4 つ、夫 30・妻 26 と夫 26・妻 30）と A10（幅 320px・文字 200%）を実行し、年齢の一致・「夫 -」「妻 -」・はみ出しなしを確認する。1280px で年度見出しが「2026」だけであることも確認する
+- [X] T010 [US1] `LifePlan/Views/LifePlan/Index.cshtml` の年度の `th` を contracts/cash-flow-table-ui.md 1 の構造にする：`<span class="life-plan-cash-flow__year">@header.Year<span class="life-plan-cash-flow__compact">年</span></span>`、続けて `life-plan-cash-flow__age life-plan-cash-flow__compact` の `span` を夫・妻の順に 2 つ。`span` の間はテンプレート上で改行して空白を入れる。`th scope="col"`、「区分」「項目」の見出し、`tbody`、`caption` は変更しない
+- [X] T011 [US1] `LifePlan/wwwroot/css/life-plan.css` にルールを追加する（既存ルールは変更しない）：`.life-plan-cash-flow__compact { display: none; }`、`@media (max-width: 575.98px)` 内で `.life-plan-cash-flow__compact` を表示し、`.life-plan-cash-flow__age { display: block; }`。年度の段と年齢の段の文字の太さ・大きさ・行間は既存のトークンで整え、`white-space: nowrap` のまま列の最小幅（6.5rem）に収める（research.md R5、FR-006）
+- [X] T012 [US1] 検証用スクリプトで quickstart A1（5 幅のうちスマートフォン幅 4 つ、夫 30・妻 26 と夫 26・妻 30）と A10（幅 320px・文字 200%）を実行し、年齢の一致・「夫 -」「妻 -」・はみ出しなしを確認する。1280px で年度見出しが「2026」だけであることも確認する
 
 **Checkpoint**: スマートフォン幅で年齢が表示され、PC 幅は変わらない。固定はまだない
 

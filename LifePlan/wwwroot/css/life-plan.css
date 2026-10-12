@@ -878,6 +878,11 @@
   display: none;
 }
 
+/* 年度見出しの「年」と夫婦の年齢は、スマートフォン幅だけで表示する（PC 幅の表示と読み上げは「2026」のまま） */
+.life-plan-cash-flow__compact {
+  display: none;
+}
+
 .validation-summary-valid {
   display: none;
 }
@@ -1055,5 +1060,15 @@
     max-width: 8rem;
     border-left: 0;
     white-space: normal;
+  }
+
+  .life-plan-cash-flow__compact {
+    display: inline;
+  }
+
+  .life-plan-cash-flow__age {
+    display: block;
+    font-weight: 400;
+    line-height: var(--ui-line-height-normal);
   }
 }

@@ -521,9 +521,13 @@
                                     <tr>
                                         <th scope="col">区分</th>
                                         <th scope="col">項目</th>
-                                        @foreach (var year in Model.Result.YearHeaders)
+                                        @foreach (var header in Model.Result.YearHeaders)
                                         {
-                                            <th scope="col">@year</th>
+                                            <th scope="col">
+                                                <span class="life-plan-cash-flow__year">@header.Year<span class="life-plan-cash-flow__compact">年</span></span>
+                                                <span class="life-plan-cash-flow__age life-plan-cash-flow__compact">@header.HusbandAgeText</span>
+                                                <span class="life-plan-cash-flow__age life-plan-cash-flow__compact">@header.WifeAgeText</span>
+                                            </th>
                                         }
                                     </tr>
                                 </thead>
