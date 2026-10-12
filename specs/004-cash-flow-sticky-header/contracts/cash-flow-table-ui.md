@@ -60,6 +60,7 @@
 | `.life-plan-cash-flow__sticky-head` | 存在しない（JS が作らない） | `position: sticky; top: 0`、`overflow: hidden`、`pointer-events: none`、表の行より手前（`z-index`）、背景は不透明 |
 
 - 既存のルール（`.life-plan-cash-flow`、`.life-plan-cash-flow__table` の `th`・`td`、固定列、`@media (max-width: 575.98px)` 内の既存ルール）は変更しない。追加のルールだけで実現する。
+- 例外として、見出しを固定しているときに表の枠がキーボードでフォーカスされた場合（`.life-plan-cash-flow-area--sticky:has(> .life-plan-cash-flow:focus-visible)`）だけ、表の枠の `outline` を `none` にし、代わりに囲みへサイト共通のフォーカス表示（`box-shadow: var(--ui-focus-shadow)`、`border-radius: var(--ui-radius-sm)`）を出す。表の枠の既定の `outline` は上部が複製の見出しに隠れるため（PR #64 のレビュー）。`:has()` に対応しないブラウザでは両方とも効かず、既定の `outline` のままになる。PC 幅では囲みに `--sticky` が付かないため対象外。
 - `.life-plan-cash-flow-area` とその祖先に `overflow`・`contain`・`transform` を指定しない（`position: sticky` の基準が変わるため。CSS にコメントを残す）。
 - 色・余白・枠線・角丸は既存のトークン（`--ui-color-*`、`--ui-border-width-sm`、`--ui-radius-sm` など）を使う。
 
@@ -67,7 +68,7 @@
 
 | # | 契機 | 振る舞い |
 | --- | --- | --- |
-| J1 | 読み込み時 | `[data-life-plan-cash-flow]` がなければ何もしない。あれば `matchMedia('(max-width: 575.98px)')` を評価する |
+| J1 | 読み込み時 | `[data-life-plan-cash-flow]` がなければ何もしない。あれば `matchMedia('(max-width: 575.98px)')` を評価する。画面幅の変化は `MediaQueryList.addEventListener('change')` で監視し、持たないブラウザ（iOS Safari 14 未満）では `addListener` を使う |
 | J2 | スマートフォン幅になったとき（読み込み時を含む） | 元の `thead` を複製し、`id` 属性を取り除いて、`.life-plan-cash-flow__sticky-head` に入れ、表の枠の直前に挿入し、囲みに `life-plan-cash-flow-area--sticky` を付ける。J3・J4 を実行する |
 | J3 | 列幅の同期（J2、元の表の大きさの変化） | 元の見出しの各セルの実測幅を、複製の対応するセルの `width`・`min-width`・`max-width` に設定し、複製の表の幅を元の表の実測幅にする。元の `thead` の高さを CSS 変数で渡し、表の枠を同じ高さだけ複製の下に重ねる |
 | J4 | 横位置の同期（J2、表の枠の `scroll`） | 複製の入れ物の `scrollLeft` に、表の枠の `scrollLeft` を代入する。`scroll` イベント内で直接行う（`requestAnimationFrame` で遅らせない）。イベントは `passive` |
@@ -83,7 +84,7 @@
 | 項目 | 約束 |
 | --- | --- |
 | 見出しの読み上げ | 元の `thead` だけ。複製は `aria-hidden="true"` で支援技術から外す（FR-025） |
-| フォーカス | 複製は `inert` で、フォーカスもクリックもできない。表の枠の `tabindex="0"` と矢印キーによる横スクロールは変わらない（FR-019） |
+| フォーカス | 複製は `inert` で、フォーカスもクリックもできない。表の枠の `tabindex="0"` と矢印キーによる横スクロールは変わらない（FR-019）。見出しの固定中に表の枠がフォーカスされたときは、見出しを含む囲みの外側にフォーカス表示を出す（2 章） |
 | ポインター | 複製は `pointer-events: none`。見出しの位置でのタッチ・ホイールは下の表の枠に届く |
 | 表の構造 | `th scope="col"`、`th scope="row"`、`caption` は変更しない（FR-024） |
 
