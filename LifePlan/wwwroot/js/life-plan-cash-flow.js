@@ -32,14 +32,14 @@
             return;
         }
 
-        const sourceCells = [...table.tHead.rows[0].cells];
+        // 幅をすべて読み取ってから書き込み、列ごとにレイアウトの再計算が起きないようにする
+        const sourceWidths = [...table.tHead.rows[0].cells].map((cell) => `${cell.getBoundingClientRect().width}px`);
         const cloneTable = stickyHead.querySelector('table');
         const cloneCells = [...cloneTable.tHead.rows[0].cells];
 
         cloneTable.style.width = `${tableWidth}px`;
         cloneTable.style.minWidth = `${tableWidth}px`;
-        sourceCells.forEach((cell, index) => {
-            const width = `${cell.getBoundingClientRect().width}px`;
+        sourceWidths.forEach((width, index) => {
             cloneCells[index].style.width = width;
             cloneCells[index].style.minWidth = width;
             cloneCells[index].style.maxWidth = width;
