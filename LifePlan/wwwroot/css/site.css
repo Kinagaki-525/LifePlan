@@ -21,6 +21,7 @@
   --ui-font-family-base: "Noto Sans JP", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --ui-font-size-root-sm: 14px;
   --ui-font-size-root-md: 16px;
+  --ui-font-size-control-touch: 16px;
   --ui-font-size-small: 0.875rem;
   --ui-font-size-body: 1rem;
   --ui-font-size-brand: 1.25rem;
@@ -67,6 +68,7 @@
   --ui-field-label-min-width: 7.5rem;
   --ui-field-label-max-width: 10rem;
   --ui-period-control-width: 80px;
+  --ui-period-control-width-touch: 120px;
   --ui-period-help-min-width: 14rem;
   --ui-children-column-min-width: 235px;
   --ui-education-title-width: 3rem;
@@ -131,6 +133,20 @@ html {
 @media (min-width: 768px) {
   html {
     font-size: var(--ui-font-size-root-md);
+  }
+}
+
+/* iOS は 16px 未満の入力欄にフォーカスすると画面を自動で拡大するため、タッチが主の端末では画面幅によらず 16px にする。要素名を付けて画面ごとの CSS より優先させる。文字が大きくなる分、年齢欄・教育費の選択欄の幅を広げ、「100」や「私立文系」が切れないようにする */
+@media (pointer: coarse) {
+  :root {
+    --ui-period-control-width: var(--ui-period-control-width-touch);
+  }
+
+  input.form-control,
+  select.form-select,
+  select.form-control,
+  textarea.form-control {
+    font-size: var(--ui-font-size-control-touch);
   }
 }
 
