@@ -44,7 +44,7 @@
 
 | 原則 | 照合結果 | 根拠 |
 | --- | --- | --- |
-| I. 仕様の正本は docs/ | ⚠️ 反映待ち | 年度ヘッダーの表示と縦固定は、正本 6.2 に記述がない。反映案（[docs-update-proposal.md](docs-update-proposal.md)）を作成済みで、ユーザーの明示的な了承を得てから反映する。実装（`/speckit-implement`）の前に反映を完了する |
+| I. 仕様の正本は docs/ | ✅ | 年度ヘッダーの表示と縦固定を、了承を得て `docs/simulator/index.md` v1.4 6.2 に反映済み（[docs-update-proposal.md](docs-update-proposal.md)）。spec.md は正本を参照 |
 | II. レイヤー責務と依存方向 | ✅ | 表示用文字列は Mapper で作る（R4）。View は ViewModel だけを使う。画面上の振る舞い（複製・同期）は `wwwroot/js` の機能別ファイルに置く。Domain の型は変えない |
 | III. 計算ロジックのテスト | ✅（対象外） | `Domain/Logic`・`Domain/Rules` の変更なし。Mapper の表示用文字列はテストを追加する（SC-011） |
 | IV. 最小変更と事前確認 | ✅ | 新しい依存パッケージなし。既存の表の CSS は変えず、追加のみ。`YearHeaders` の型変更は、使用箇所（View 1、テスト 1）に限られる |
@@ -65,7 +65,7 @@
 | `LifePlan.Tests/Application/Mappers/LifePlanPageMapperResultTests.cs` | 変更 | テスト | 年度ヘッダーのテストを新しい型に更新し、年齢・空の年度のテストを追加 |
 | `Domain/**`、計算ロジック、他の ViewModel | 変更なし | — | — |
 
-**Post-Design 再確認（Phase 1 後）**: 原則 II〜V に違反なし。原則 I は、正本への反映を実装の前提条件として tasks に含める（反映はユーザーの了承後）。
+**Post-Design 再確認（Phase 1 後）**: 原則 II〜V に違反なし。原則 I も反映済みで違反なし。
 
 ## Project Structure
 
@@ -74,7 +74,7 @@
 ```text
 specs/004-cash-flow-sticky-header/
 ├── spec.md                  # 仕様（Clarifications 2026-10-12 を含む）
-├── docs-update-proposal.md  # 正本 6.2 への反映案（了承待ち）
+├── docs-update-proposal.md  # 正本 v1.4 6.2 への反映内容（反映済み）
 ├── plan.md                  # 本書
 ├── research.md              # Phase 0：方式比較と設計判断 R0〜R8
 ├── data-model.md            # Phase 1：表示用データと画面の状態
@@ -107,7 +107,7 @@ LifePlan.Tests/
 
 ## 実装の順序と横スクロールを守る手順
 
-1. 正本への反映（ユーザーの了承後）。
+1. 正本への反映（2026-10-12 反映済み）。
 2. 修正前の計測（quickstart の A 系を `cfb8f53` で実行し、横スクロールの量・列幅・固定列の位置・PC 幅のスクリーンショットを記録）。
 3. C#：ViewModel・Mapper・テスト（SC-011）。
 4. View・CSS：年齢の 3 段表示（この時点では固定なし）。PC 幅のスクリーンショットが修正前と一致することを確認。
