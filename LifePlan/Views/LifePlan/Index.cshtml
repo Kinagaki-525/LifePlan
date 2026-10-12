@@ -514,37 +514,39 @@
 
                         <p class="life-plan-cash-flow__scroll-hint" aria-hidden="true">表は左右にスクロールできます</p>
 
-                        <div class="life-plan-cash-flow" role="region" aria-label="キャッシュフロー表" tabindex="0">
-                            <table class="life-plan-cash-flow__table">
-                                <caption class="visually-hidden">年次キャッシュフロー表。金額の単位は万円です。</caption>
-                                <thead>
-                                    <tr>
-                                        <th scope="col">区分</th>
-                                        <th scope="col">項目</th>
-                                        @foreach (var header in Model.Result.YearHeaders)
-                                        {
-                                            <th scope="col">
-                                                <span class="life-plan-cash-flow__year">@header.Year<span class="life-plan-cash-flow__compact">年</span></span>
-                                                <span class="life-plan-cash-flow__age life-plan-cash-flow__compact">@header.HusbandAgeText</span>
-                                                <span class="life-plan-cash-flow__age life-plan-cash-flow__compact">@header.WifeAgeText</span>
-                                            </th>
-                                        }
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (var row in Model.Result.CashFlowRows)
-                                    {
-                                        <tr class="life-plan-cash-flow__row--@row.CategoryKey">
-                                            <th scope="row" class="life-plan-cash-flow__category">@row.Category</th>
-                                            <th scope="row" class="life-plan-cash-flow__label">@row.Label</th>
-                                            @foreach (var value in row.Values)
+                        <div class="life-plan-cash-flow-area" data-life-plan-cash-flow>
+                            <div class="life-plan-cash-flow" role="region" aria-label="キャッシュフロー表" tabindex="0">
+                                <table class="life-plan-cash-flow__table">
+                                    <caption class="visually-hidden">年次キャッシュフロー表。金額の単位は万円です。</caption>
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">区分</th>
+                                            <th scope="col">項目</th>
+                                            @foreach (var header in Model.Result.YearHeaders)
                                             {
-                                                <td>@value</td>
+                                                <th scope="col">
+                                                    <span class="life-plan-cash-flow__year">@header.Year<span class="life-plan-cash-flow__compact">年</span></span>
+                                                    <span class="life-plan-cash-flow__age life-plan-cash-flow__compact">@header.HusbandAgeText</span>
+                                                    <span class="life-plan-cash-flow__age life-plan-cash-flow__compact">@header.WifeAgeText</span>
+                                                </th>
                                             }
                                         </tr>
-                                    }
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var row in Model.Result.CashFlowRows)
+                                        {
+                                            <tr class="life-plan-cash-flow__row--@row.CategoryKey">
+                                                <th scope="row" class="life-plan-cash-flow__category">@row.Category</th>
+                                                <th scope="row" class="life-plan-cash-flow__label">@row.Label</th>
+                                                @foreach (var value in row.Values)
+                                                {
+                                                    <td>@value</td>
+                                                }
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
 
                         <p class="life-plan-result-frame__note">金額の単位は万円です。</p>
@@ -638,6 +640,7 @@
     @if (Model.Result is not null)
     {
         <script src="~/js/life-plan-chart.js" asp-append-version="true"></script>
+        <script src="~/js/life-plan-cash-flow.js" asp-append-version="true"></script>
     }
     <script src="~/js/life-plan-tabs.js" asp-append-version="true"></script>
 }
