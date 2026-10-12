@@ -355,6 +355,13 @@
   gap: var(--ui-space-md) var(--ui-space-lg);
 }
 
+/* タッチが主の端末は選択欄の文字と幅が大きく、4列では収まらないため2列にする（992px 未満は後のメディアクエリで1列） */
+@media (pointer: coarse) {
+  .life-plan-education-grid {
+    grid-template-columns: repeat(2, minmax(var(--ui-education-column-min-width), 1fr));
+  }
+}
+
 .life-plan-education-field {
   display: grid;
   grid-template-columns: minmax(var(--ui-education-label-width), auto) var(--ui-period-control-width);
