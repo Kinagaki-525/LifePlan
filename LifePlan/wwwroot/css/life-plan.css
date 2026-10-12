@@ -878,6 +878,43 @@
   display: none;
 }
 
+/* 年度見出しの「年」と夫婦の年齢は、スマートフォン幅だけで表示する（PC 幅の表示と読み上げは「2026」のまま） */
+.life-plan-cash-flow__compact {
+  display: none;
+}
+
+/*
+  スマートフォン幅で縦スクロール中に固定する見出し（life-plan-cash-flow.js が複製を挿入する）。
+  position: sticky をページ基準で効かせるため、.life-plan-cash-flow-area とその祖先には
+  overflow・contain・transform を指定しないこと。
+*/
+.life-plan-cash-flow__sticky-head {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  overflow: hidden;
+  border: var(--ui-border-width-sm) solid var(--ui-color-border);
+  border-bottom: 0;
+  border-radius: var(--ui-radius-sm) var(--ui-radius-sm) 0 0;
+  background: var(--ui-color-surface);
+  pointer-events: none;
+}
+
+/* 表の枠を見出しの高さと上側の枠線のぶんだけ上へ重ね、元の見出しを複製の真下に置く */
+.life-plan-cash-flow-area--sticky .life-plan-cash-flow {
+  margin-top: calc((var(--life-plan-cash-flow-head-height) + var(--ui-border-width-sm)) * -1);
+}
+
+/* 表の枠のフォーカス表示は上部が複製の見出しに隠れるため、見出しを含む囲みの外側に表示する */
+.life-plan-cash-flow-area--sticky:has(> .life-plan-cash-flow:focus-visible) {
+  border-radius: var(--ui-radius-sm);
+  box-shadow: var(--ui-focus-shadow);
+}
+
+.life-plan-cash-flow-area--sticky:has(> .life-plan-cash-flow:focus-visible) > .life-plan-cash-flow {
+  outline: none;
+}
+
 .validation-summary-valid {
   display: none;
 }
@@ -1055,5 +1092,15 @@
     max-width: 8rem;
     border-left: 0;
     white-space: normal;
+  }
+
+  .life-plan-cash-flow__compact {
+    display: inline;
+  }
+
+  .life-plan-cash-flow__age {
+    display: block;
+    font-weight: 400;
+    line-height: var(--ui-line-height-normal);
   }
 }

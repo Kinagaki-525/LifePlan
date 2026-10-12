@@ -124,7 +124,7 @@ namespace LifePlan.Application.Mappers
 
             return new LifePlanResultViewModel
             {
-                YearHeaders = rows.Select(row => row.Year.ToString()).ToList(),
+                YearHeaders = rows.Select(ToYearHeaderViewModel).ToList(),
                 CashFlowRows = cashFlowRows,
                 ChartPoints = rows.Select(ToChartPointViewModel).ToList(),
                 Assumptions = LifePlanAssumptionMapper.CreateAssumptions(result.AssumptionsVersion)
@@ -245,6 +245,21 @@ namespace LifePlan.Application.Mappers
         private static string ToAgeText(int? age)
         {
             return age.HasValue ? age.Value.ToString() : "-";
+        }
+
+        private static CashFlowYearHeaderViewModel ToYearHeaderViewModel(AnnualCashFlowRow row)
+        {
+            return new CashFlowYearHeaderViewModel
+            {
+                Year = row.Year.ToString(),
+                HusbandAgeText = ToHeaderAgeText("夫", row.HusbandAge),
+                WifeAgeText = ToHeaderAgeText("妻", row.WifeAge)
+            };
+        }
+
+        private static string ToHeaderAgeText(string personLabel, int? age)
+        {
+            return age.HasValue ? $"{personLabel}{age.Value}歳" : $"{personLabel} -";
         }
 
         private static string ToManYenText(long yen)

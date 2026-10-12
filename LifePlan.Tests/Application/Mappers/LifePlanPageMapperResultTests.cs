@@ -15,7 +15,66 @@ public class LifePlanPageMapperResultTests
 
         var viewModel = LifePlanPageMapper.ToResultViewModel(result);
 
-        Assert.Equal(["2026", "2027"], viewModel.YearHeaders);
+        Assert.Equal(["2026", "2027"], viewModel.YearHeaders.Select(header => header.Year));
+    }
+
+    [Fact]
+    public void ToResultViewModel_CreatesYearHeaderAgeTextsFromAnnualRows()
+    {
+        var result = CreateCalculationResult(
+            CreateAnnualRow(2026, husbandAge: 27, wifeAge: 26),
+            CreateAnnualRow(2027, husbandAge: 28, wifeAge: 27));
+
+        var viewModel = LifePlanPageMapper.ToResultViewModel(result);
+
+        Assert.Equal(["夫27歳", "夫28歳"], viewModel.YearHeaders.Select(header => header.HusbandAgeText));
+        Assert.Equal(["妻26歳", "妻27歳"], viewModel.YearHeaders.Select(header => header.WifeAgeText));
+    }
+
+    [Fact]
+    public void ToResultViewModel_ShowsDashInYearHeaderWhenHusbandAgeIsEmpty()
+    {
+        var result = CreateCalculationResult(
+            CreateAnnualRow(2096, husbandAge: 100, wifeAge: 96),
+            CreateAnnualRow(2097, husbandAge: null, wifeAge: 97));
+
+        var viewModel = LifePlanPageMapper.ToResultViewModel(result);
+
+        Assert.Equal(["夫100歳", "夫 -"], viewModel.YearHeaders.Select(header => header.HusbandAgeText));
+        Assert.Equal(["妻96歳", "妻97歳"], viewModel.YearHeaders.Select(header => header.WifeAgeText));
+    }
+
+    [Fact]
+    public void ToResultViewModel_ShowsDashInYearHeaderWhenWifeAgeIsEmpty()
+    {
+        var result = CreateCalculationResult(
+            CreateAnnualRow(2096, husbandAge: 96, wifeAge: 100),
+            CreateAnnualRow(2097, husbandAge: 97, wifeAge: null));
+
+        var viewModel = LifePlanPageMapper.ToResultViewModel(result);
+
+        Assert.Equal(["夫96歳", "夫97歳"], viewModel.YearHeaders.Select(header => header.HusbandAgeText));
+        Assert.Equal(["妻100歳", "妻 -"], viewModel.YearHeaders.Select(header => header.WifeAgeText));
+    }
+
+    [Fact]
+    public void ToResultViewModel_YearHeaderAgesMatchFamilyAgeRowsInEveryColumn()
+    {
+        var result = CreateCalculationResult(
+            CreateAnnualRow(2026, husbandAge: 99, wifeAge: 95, childAges: [3]),
+            CreateAnnualRow(2027, husbandAge: 100, wifeAge: 96, childAges: [4]),
+            CreateAnnualRow(2028, husbandAge: null, wifeAge: 97, childAges: [5]));
+
+        var viewModel = LifePlanPageMapper.ToResultViewModel(result);
+        var husbandRow = Assert.Single(viewModel.CashFlowRows, row => row.Label == "夫（年齢）");
+        var wifeRow = Assert.Single(viewModel.CashFlowRows, row => row.Label == "妻（年齢）");
+
+        Assert.All(viewModel.CashFlowRows, row => Assert.Equal(viewModel.YearHeaders.Count, row.Values.Count));
+        Assert.Equal(["2026", "2027", "2028"], viewModel.YearHeaders.Select(header => header.Year));
+        Assert.Equal(["99", "100", "-"], husbandRow.Values);
+        Assert.Equal(["夫99歳", "夫100歳", "夫 -"], viewModel.YearHeaders.Select(header => header.HusbandAgeText));
+        Assert.Equal(["95", "96", "97"], wifeRow.Values);
+        Assert.Equal(["妻95歳", "妻96歳", "妻97歳"], viewModel.YearHeaders.Select(header => header.WifeAgeText));
     }
 
     [Fact]
